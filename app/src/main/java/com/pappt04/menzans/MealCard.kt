@@ -1,8 +1,6 @@
 package com.pappt04.menzans
 
 import android.content.res.Configuration
-import android.view.Surface
-import android.widget.Space
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -39,13 +37,13 @@ data class MealData(var name: String, var price: Int, var remaining: Int)
 @Composable
 fun MealCard(meal: MealData) {
     var isExpanded by remember { mutableStateOf(false) }
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .padding(8.dp)
-            .clickable { isExpanded=!isExpanded }
+            .clickable { isExpanded = !isExpanded }
     ) {
         Column {
             Text(
@@ -64,39 +62,63 @@ fun MealCard(meal: MealData) {
                 modifier = Modifier
                     .fillMaxWidth()
             )
-        }
-        Text(
-            text = "Remaining: ${meal.remaining}",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        //TODO DAYS IN WEEK
-        //TODO TWO BUTTONS TO ADD AND SUBTRACT
-        AnimatedVisibility(isExpanded,
-            modifier = Modifier
-                .animateContentSize(animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessLow))) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly) {
-                Button(onClick = {
-                    Toast.makeText(context, "Welcome to Geeks for Geeks", Toast.LENGTH_LONG).show()
-                },
-                   ) {
-                    Text("Minus")
-                }
+            Text(
+                text = "Remaining: ${meal.remaining}",
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            //TODO DAYS IN WEEK
+            //TODO TWO BUTTONS TO ADD AND SUBTRACT
+            AnimatedVisibility(
+                isExpanded,
+                modifier = Modifier
+                    .animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    )
+            ) {
+                val dataprev = listOf('M', 'T', 'W', 'T', 'F', 'S', 'S')
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    horizontalAlignment =Alignment.CenterHorizontally
+                    ) {
+                    WeekView(dataprev)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            onClick = {
+                                Toast.makeText(
+                                    context,
+                                    "Welcome to Geeks for Geeks",
+                                    Toast.LENGTH_LONG
+                                )
+                                    .show()
+                            },
+                        ) {
+                            Text("Minus")
+                        }
 
-                Button(onClick = {
-                    Toast.makeText(context, "Welcome to Geeks for Geeks", Toast.LENGTH_LONG).show()
-                }) {
-                    Text("Plus")
+                        Button(onClick = {
+                            Toast.makeText(context, "Welcome to Geeks for Geeks", Toast.LENGTH_LONG)
+                                .show()
+                        }) {
+                            Text("Plus")
+                        }
+                    }
                 }
             }
         }
+
     }
 }
 
@@ -109,6 +131,6 @@ fun MealCard(meal: MealData) {
 @Composable
 fun PreviewMealCard() {
     MenzaNSTheme {
-        MealCard(MealData("Breakfast", 90,1))
+        MealCard(MealData("Breakfast", 90, 1))
     }
 }
