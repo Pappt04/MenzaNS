@@ -29,7 +29,7 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldDesign() {
+fun ScaffoldDesign(meals: List<MealData>) {
     var presses by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -69,7 +69,7 @@ fun ScaffoldDesign() {
                 .fillMaxWidth(1f),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            MealContainer(MealSample)
+            MealContainer(meals)
         }
     }
 }
@@ -79,6 +79,6 @@ fun ScaffoldDesign() {
 fun PreviewScaffold()
 {
     MenzaNSTheme {
-        ScaffoldDesign()
+        ScaffoldDesign(DummyData.MealSample)
     }
 }

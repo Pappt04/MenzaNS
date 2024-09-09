@@ -1,0 +1,28 @@
+{
+    "meals": [
+      {
+        "name": "Breakfast",
+        "price": 67,
+        "start_hour": 7,
+        "start_minute": 0,
+        "end_hour": 9,
+        "end_minute": 30
+      },
+      {
+        "name": "Lunch",
+        "price": 120,
+        "start_hour": 11,
+        "start_minute": 0,
+        "end_hour": 15,
+        "end_minute": 0
+      },
+      {
+        "name": "dinner",
+        "price": 90,
+        "start_hour": 18,
+        "start_minute": 0,
+        "end_hour": 20,
+        "end_minute": 0
+      }
+    ]
+}

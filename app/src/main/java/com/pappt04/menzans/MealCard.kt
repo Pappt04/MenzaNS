@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 
-data class MealData(var name: String, var price: Int, var remaining: Int)
 
 
 @Composable
@@ -55,6 +54,14 @@ fun MealCard(meal: MealData) {
                     .fillMaxWidth()
             )
             Text(
+                text = String.format("%02d:%02d-%02d:%02d",meal.start_hour,meal.start_minute,meal.end_hour,meal.end_minute),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Text(
                 text = "${meal.price} din",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
@@ -63,10 +70,10 @@ fun MealCard(meal: MealData) {
                     .fillMaxWidth()
             )
             Text(
-                text = "Remaining: ${meal.remaining}",
+                text = "Remaining: 1",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -131,6 +138,6 @@ fun MealCard(meal: MealData) {
 @Composable
 fun PreviewMealCard() {
     MenzaNSTheme {
-        MealCard(MealData("Breakfast", 90, 1))
+        MealCard(MealData("Breakfast",67,7,0,9,30))
     }
 }
