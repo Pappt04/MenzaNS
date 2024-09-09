@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 @Composable
-fun MealContainer(meals: List<MealData>) {
+fun MealContainer(meals: List<MealData>,remainingOnCard: Array<Int>) {
     MenzaNSTheme {
         LazyColumn(
             modifier = Modifier
@@ -21,7 +21,10 @@ fun MealContainer(meals: List<MealData>) {
                 .fillMaxHeight()
                 .padding(10.dp)
         ) {
-            items(meals) { meal: MealData -> MealCard(meal) }
+            var i=0
+            items(meals) { meal: MealData -> MealCard(meal,remainingOnCard[i],DummyData.FileNames[i])
+                i++
+            }
         }
     }
 }
@@ -35,6 +38,6 @@ fun MealContainer(meals: List<MealData>) {
 @Composable
 fun PreviewMealContainer() {
     MenzaNSTheme {
-        MealContainer(DummyData.MealSample)
+        MealContainer(DummyData.MealSample,DummyData.RemainingONCardSample)
     }
 }

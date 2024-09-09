@@ -1,5 +1,6 @@
 package com.pappt04.menzans
 
+import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -31,11 +32,10 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 
-
-
 @Composable
-fun MealCard(meal: MealData) {
+fun MealCard(meal: MealData, remaining: Int, fileToSave: String) {
     var isExpanded by remember { mutableStateOf(false) }
+    var currentlyRemaining by remember { mutableStateOf(remaining) }
     val context = LocalContext.current
 
     Card(
@@ -54,7 +54,13 @@ fun MealCard(meal: MealData) {
                     .fillMaxWidth()
             )
             Text(
-                text = String.format("%02d:%02d-%02d:%02d",meal.start_hour,meal.start_minute,meal.end_hour,meal.end_minute),
+                text = String.format(
+                    "%02d:%02d-%02d:%02d",
+                    meal.start_hour,
+                    meal.start_minute,
+                    meal.end_hour,
+                    meal.end_minute
+                ),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodySmall,
@@ -70,7 +76,7 @@ fun MealCard(meal: MealData) {
                     .fillMaxWidth()
             )
             Text(
-                text = "Remaining: 1",
+                text = "Remaining: ${currentlyRemaining}",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyLarge,
@@ -93,8 +99,8 @@ fun MealCard(meal: MealData) {
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
-                    horizontalAlignment =Alignment.CenterHorizontally
-                    ) {
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     WeekView(dataprev)
                     Row(
                         modifier = Modifier
@@ -104,20 +110,16 @@ fun MealCard(meal: MealData) {
                     ) {
                         Button(
                             onClick = {
-                                Toast.makeText(
-                                    context,
-                                    "Welcome to Geeks for Geeks",
-                                    Toast.LENGTH_LONG
-                                )
-                                    .show()
+                                currentlyRemaining--
+                                saveToFile(context,fileToSave,currentlyRemaining)
                             },
                         ) {
                             Text("Minus")
                         }
 
                         Button(onClick = {
-                            Toast.makeText(context, "Welcome to Geeks for Geeks", Toast.LENGTH_LONG)
-                                .show()
+                            currentlyRemaining++
+                            saveToFile(context,fileToSave,currentlyRemaining)
                         }) {
                             Text("Plus")
                         }
@@ -126,6 +128,14 @@ fun MealCard(meal: MealData) {
             }
         }
 
+    }
+}
+
+fun saveToFile(context:Context,file:String,remaining: Int)
+{
+    val s1=remaining.toString()
+    context.openFileOutput(file, Context.MODE_PRIVATE).use {
+        it.write(s1.toByteArray())
     }
 }
 
@@ -138,6 +148,6 @@ fun MealCard(meal: MealData) {
 @Composable
 fun PreviewMealCard() {
     MenzaNSTheme {
-        MealCard(MealData("Breakfast",67,7,0,9,30))
+        MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6,DummyData.FileNames[0])
     }
 }

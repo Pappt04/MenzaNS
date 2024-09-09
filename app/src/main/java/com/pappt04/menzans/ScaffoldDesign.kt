@@ -24,12 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldDesign(meals: List<MealData>) {
+fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
     var presses by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -53,7 +52,8 @@ fun ScaffoldDesign(meals: List<MealData>) {
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "Bottom app bar",
+                    style = MaterialTheme.typography.titleLarge,
+                    text = "Balance: ${remainingOnCard[3].toString()} rsd",
                 )
             }
         },
@@ -69,7 +69,7 @@ fun ScaffoldDesign(meals: List<MealData>) {
                 .fillMaxWidth(1f),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            MealContainer(meals)
+            MealContainer(meals,remainingOnCard)
         }
     }
 }
@@ -79,6 +79,6 @@ fun ScaffoldDesign(meals: List<MealData>) {
 fun PreviewScaffold()
 {
     MenzaNSTheme {
-        ScaffoldDesign(DummyData.MealSample)
+        ScaffoldDesign(DummyData.MealSample,DummyData.RemainingONCardSample)
     }
 }

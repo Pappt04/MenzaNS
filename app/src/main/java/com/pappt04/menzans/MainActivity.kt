@@ -4,32 +4,43 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.activity.enableEdgeToEdge
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
-        //val path= application.filesDir
+        enableEdgeToEdge()
 
         //TODO JSON DATA READING NOT WORKING NEED TO FIX
-        //var datafromjson= readJsonAssets(this,"mealinfo.json")
-        //val mealList= parseJson(datafromjson)
-        var jsonMeals: List<MealData> = DummyData.MealSample
+        var files: Array<String> = this.fileList()
+        var remainingOnCard: Array<Int> = emptyArray()
+        var s1:String=""
+        for (s in DummyData.FileNames) {
+            if (s in files) {
+                this.openFileInput(s).bufferedReader().useLines { lines ->
+                    lines.fold("") { some, text ->
+                        s1="$some$text"
+                        s1
+                    }
+                }
+            } else
+            {
+                val s1: String= "0"
+                this.openFileOutput(s, Context.MODE_PRIVATE).use {
+                    it.write(s1.toByteArray())
+                }
+            }
+            remainingOnCard+=s1.toInt()
+        }
+
+
+        //Log.d(TAG, "onCreate: $s1")
+        val jsonMeals: List<MealData> = DummyData.MealSample
         setContent {
             MenzaNSTheme {
-                ScaffoldDesign(jsonMeals)
+                ScaffoldDesign(jsonMeals, remainingOnCard)
             }
         }
     }
-}
-
-fun readJsonAssets(context: Context, filename: String): String {
-    return context.assets.open(filename).bufferedReader().use { it.readText() }
-}
-fun parseJson(jsonString: String)
-{
-    return Gson().fromJson(jsonString, object : TypeToken<List<MealData>>() {}.type)
 }
