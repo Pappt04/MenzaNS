@@ -18,9 +18,11 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +31,8 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
-    var presses by remember { mutableIntStateOf(0) }
+    var showBalanceDialog: Boolean by remember { mutableStateOf(false) }
+    var currentBalance: Int by remember { mutableIntStateOf(remainingOnCard[3]) }
 
     Scaffold(
         topBar = {
@@ -53,12 +56,14 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleLarge,
-                    text = "Balance: ${remainingOnCard[3].toString()} rsd",
+                    text = "Balance: ${currentBalance} rsd",
                 )
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { presses++ }) {
+            FloatingActionButton(onClick = {
+                showBalanceDialog = true
+            }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
@@ -69,16 +74,24 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
                 .fillMaxWidth(1f),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            MealContainer(meals,remainingOnCard)
+            MealContainer(meals, remainingOnCard)
+            if (showBalanceDialog) {
+                BalanceDialog(
+                    onDismissRequest = { showBalanceDialog = false
+                        currentBalance = balanceFromDialog
+                    },
+                    currentBalance, LocalContext.current, DummyData.FileNames[3]
+                )
+
+            }
         }
     }
 }
 
 @Preview
 @Composable
-fun PreviewScaffold()
-{
+fun PreviewScaffold() {
     MenzaNSTheme {
-        ScaffoldDesign(DummyData.MealSample,DummyData.RemainingONCardSample)
+        ScaffoldDesign(DummyData.MealSample, DummyData.RemainingONCardSample)
     }
 }
