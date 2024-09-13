@@ -2,8 +2,11 @@ package com.pappt04.menzans
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
@@ -32,7 +35,7 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 @Composable
 fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
     var showBalanceDialog: Boolean by remember { mutableStateOf(false) }
-    var currentBalance: Int by remember { mutableIntStateOf(remainingOnCard[3]) }
+    var counter = remember { mutableIntStateOf(remainingOnCard[3]) }
 
     Scaffold(
         topBar = {
@@ -56,7 +59,7 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleLarge,
-                    text = "Balance: ${currentBalance} rsd",
+                    text = "Balance: ${counter.intValue} rsd",
                 )
             }
         },
@@ -74,13 +77,14 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
                 .fillMaxWidth(1f),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            MealContainer(meals, remainingOnCard)
+            MealContainer(meals, remainingOnCard, counter)
+
             if (showBalanceDialog) {
                 BalanceDialog(
-                    onDismissRequest = { showBalanceDialog = false
-                        currentBalance = balanceFromDialog
+                    onDismissRequest = {
+                        showBalanceDialog = false
                     },
-                    currentBalance, LocalContext.current, DummyData.FileNames[3]
+                    counter, LocalContext.current, DummyData.FileNames[3]
                 )
 
             }

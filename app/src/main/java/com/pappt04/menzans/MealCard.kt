@@ -19,7 +19,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,10 +35,11 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 
 @Composable
-fun MealCard(meal: MealData, remaining: Int, fileToSave: String) {
+fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: MutableState<Int>) {
     var isExpanded by remember { mutableStateOf(false) }
     var currentlyRemaining by remember { mutableStateOf(remaining) }
     val context = LocalContext.current
+    var currentBalance by remember { mutableStateOf(balance) }
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -110,16 +113,34 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String) {
                     ) {
                         Button(
                             onClick = {
-                                currentlyRemaining--
-                                saveToFile(context,fileToSave,currentlyRemaining)
+                                if (currentlyRemaining > 0) {
+                                    balance.value += meal.price
+                                    currentlyRemaining--
+                                }
+                                saveToFile(context, DummyData.FileNames[3], balance.value)
+                                saveToFile(context, fileToSave, currentlyRemaining)
                             },
                         ) {
                             Text("Minus")
                         }
+                        Button(
+                            onClick = {
+                                if (currentlyRemaining > 0) {
+                                    currentlyRemaining--
+                                }
+                                saveToFile(context, fileToSave, currentlyRemaining)
+                            },
+                        ) {
+                            Text("Consume")
+                        }
 
                         Button(onClick = {
-                            currentlyRemaining++
-                            saveToFile(context,fileToSave,currentlyRemaining)
+                            if (balance.value > meal.price) {
+                                balance.value -= meal.price
+                                currentlyRemaining++
+                            }
+                            saveToFile(context, DummyData.FileNames[3], balance.value)
+                            saveToFile(context, fileToSave, currentlyRemaining)
                         }) {
                             Text("Plus")
                         }
@@ -131,12 +152,23 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String) {
     }
 }
 
-fun saveToFile(context:Context,file:String,remaining: Int)
-{
-    val s1=remaining.toString()
+fun saveToFile(context: Context, file: String, remaining: Int) {
+    val s1 = remaining.toString()
     context.openFileOutput(file, Context.MODE_PRIVATE).use {
         it.write(s1.toByteArray())
     }
+}
+
+fun readFromFile(context: Context,file: String): String
+{
+    var s1=""
+    context.openFileInput(file).bufferedReader().useLines { lines ->
+        lines.fold("") { some, text ->
+            s1="$some$text"
+            s1
+        }
+    }
+    return s1
 }
 
 @Preview(name = "Light Mode")
@@ -148,6 +180,6 @@ fun saveToFile(context:Context,file:String,remaining: Int)
 @Composable
 fun PreviewMealCard() {
     MenzaNSTheme {
-        MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6,DummyData.FileNames[0])
+        //MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6, DummyData.FileNames[0],500)
     }
 }

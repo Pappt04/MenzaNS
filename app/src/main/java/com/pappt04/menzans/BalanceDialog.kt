@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +33,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
-var balanceFromDialog: Int = 0
 
 @Composable
-fun BalanceDialog(onDismissRequest: () -> Unit, balance: Int, context: Context, filename: String) {
+fun BalanceDialog(
+    onDismissRequest: () -> Unit,
+    balance: MutableState<Int>,
+    context: Context,
+    filename: String
+) {
     var mText by remember { mutableStateOf("") }
-    var currentBalance by remember { mutableIntStateOf(balance) }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(
@@ -91,9 +95,10 @@ fun BalanceDialog(onDismissRequest: () -> Unit, balance: Int, context: Context, 
                         onClick = {
                             Toast.makeText(
                                 context,
-                                "Your balance is still $currentBalance rsd",
+                                "Your balance is still ${balance.value} rsd",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            saveToFile(context, filename, balance.value)
                             onDismissRequest()
                         },
                     ) {
@@ -101,26 +106,20 @@ fun BalanceDialog(onDismissRequest: () -> Unit, balance: Int, context: Context, 
                     }
                     Button(onClick = {
                         try {
-                            currentBalance += mText.toInt()
+                            balance.value += mText.toInt()
 
-                            if (currentBalance < 0)
-                                currentBalance = 0
+                            if (balance.value < 0)
+                                balance.value = 0
 
-                            saveToFile(context, filename, currentBalance)
-
-                            Toast.makeText(
-                                context,
-                                "Your balance is now: $currentBalance rsd",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            balanceFromDialog=currentBalance
-
-                            onDismissRequest()
-
-                        } catch (e: Exception) {
-                            onDismissRequest()
+                            saveToFile(context, filename, balance.value)
+                        } catch (_: Exception) {
                         }
+                        Toast.makeText(
+                            context,
+                            "Your balance is now: ${balance.value} rsd",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onDismissRequest()
                     }) {
                         Text("Confirm")
                     }
@@ -140,6 +139,6 @@ fun BalanceDialog(onDismissRequest: () -> Unit, balance: Int, context: Context, 
 @Composable
 fun PreviewBalanceDialog() {
     MenzaNSTheme {
-        BalanceDialog(onDismissRequest = {}, 1500, LocalContext.current, "breakfast")
+        //BalanceDialog(onDismissRequest = {}, 1500, LocalContext.current, "breakfast")
     }
 }

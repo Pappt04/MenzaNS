@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 }
             } else
             {
-                val s1: String= "0"
+                s1= "0"
                 this.openFileOutput(s, Context.MODE_PRIVATE).use {
                     it.write(s1.toByteArray())
                 }
