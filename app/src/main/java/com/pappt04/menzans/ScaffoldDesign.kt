@@ -1,18 +1,19 @@
 package com.pappt04.menzans
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,16 +27,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
+fun ScaffoldDesign(
+    meals: List<MealData>,
+    remainingOnCard: Array<Int>,
+    drawerState: DrawerState,
+    scope: CoroutineScope
+) {
     var showBalanceDialog: Boolean by remember { mutableStateOf(false) }
-    var counter = remember { mutableIntStateOf(remainingOnCard[3]) }
+    val counter = remember { mutableIntStateOf(remainingOnCard[3]) }
 
     Scaffold(
         topBar = {
@@ -45,13 +54,26 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("MenzaNS")
+                    Text("MenzaNS",
+                        fontWeight= FontWeight.Bold,)
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
+                        )
+                    }
                 }
             )
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = MaterialTheme.colorScheme.primary,
             ) {
                 Text(
@@ -78,7 +100,6 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             MealContainer(meals, remainingOnCard, counter)
-
             if (showBalanceDialog) {
                 BalanceDialog(
                     onDismissRequest = {
@@ -92,10 +113,20 @@ fun ScaffoldDesign(meals: List<MealData>, remainingOnCard: Array<Int>) {
     }
 }
 
-@Preview
+@Preview(name = "Light Mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
 @Composable
 fun PreviewScaffold() {
     MenzaNSTheme {
-        ScaffoldDesign(DummyData.MealSample, DummyData.RemainingONCardSample)
+//        ScaffoldDesign(
+//            DummyData.MealSample,
+//            DummyData.RemainingONCardSample,
+//            drawerState = DrawerState(false),
+//            scope =
+//            )
     }
 }
