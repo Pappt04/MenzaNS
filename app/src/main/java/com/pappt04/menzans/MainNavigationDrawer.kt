@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,6 +51,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pappt04.menzans.DummyData.CardHolderFileName
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
@@ -70,18 +72,20 @@ fun MainNavigationDrawer() {
         0 -> "MenzaNS"
         1 -> "Edit Data on Card"
         2 -> "FYI stuff"
+        3 -> "Settings"
         else -> "SettingsScreen"
     }
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet(
             modifier = Modifier.fillMaxWidth(0.7f)
         ) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 64.dp),
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 64.dp),
                 contentAlignment = Alignment.Center
-            ){
-                Text(text= "MenzaNS", fontSize = 40.sp)
+            ) {
+                Text(text = "MenzaNS", fontSize = 40.sp)
             }
             DummyData.navigationItemData.forEachIndexed { index, item ->
                 NavigationDrawerItem(
@@ -105,11 +109,12 @@ fun MainNavigationDrawer() {
                         Icon(
                             imageVector = if (index == selectedItemIndex) {
                                 item.selectedIcon
-                            } else item.unselectedIcon, contentDescription = "Menu"
+                            } else item.unselectedIcon, contentDescription = item.route
                         )
                     },
-
-                    )
+                    modifier = Modifier
+                        .padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
             }
         }
     }) {
@@ -135,20 +140,20 @@ fun MainNavigationDrawer() {
                     }
                 })
             },
-        ) { innerPadding ->
-            Text("HAHA", modifier = Modifier.padding(innerPadding))
+        ) {
+            it
             navController.addOnDestinationChangedListener() { controller, destination, arguments ->
                 selectedItemIndex = when (destination.route) {
                     "ScaffoldDesign" -> 0
                     "EditScreen" -> 1
                     "InfoScreen" -> 2
+                    "SettingsScreen" -> 3
                     else -> 0
                 }
 
             }
             NavHost(navController = navController, startDestination = "ScaffoldDesign") {
                 composable(route = Screen.MainScreen.route) {
-                    //TODO JSON DATA READING NOT WORKING NEED TO FIX
                     var files: Array<String> = context.fileList()
                     var remainingOnCard: Array<Int> = emptyArray()
                     var s1: String = ""
@@ -172,7 +177,27 @@ fun MainNavigationDrawer() {
                     ScaffoldDesign(jsonMeals, remainingOnCard)
                 }
                 composable(route = Screen.EditScreen.route) {
+                    val files: Array<String> = context.fileList()
+                    var stemp = ""
+                    if (CardHolderFileName in files) {
+                        context.openFileInput(CardHolderFileName).bufferedReader()
+                            .useLines { lines ->
+                                lines.fold("") { some, text ->
+                                    stemp = "$some$text"
+                                    stemp
+                                }
+                            }
+                    } else {
+                        context.openFileOutput(CardHolderFileName, Context.MODE_PRIVATE).use {
+                        }
+                    }
                     EditScreen()
+                }
+                composable(route = Screen.InfoScreen.route) {
+                    InfoScreen()
+                }
+                composable(route = Screen.SettingsScreen.route) {
+                    SettingsScreen()
                 }
             }
         }

@@ -22,6 +22,7 @@ object DummyData
     var RemainingONCardSample= arrayOf(1,2,3,4)
 
     val FileNames= listOf("breakfast","lunch","dinner","balance")
+    val CardHolderFileName= "cardholderdata"
 
     data class NavigationItem(
         val title: String,
