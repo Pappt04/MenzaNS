@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -39,6 +41,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
     var isExpanded by remember { mutableStateOf(false) }
     var currentlyRemaining by remember { mutableIntStateOf(remaining) }
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -120,8 +123,10 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                     balance.value += meal.price
                                     currentlyRemaining--
                                 }
-                                saveToFile(context, DummyData.FileNames[3], balance.value)
-                                saveToFile(context, fileToSave, currentlyRemaining)
+                                scope.launch {
+                                    saveToFile(context, DummyData.FileNames[3], balance.value)
+                                    saveToFile(context, fileToSave, currentlyRemaining)
+                                }
                             },
                         ) {
                             Text("Minus")
@@ -131,7 +136,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 if (currentlyRemaining > 0) {
                                     currentlyRemaining--
                                 }
-                                saveToFile(context, fileToSave, currentlyRemaining)
+                                scope.launch { saveToFile(context, fileToSave, currentlyRemaining) }
                             },
                         ) {
                             Text("Consume")
@@ -142,8 +147,10 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 balance.value -= meal.price
                                 currentlyRemaining++
                             }
-                            saveToFile(context, DummyData.FileNames[3], balance.value)
-                            saveToFile(context, fileToSave, currentlyRemaining)
+                            scope.launch {
+                                saveToFile(context, DummyData.FileNames[3], balance.value)
+                                saveToFile(context, fileToSave, currentlyRemaining)
+                            }
                         }) {
                             Text("Plus")
                         }
@@ -162,12 +169,11 @@ fun saveToFile(context: Context, file: String, remaining: Int) {
     }
 }
 
-fun readFromFile(context: Context,file: String): String
-{
-    var s1=""
+fun readFromFile(context: Context, file: String): String {
+    var s1 = ""
     context.openFileInput(file).bufferedReader().useLines { lines ->
         lines.fold("") { some, text ->
-            s1="$some$text"
+            s1 = "$some$text"
             s1
         }
     }
@@ -184,6 +190,6 @@ fun readFromFile(context: Context,file: String): String
 fun PreviewMealCard() {
     MenzaNSTheme {
         val counter = remember { mutableIntStateOf(500) }
-        MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6, DummyData.FileNames[0],counter)
+        MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6, DummyData.FileNames[0], counter)
     }
 }

@@ -27,31 +27,35 @@ object DummyData
         val title: String,
         val selectedIcon: ImageVector,
         val unselectedIcon: ImageVector,
-        val badgeCount: Int? = null
+        val route: String,
+        val badgeCount: Int? = null,
     )
 
     val navigationItemData = listOf(
         NavigationItem(
-            title = "Profile",
+            title = "Card",
             selectedIcon = Icons.Filled.AccountCircle,
-            unselectedIcon = Icons.Outlined.AccountCircle
+            unselectedIcon = Icons.Outlined.AccountCircle,
+            route = "ScaffoldDesign"
         ),
         NavigationItem(
-            title = "Card",
+            title = "Edit",
             selectedIcon = Icons.Filled.Edit,
             unselectedIcon = Icons.Outlined.Edit,
-            badgeCount = 105
+            route = "EditScreen"
         ),
         NavigationItem(
             title = "Info",
             selectedIcon = Icons.Filled.Info,
-            unselectedIcon = Icons.Outlined.Info
+            unselectedIcon = Icons.Outlined.Info,
+            route = "InfoScreen"
         ),
 
         NavigationItem(
             title = "Settings",
             selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings
+            unselectedIcon = Icons.Outlined.Settings,
+            route = "SettingsScreen"
         )
     )
 }
