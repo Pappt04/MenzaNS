@@ -4,25 +4,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
-object DummyData
-{
+object DummyData {
     var MealSample = listOf(
-        MealData("Breakfast",67,7,0,9,30),
-        MealData("Lunch",120,11,0,15,0),
-        MealData("Dinner",90,18,0,20,30)
+        MealData("Breakfast", 67, 7, 0, 9, 30),
+        MealData("Lunch", 120, 11, 0, 15, 0),
+        MealData("Dinner", 90, 18, 0, 20, 30)
     )
 
-    var RemainingONCardSample= arrayOf(1,2,3,4)
+    var RemainingONCardSample = arrayOf(1, 2, 3, 4)
 
-    val FileNames= listOf("breakfast","lunch","dinner","balance")
-    val CardHolderFileName= "cardholderdata"
+    val FileNames = listOf("breakfast", "lunch", "dinner", "balance")
+    val CardHolderFileName = "cardholderdata"
 
     data class NavigationItem(
         val title: String,
@@ -38,6 +39,12 @@ object DummyData
             selectedIcon = Icons.Filled.AccountCircle,
             unselectedIcon = Icons.Outlined.AccountCircle,
             route = "ScaffoldDesign"
+        ),
+        NavigationItem(
+            title = "Statistics",
+            selectedIcon = Icons.Filled.LocationOn,
+            unselectedIcon = Icons.Outlined.LocationOn,
+            route = "StatisticsScreen"
         ),
         NavigationItem(
             title = "Edit",
