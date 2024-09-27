@@ -1,9 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">MenzaNS</string>
+    <string name="app_name">MenzaNS</string>
     <string name="add_to_balance">Add to Balance:</string>
     <string name="your_balance_is_still_rsd">Your balance is still %1$s rsd</string>
     <string name="dismiss">Dismiss</string>
-    <string name="your_balance_is_now_rsd">Your balance is now: %1$s rsd</string>
     <string name="confirm">Confirm</string>
     <string name="discard">Discard</string>
     <string name="save">Save</string>
@@ -45,10 +45,8 @@
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s there is a big chance you ate</string>
     <string name="request_permission">Request %1$s permission</string>
     <string name="menu_description">Menu</string>
+    <string name="your_balance_is_now_rsd">Your balance is now: %1$s rsd</string>
     <string name="language">English</string>
-    <string name="en" translatable="false">English</string>
-    <string name="hu" translatable="false">Magyar</string>
-    <string name="sr" translatable="false">Srpski</string>
     <string name="card">Card</string>
     <string name="statistics">Statistics</string>
     <string name="edit">Edit</string>

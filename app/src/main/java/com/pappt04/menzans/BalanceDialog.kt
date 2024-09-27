@@ -1,5 +1,6 @@
 package com.pappt04.menzans
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
@@ -25,7 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,14 +59,14 @@ fun BalanceDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Add to Balance:",
+                    text = stringResource(R.string.add_to_balance),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                 )
-                Row() {
+                Row {
                     TextField(
                         value = mText,
                         onValueChange = { mText = it },
@@ -98,14 +99,14 @@ fun BalanceDialog(
                         onClick = {
                             Toast.makeText(
                                 context,
-                                "Your balance is still ${balance.value} rsd",
+                                context.getString(R.string.your_balance_is_still_rsd, balance.value.toString()),
                                 Toast.LENGTH_SHORT
                             ).show()
                             saveToFile(context, filename, balance.value)
                             onDismissRequest()
                         },
                     ) {
-                        Text("Dismiss")
+                        Text(stringResource(R.string.dismiss))
                     }
                     Button(onClick = {
                         try {
@@ -119,12 +120,12 @@ fun BalanceDialog(
                         }
                         Toast.makeText(
                             context,
-                            "Your balance is now: ${balance.value} rsd",
+                            context.getString(R.string.your_balance_is_now_rsd, balance.value.toString()),
                             Toast.LENGTH_SHORT
                         ).show()
                         onDismissRequest()
                     }) {
-                        Text("Confirm")
+                        Text(stringResource(R.string.confirm))
                     }
                 }
             }

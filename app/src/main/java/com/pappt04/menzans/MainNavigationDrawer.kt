@@ -1,10 +1,7 @@
 package com.pappt04.menzans
 
-import android.Manifest
 import android.content.Context
 import android.content.res.Configuration
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,7 +48,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationDrawer(cardData: List<String>) {
+fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -60,11 +59,11 @@ fun MainNavigationDrawer(cardData: List<String>) {
     var selectedItemIndex by remember { mutableIntStateOf(0) }
 
     val screenTitle = when (selectedItemIndex) {
-        0 -> "MenzaNS"
-        1 -> "Statistics"
-        2 -> "Edit Data on Card"
-        3 -> "FYI stuff"
-        else -> "Settings"
+        0 -> stringResource(R.string.app_name)
+        1 -> stringResource(R.string.statistics)
+        2 -> stringResource(R.string.edit)
+        3 -> stringResource(R.string.info)
+        else -> stringResource(R.string.settings)
     }
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet(
@@ -76,7 +75,7 @@ fun MainNavigationDrawer(cardData: List<String>) {
                     .padding(vertical = 64.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "MenzaNS", fontSize = 40.sp)
+                Text(text = stringResource(id=R.string.app_name), fontSize = 40.sp)
             }
 
             //TODO CREATE A BETTER DESIGN FOR THIS CARD IN THIS STATE IT IS UNUSABLE
@@ -85,7 +84,7 @@ fun MainNavigationDrawer(cardData: List<String>) {
             DummyData.navigationItemData.forEachIndexed { index, item ->
                 NavigationDrawerItem(
                     selected = selectedItemIndex == index,
-                    label = { Text(text = item.title) },
+                    label = { Text(text = item.title.asString(context)) },
                     onClick = {
                         selectedItemIndex = index
                         scope.launch {
@@ -130,14 +129,14 @@ fun MainNavigationDrawer(cardData: List<String>) {
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.Default.Menu, contentDescription = "Menu"
+                            imageVector = Icons.Default.Menu, contentDescription = stringResource(R.string.menu_description)
                         )
                     }
                 })
             },
         ) {
             innerpadding->
-            navController.addOnDestinationChangedListener() { controller, destination, arguments ->
+            navController.addOnDestinationChangedListener { controller, destination, arguments ->
                 selectedItemIndex = when (destination.route) {
                     "ScaffoldDesign" -> 0
                     "StatisticsScreen" -> 1
@@ -150,9 +149,9 @@ fun MainNavigationDrawer(cardData: List<String>) {
             }
             NavHost(navController = navController, startDestination = "ScaffoldDesign") {
                 composable(route = Screen.MainScreen.route) {
-                    var files: Array<String> = context.fileList()
+                    val files: Array<String> = context.fileList()
                     var remainingOnCard: Array<Int> = emptyArray()
-                    var s1: String = ""
+                    var s1 = ""
                     for (s in DummyData.FileNames) {
                         if (s in files) {
                             context.openFileInput(s).bufferedReader().useLines { lines ->
@@ -197,7 +196,7 @@ fun MainNavigationDrawer(cardData: List<String>) {
 
 
                     var remainingOnCard: Array<Int> = emptyArray()
-                    var s1: String = ""
+                    var s1 = ""
                     for (s in DummyData.FileNames) {
                         if (s in files) {
                             context.openFileInput(s).bufferedReader().useLines { lines ->
@@ -223,7 +222,7 @@ fun MainNavigationDrawer(cardData: List<String>) {
                     InfoScreen()
                 }
                 composable(route = Screen.SettingsScreen.route) {
-                    SettingsScreen(innerpadding)
+                    SettingsScreen(innerpadding,darkTheme)
                 }
             }
         }

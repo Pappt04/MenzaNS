@@ -5,25 +5,21 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 
 fun createChannel(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        for (channel in DummyData.CHANNEL_IDs) {
-            val notificationChannel = NotificationChannel(
-                channel,
-                channel,
-                NotificationManager.IMPORTANCE_LOW
-            )
-                .apply {
-                    setShowBadge(false)
-                }
-            notificationChannel.enableVibration(true)
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+    for (channel in DummyData.CHANNEL_IDs) {
+        val notificationChannel = NotificationChannel(
+            channel,
+            channel,
+            NotificationManager.IMPORTANCE_LOW
+        )
+            .apply {
+                setShowBadge(false)
+            }
+        notificationChannel.enableVibration(true)
+        val notificationManager = context.getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(notificationChannel)
     }
 }
 
@@ -33,10 +29,7 @@ fun NotificationManager.sendAteMealNotification(
     timeExited: String
 ) {
     val flag =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            PendingIntent.FLAG_IMMUTABLE
-        else
-            PendingIntent.FLAG_MUTABLE
+        PendingIntent.FLAG_IMMUTABLE
 
     val Tapintent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -66,23 +59,32 @@ fun NotificationManager.sendAteMealNotification(
     val TwicependingIntent = PendingIntent.getBroadcast(context, 300, Twiceintent, flag)
 
     val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[0])
-        .setContentTitle("Record your consumed meals")
-        .setContentText("We think you were at Menza from $timeEntered to $timeExited")
+        .setContentTitle(context.getString(R.string.record_your_consumed_meals_notification))
+        .setContentText(
+            context.getString(
+                R.string.we_think_you_were_at_menza_from_to_notification,
+                timeEntered,
+                timeExited
+            ))
         .setSmallIcon(R.drawable.ic_launcher_foreground)
         .setContentIntent(TappendingIntent)
         .setAutoCancel(true)
-        .addAction(0,"NO",DismisspendingIntent)
-        .addAction(0,"YES",ConfirmpendingIntent)
-        .addAction(0,"TWICE",TwicependingIntent)
+        .addAction(0, context.getString(R.string.no),DismisspendingIntent)
+        .addAction(0, context.getString(R.string.yes),ConfirmpendingIntent)
+        .addAction(0, context.getString(R.string.twice),TwicependingIntent)
     notify(DummyData.NOTIFICATION_IDs.first, notification.build())
 }
 
 fun NotificationManager.sendAutomaticDeductNotification(context: Context, minutes: Int)
 {
     val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[1])
-        .setContentTitle("Automatically Deducted one Meal token")
-        .setContentText("We think you were at Menza for $minutes there is a big chance you ate")
-        .setSmallIcon(R.drawable.ic_launcher_background)
+        .setContentTitle(context.getString(R.string.we_automatically_deducted_one_meal_token_for_you_notification))
+        .setContentText(
+            context.getString(
+                R.string.we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification,
+                minutes.toString()
+            ))
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
 
     notify(33, notification.build())
 }

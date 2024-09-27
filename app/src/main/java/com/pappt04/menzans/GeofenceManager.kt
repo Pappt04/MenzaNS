@@ -7,14 +7,11 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_DWELL
 import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER
 import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-import com.pappt04.menzans.DummyData.CUSTOM_INTENT_GEOFENCE
 import com.pappt04.menzans.DummyData.CUSTOM_REQUEST_CODE_GEOFENCE
 import kotlinx.coroutines.tasks.await
 
@@ -22,7 +19,7 @@ class GeofenceManager(context: Context) {
 
     private val TAG = "GeofenceManager"
     private val client = LocationServices.getGeofencingClient(context)
-    val geofenceList = mutableMapOf<String, Geofence>()
+    private val geofenceList = mutableMapOf<String, Geofence>()
 
     private val geofencingPendingIntent by lazy {
         val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
@@ -53,7 +50,7 @@ class GeofenceManager(context: Context) {
 
     @SuppressLint("MissingPermission")
     fun registerGeofence() {
-        client.addGeofences(createGeofencingRequest(), geofencingPendingIntent)?.run {
+        client.addGeofences(createGeofencingRequest(), geofencingPendingIntent).run {
             addOnSuccessListener {
                 Log.d(TAG, "registerGeofence: SUCCESS")
             }

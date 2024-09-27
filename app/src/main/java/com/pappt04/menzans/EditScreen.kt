@@ -2,6 +2,7 @@ package com.pappt04.menzans
 
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -15,12 +16,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -36,7 +34,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDatePickerState
@@ -51,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -93,20 +91,6 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
 
     val context = LocalContext.current
     Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text(
-                        "",
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-            )
-        },
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -119,13 +103,13 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {context.startActivity(Intent(context, MainActivity::class.java)) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.5f)
                             .padding(10.dp)
                     ) {
-                        Text("Discard")
+                        Text(stringResource(R.string.discard))
                     }
                     Button(
                         onClick = {
@@ -148,7 +132,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             .weight(0.5f)
                             .padding(10.dp)
                     ) {
-                        Text("Save")
+                        Text(stringResource(R.string.save))
                     }
                 }
             }
@@ -179,7 +163,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                         {
                             Image(
                                 painter = painterResource(id = R.drawable.isic_logo),
-                                contentDescription = "International Student Identity card logo",
+                                contentDescription = stringResource(R.string.international_student_identity_card_logo_description),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(80.dp)
@@ -188,7 +172,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.eyca_logo),
-                                contentDescription = "Logo off European Youth Card",
+                                contentDescription = stringResource(R.string.logo_off_european_youth_card_description),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(80.dp)
@@ -197,7 +181,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.coat_of_arms_of_serbia_small),
-                                contentDescription = "Coat of arms of Serbia",
+                                contentDescription = stringResource(R.string.coat_of_arms_of_serbia_description),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(80.dp)
@@ -205,11 +189,11 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     .weight(1f)
                             )
                         }
-                        Row() {
+                        Row {
                             OutlinedTextField(
                                 value = surname,
                                 onValueChange = { surname = it },
-                                label = { Text("Surname:") },
+                                label = { Text(stringResource(R.string.surname)) },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -218,7 +202,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             OutlinedTextField(
                                 value = name,
                                 onValueChange = { name = it },
-                                label = { Text("Name:") },
+                                label = { Text(stringResource(R.string.name)) },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -228,16 +212,16 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                         OutlinedTextField(
                             value = universityandfaculty,
                             onValueChange = { universityandfaculty = it },
-                            label = { Text(text = "Studies at:") },
+                            label = { Text(text = stringResource(R.string.studies_at)) },
                             modifier = Modifier
                                 .padding(4.dp)
                                 .fillMaxWidth()
                         )
-                        Row(){
+                        Row{
                             OutlinedTextField(
                                 value = dateofBirth.value,
                                 onValueChange = { print("Clicked") },
-                                label = { Text(text = "Date of Birth:") },
+                                label = { Text(text = stringResource(R.string.date_of_birth)) },
                                 enabled = false,
                                 readOnly = true,
                                 modifier = Modifier
@@ -251,7 +235,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             OutlinedTextField(
                                 value = cardIssued.value,
                                 onValueChange = { print("Clicked") },
-                                label = { Text(text = "Issued Date:") },
+                                label = { Text(text = stringResource(R.string.issued_date)) },
                                 enabled = false,
                                 readOnly = true,
                                 modifier = Modifier
@@ -265,7 +249,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             OutlinedTextField(
                                 value = cardValid.value,
                                 onValueChange = { print("Clicked") },
-                                label = { Text(text = "Valid until:") },
+                                label = { Text(text = stringResource(R.string.valid_until)) },
                                 enabled = false,
                                 readOnly = true,
                                 modifier = Modifier
@@ -279,21 +263,21 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                         OutlinedTextField(
                             value = index,
                             onValueChange = { index = it },
-                            label = { Text(text = "Index:") },
+                            label = { Text(text = stringResource(R.string.index)) },
                             modifier = Modifier
                                 .padding(4.dp)
                         )
                         OutlinedTextField(
                             value = cardnumber,
                             onValueChange = { cardnumber = it },
-                            label = { Text(text = "Card number:") },
+                            label = { Text(text = stringResource(R.string.card_number)) },
                             modifier = Modifier
                                 .padding(4.dp)
                         )
                         OutlinedTextField(
                             value = ISICcardnumber,
                             onValueChange = { ISICcardnumber = it },
-                            label = { Text(text = "ISIC card number:") },
+                            label = { Text(text = stringResource(R.string.isic_card_number)) },
                             modifier = Modifier
                                 .padding(4.dp)
                         )
@@ -318,9 +302,10 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                         .padding(8.dp)
                 ) {
                     Column {
-                        Row() {
+                        Row {
                             OutlinedTextField(
-                                value = editbreakfast.value.toString(),
+                                value = editbreakfast.intValue.toString(),
+                                placeholder = { Text("0") },
                                 onValueChange = {
                                     try {
                                         editbreakfast.intValue = it.toInt()
@@ -329,14 +314,14 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text("Breakfast:") },
+                                label = { Text(stringResource(R.string.breakfast)) },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
                                     .weight(1f)
                             )
                             OutlinedTextField(
-                                value = editlunch.value.toString(),
+                                value = editlunch.intValue.toString(),
                                 onValueChange = {
                                     try {
                                         editlunch.intValue = it.toInt()
@@ -345,7 +330,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text("Lunch:") },
+                                label = { Text(stringResource(R.string.lunch)) },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -361,7 +346,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text("Dinner:") },
+                                label = { Text(stringResource(R.string.dinner)) },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -369,16 +354,16 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                             )
                         }
                         OutlinedTextField(
-                            value = editbalance.value.toString(),
+                            value = editbalance.intValue.toString(),
                             onValueChange = {
                                 try {
-                                    editbalance.value = it.toInt()
+                                    editbalance.intValue = it.toInt()
                                 } catch (e: Exception) {
-                                    editbalance.value = 0
+                                    editbalance.intValue = 0
                                 }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text("Balance:") },
+                            label = { Text(stringResource(R.string.balance)) },
                             textStyle = LocalTextStyle.current.copy(
                                 textAlign = TextAlign.Right,
                                 fontSize = 22.sp
@@ -430,7 +415,7 @@ fun DateofBirthPicker(
                         birthDialogState.selectedDateMillis?.convertMillisToDate() ?: ""
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
@@ -440,7 +425,7 @@ fun DateofBirthPicker(
                     showBirthDialog.value = false
                 }
             ) {
-                Text("CANCEL")
+                Text(stringResource(R.string.discard))
             }
         }
     ) {
@@ -485,7 +470,7 @@ fun ValidPicker(
                         validState.selectedDateMillis?.convertMillisToDate() ?: ""
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.discard))
             }
         },
         dismissButton = {
@@ -495,7 +480,7 @@ fun ValidPicker(
                     showValidDialog.value = false
                 }
             ) {
-                Text("CANCEL")
+                Text(stringResource(R.string.discard))
             }
         }
     ) {
@@ -540,7 +525,7 @@ fun IssuedPicker(
                         issuedState.selectedDateMillis?.convertMillisToDate() ?: ""
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
@@ -550,7 +535,7 @@ fun IssuedPicker(
                     showIssuedDialog.value = false
                 }
             ) {
-                Text("CANCEL")
+                Text(stringResource(R.string.discard))
             }
         }
     ) {
@@ -606,7 +591,8 @@ fun saveCardHolderInfotoFiles(
         success = true
     }
     if (success)
-        Toast.makeText(context, "File successfully saved", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,
+            context.getString(R.string.file_successfully_saved), Toast.LENGTH_SHORT).show()
 }
 
 fun saveCardData(

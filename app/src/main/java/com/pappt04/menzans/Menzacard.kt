@@ -3,7 +3,6 @@ package com.pappt04.menzans
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -25,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,7 +60,7 @@ fun MenzaCard(cardData: List<String>) {
             Row {
                 Image(
                     painter = painterResource(id = R.drawable.isic_logo),
-                    contentDescription = "A call icon for calling",
+                    contentDescription = "ISIC Logo",
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(80.dp)
@@ -69,7 +68,7 @@ fun MenzaCard(cardData: List<String>) {
                         .weight(1f)
                 )
                 Text(
-                    text = "ISIC card number \t${cardData[8]}",
+                    text = stringResource(R.string.isic_card_number)+ cardData[8],
                     modifier = Modifier
                         .padding(8.dp)
                 )

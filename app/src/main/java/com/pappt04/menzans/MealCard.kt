@@ -28,7 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,7 +54,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                 .padding(10.dp)
         ) {
             Text(
-                text = meal.name,
+                text = meal.name.asString(context),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleLarge,
@@ -76,7 +76,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                     .fillMaxWidth()
             )
             Text(
-                text = "${meal.price} din",
+                text = "${meal.price} rsd",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodySmall,
@@ -84,9 +84,8 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                     .fillMaxWidth()
             )
             Text(
-                text = "Remaining: $currentlyRemaining",
+                text = stringResource(R.string.remaining)+": $currentlyRemaining",
                 textAlign = TextAlign.Center,
-                //fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
@@ -104,7 +103,15 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                         )
                     )
             ) {
-                val dataprev = listOf('M', 'T', 'W', 'T', 'F', 'S', 'S')
+                val dataprev = listOf(
+                    stringResource(R.string.monday),
+                    stringResource(R.string.tuesday),
+                    stringResource(R.string.wednesday),
+                    stringResource(R.string.thursday),
+                    stringResource(R.string.friday),
+                    stringResource(R.string.saturday),
+                    stringResource(R.string.sunday)
+                )
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
@@ -129,7 +136,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 }
                             },
                         ) {
-                            Text("Minus")
+                            Text(stringResource(R.string.subtract))
                         }
                         Button(
                             onClick = {
@@ -139,7 +146,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 scope.launch { saveToFile(context, fileToSave, currentlyRemaining) }
                             },
                         ) {
-                            Text("Consume")
+                            Text(stringResource(R.string.consume))
                         }
 
                         Button(onClick = {
@@ -152,7 +159,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 saveToFile(context, fileToSave, currentlyRemaining)
                             }
                         }) {
-                            Text("Plus")
+                            Text(stringResource(R.string.add))
                         }
                     }
                 }
@@ -171,10 +178,13 @@ fun saveToFile(context: Context, file: String, remaining: Int) {
 
 fun readFromFile(context: Context, file: String): String {
     var s1 = ""
-    context.openFileInput(file).bufferedReader().useLines { lines ->
-        lines.fold("") { some, text ->
-            s1 = "$some$text"
-            s1
+    val files: Array<String> = context.fileList()
+    if(file in files){
+        context.openFileInput(file).bufferedReader().useLines { lines ->
+            lines.fold("") { some, text ->
+                s1 = "$some$text"
+                s1
+            }
         }
     }
     return s1
@@ -190,6 +200,6 @@ fun readFromFile(context: Context, file: String): String {
 fun PreviewMealCard() {
     MenzaNSTheme {
         val counter = remember { mutableIntStateOf(500) }
-        MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6, DummyData.FileNames[0], counter)
+       // MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6, DummyData.FileNames[0], counter)
     }
 }

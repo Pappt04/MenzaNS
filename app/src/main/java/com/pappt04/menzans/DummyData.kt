@@ -17,9 +17,9 @@ import com.google.android.gms.location.Geofence
 
 object DummyData {
     var MealSample = listOf(
-        MealData("Breakfast", 67, 7, 0, 9, 30),
-        MealData("Lunch", 120, 11, 0, 15, 0),
-        MealData("Dinner", 90, 18, 0, 20, 30)
+        MealData(Uitext.StringResource(R.string.breakfast), 67, 7, 0, 9, 30),
+        MealData(Uitext.StringResource(R.string.lunch), 120, 11, 0, 15, 0),
+        MealData(Uitext.StringResource(R.string.dinner), 90, 18, 0, 20, 30)
     )
 
     var RemainingONCardSample = arrayOf(1, 2, 3, 4)
@@ -27,6 +27,7 @@ object DummyData {
     val FileNames = listOf("breakfast", "lunch", "dinner", "balance")
     val CardHolderFileName = "cardholderdata"
     val FileGeoFenceEntered="geofenceentered"
+    val FileDarkThemeEnabled="darkthemeenabled"
 
 
     public val CHANNEL_IDs = listOf("Record Meals", "Reminders")
@@ -37,15 +38,13 @@ object DummyData {
     public val ACTION_TWICE="TWICE"
     public val ACTION_TOPUP="TOPUP"
 
-
     public const val CUSTOM_INTENT_GEOFENCE = "GEOFENCE-TRANSITION-INTENT-ACTION"
     public const val CUSTOM_REQUEST_CODE_GEOFENCE = 1100
-
 
     public const val EATING_SPEED_TRESHOLD=15
 
     data class NavigationItem(
-        val title: String,
+        val title: Uitext,
         val selectedIcon: ImageVector,
         val unselectedIcon: ImageVector,
         val route: String,
@@ -54,32 +53,32 @@ object DummyData {
 
     val navigationItemData = listOf(
         NavigationItem(
-            title = "Card",
+            title = Uitext.StringResource(R.string.card),
             selectedIcon = Icons.Filled.AccountCircle,
             unselectedIcon = Icons.Outlined.AccountCircle,
             route = "ScaffoldDesign"
         ),
         NavigationItem(
-            title = "Statistics",
+            title = Uitext.StringResource(R.string.statistics),
             selectedIcon = Icons.Filled.LocationOn,
             unselectedIcon = Icons.Outlined.LocationOn,
             route = "StatisticsScreen"
         ),
         NavigationItem(
-            title = "Edit",
+            title = Uitext.StringResource(R.string.edit),
             selectedIcon = Icons.Filled.Edit,
             unselectedIcon = Icons.Outlined.Edit,
             route = "EditScreen"
         ),
         NavigationItem(
-            title = "Info",
+            title = Uitext.StringResource(R.string.info),
             selectedIcon = Icons.Filled.Info,
             unselectedIcon = Icons.Outlined.Info,
             route = "InfoScreen"
         ),
 
         NavigationItem(
-            title = "Settings",
+            title = Uitext.StringResource(R.string.settings),
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             route = "SettingsScreen"

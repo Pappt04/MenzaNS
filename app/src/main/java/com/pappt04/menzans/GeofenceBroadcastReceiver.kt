@@ -15,7 +15,7 @@ import java.util.Date
 import kotlin.math.abs
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
-    public val TAG = "GeofenceBroadcastReceiver"
+    private val TAG = "GeofenceBroadcastReceiver"
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val notificationManager = context?.let {
@@ -67,26 +67,23 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                         }
                 }
 
-                val enteredsplit = timeEntered?.split(":")?.toTypedArray()
-                val exitedsplit = timeExited?.split(":")?.toTypedArray()
+                val enteredsplit = timeEntered.split(":").toTypedArray()
+                val exitedsplit = timeExited.split(":").toTypedArray()
 
-                var hourdiff = 0
-                var mindiff = 0
-                var alldiff = 0
-                if (enteredsplit != null && exitedsplit != null) {
-                    hourdiff = abs(enteredsplit[0].toInt() - exitedsplit[0].toInt())
-                    mindiff = abs(enteredsplit[1].toInt() - exitedsplit[1].toInt())
-                    alldiff = hourdiff * 60 + mindiff
-                    if (alldiff > DummyData.EATING_SPEED_TRESHOLD) {
-                        automaticallyDeductToken(context, enteredsplit, exitedsplit)
-                        notificationManager.sendAutomaticDeductNotification(context, alldiff)
-                    } else {
-                        notificationManager.sendAteMealNotification(
-                            context,
-                            timeEntered,
-                            timeExited
-                        )
-                    }
+
+                val hourdiff: Int = abs(enteredsplit[0].toInt() - exitedsplit[0].toInt())
+                val mindiff: Int = abs(enteredsplit[1].toInt() - exitedsplit[1].toInt())
+                val alldiff: Int = hourdiff * 60 + mindiff
+
+                if (alldiff > DummyData.EATING_SPEED_TRESHOLD) {
+                    automaticallyDeductToken(context, enteredsplit, exitedsplit)
+                    notificationManager.sendAutomaticDeductNotification(context, alldiff)
+                } else {
+                    notificationManager.sendAteMealNotification(
+                        context,
+                        timeEntered,
+                        timeExited
+                    )
                 }
             }
 
@@ -104,17 +101,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         var correctMeal = 0
         for (mealdata in MealSample) {
             correctMeal++
-            if (mealdata.start_hour <= (enteredsplit?.get(0)?.toInt()
-                    ?: 0) && mealdata.end_hour >= (exitedsplit?.get(0)?.toInt() ?: 0)
+            if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt())
             ) {
                 //Maybe it should just check entered time
                 val currentTokens =
-                    context?.let { readFromFile(it, DummyData.FileNames[correctMeal]) }
-                context?.let {
-                    if (currentTokens != null) {
-                        saveToFile(it, DummyData.FileNames[correctMeal], currentTokens.toInt() - 1)
-                    }
-                }
+                    readFromFile(context, DummyData.FileNames[correctMeal])
+                saveToFile(context, DummyData.FileNames[correctMeal], currentTokens.toInt() - 1)
             }
         }
     }

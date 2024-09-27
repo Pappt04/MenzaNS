@@ -1,13 +1,7 @@
 package com.pappt04.menzans
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 @Composable
-fun DayView(day: Char) {
+fun DayView(day: String) {
     Surface(
         modifier = Modifier
             .padding(1.dp),
@@ -29,7 +23,7 @@ fun DayView(day: Char) {
         shape = RoundedCornerShape(2.dp)
     ) {
         Text(
-            text = "$day",
+            text = day,
             modifier = Modifier.padding(10.dp)
         )
     }
@@ -39,18 +33,18 @@ fun DayView(day: Char) {
 @Composable
 fun PreviewDayView() {
     MenzaNSTheme {
-        DayView('M')
+        //DayView('M')
     }
 }
 
 @Composable
-fun WeekView(days: List<Char>) {
+fun WeekView(days: List<String>) {
     MenzaNSTheme {
         LazyRow(
             modifier = Modifier
                 .padding(3.dp)
         ) {
-            items(days) { day: Char -> DayView(day) }
+            items(days) { day: String -> DayView(day) }
         }
     }
 }
@@ -64,6 +58,6 @@ fun WeekView(days: List<Char>) {
 @Composable
 fun PreviewWeekView()
 {
-    val dataprev= listOf('M','T','W','T','F','S','S',)
-    WeekView(dataprev)
+   // val dataprev= listOf('M','T','W','T','F','S','S')
+   // WeekView(dataprev)
 }

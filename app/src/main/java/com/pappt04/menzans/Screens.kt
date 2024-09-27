@@ -1,9 +1,9 @@
 package com.pappt04.menzans
 
 sealed class Screen(val route: String) {
-    object MainScreen: Screen("ScaffoldDesign")
-    object StatisticsScreen: Screen("StatisticsScreen")
-    object EditScreen: Screen("EditScreen")
-    object InfoScreen: Screen("InfoScreen")
-    object SettingsScreen: Screen("SettingsScreen")
+    data object MainScreen: Screen("ScaffoldDesign")
+    data object StatisticsScreen: Screen("StatisticsScreen")
+    data object EditScreen: Screen("EditScreen")
+    data object InfoScreen: Screen("InfoScreen")
+    data object SettingsScreen: Screen("SettingsScreen")
 }

@@ -8,13 +8,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.DummyData.CardHolderFileName
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val NOTIFICATION_PERMISSION_CODE = 1004
     private val ALL_LOCATION_PERMISSIONS = 1010
@@ -26,8 +31,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MenzaNSTheme {
-                val context = LocalContext.current
+            val context = LocalContext.current
+            var darkTheme = remember { mutableStateOf(true) }
+            var saveddark=readFromFile(context = context,DummyData.FileDarkThemeEnabled)
+
+            if(saveddark!= "" && saveddark.toInt()==1)
+            {
+                darkTheme.value=true
+            } else {
+                darkTheme.value = false
+            }
+            MenzaNSTheme(darkTheme = darkTheme.value) {
 
                 geofenceManager = GeofenceManager(context)
 
@@ -52,18 +66,18 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 val splitstring: List<String> = stemp.split(",")
-                MainNavigationDrawer(splitstring)
+                MainNavigationDrawer(splitstring, darkTheme)
 
             }
         }
     }
 
-    fun requestAllPermissions() {
+    private fun requestAllPermissions() {
         requestAllLocationPermission()
         requestNotifcationLocationPermission()
     }
 
-    fun requestAllLocationPermission() {
+    private fun requestAllLocationPermission() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -75,7 +89,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    fun requestNotifcationLocationPermission() {
+    private fun requestNotifcationLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
                 this,
