@@ -30,6 +30,7 @@
             </intent-filter>
         </activity>
         <receiver android:name=".GeofenceBroadcastReceiver"/>
+        <receiver android:name=".NotificationBroadcastReceiver"/>
     </application>
 
 </manifest>

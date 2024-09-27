@@ -1,6 +1,5 @@
 package com.pappt04.menzans
 
-import android.content.Context
 import android.location.Location
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -15,8 +14,6 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofenceStatusCodes
-import com.google.android.gms.maps.model.LatLng
 
 object DummyData {
     var MealSample = listOf(
@@ -30,6 +27,22 @@ object DummyData {
     val FileNames = listOf("breakfast", "lunch", "dinner", "balance")
     val CardHolderFileName = "cardholderdata"
     val FileGeoFenceEntered="geofenceentered"
+
+
+    public val CHANNEL_IDs = listOf("Record Meals", "Reminders")
+    public val NOTIFICATION_IDs = (30..32)
+
+    public val ACTION_DISMISS="DISMISS"
+    public val ACTION_CONFIRM="CONFIRM"
+    public val ACTION_TWICE="TWICE"
+    public val ACTION_TOPUP="TOPUP"
+
+
+    public const val CUSTOM_INTENT_GEOFENCE = "GEOFENCE-TRANSITION-INTENT-ACTION"
+    public const val CUSTOM_REQUEST_CODE_GEOFENCE = 1100
+
+
+    public const val EATING_SPEED_TRESHOLD=15
 
     data class NavigationItem(
         val title: String,
@@ -72,12 +85,6 @@ object DummyData {
             route = "SettingsScreen"
         )
     )
-
-    public val CHANNEL_IDs = listOf("Record Meals", "Reminders")
-    public val NOTIFICATION_IDs = (30..32)
-
-    public const val CUSTOM_INTENT_GEOFENCE = "GEOFENCE-TRANSITION-INTENT-ACTION"
-    public const val CUSTOM_REQUEST_CODE_GEOFENCE = 1100
 
     data class LandmarkDataObject(
         val key: String,

@@ -26,7 +26,7 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
                 context,
                 NotificationManager::class.java
             ) as NotificationManager
-            notificationManager.sendDummyText(context,"Test string")
+           notificationManager.sendAteMealNotification(context,"12:30","13:09")
         }
     )
     {
