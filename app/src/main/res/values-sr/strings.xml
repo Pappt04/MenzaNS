@@ -54,4 +54,23 @@
     <string name="settings">Postavke</string>
     <string name="change_your_language">Menjaj jezik</string>
     <string name="use_dark_theme">Koristi Tamnu temu</string>
+    <string name="zavod_za_zdravstvenu_zastitu_studenata_novi_sad">Zavod za Zdravstvenu Zastitu Studenata Novi Sad</string>
+    <string name="student_center_novi_sad">Studentski Centar Novi Sad</string>
+    <string name="student_menza">Studentska Menza</string>
+    <string name="new_facebook_group_for_students_in_novi_sad">Nova Facebook grupa za studenta u Novom Sadu</string>
+    <string name="center_for_career_and_work">Centar za zapošljavanje i razvoj karijere</string>
+    <string name="university_of_novi_sad">Univerzitet na Novom Sadu</string>
+    <string name="university_library">" Univerzitetska biblioteka"</string>
+    <string name="moja_kartica_discounts_serbia">Moja Kartica popusti(*Srbija)</string>
+    <string name="international_student_identity_card_discounts">International Student Identity Card popusti</string>
+    <string name="faculty_of_technical_sciences">Fakultet Tehničkih Nauka</string>
+    <string name="faculty_of_agriculture">Poljoprivredni Fakultet</string>
+    <string name="faculty_of_law">Pravni Fakultet</string>
+    <string name="faculty_of_philosophy">Filozofski Fakultet</string>
+    <string name="faculty_of_technology">Tehnološki Fakultet</string>
+    <string name="faculty_of_medicine">Neducubsju Fakultet</string>
+    <string name="faculty_of_sport_and_physical_education">Fakultete Fizičke Kulture</string>
+    <string name="faculty_of_sciences">Prirodno Matematički Fakultet</string>
+    <string name="academy_of_arts">Akademija Umetnosti</string>
+    <string name="faculty_of_economics_in_subotica">Ekonomski Fakultet, Subotica</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,8 +35,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -49,7 +48,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,7 +60,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals: List<MealData>) {
+fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals: List<MealData>, maindrawerpadding: PaddingValues) {
     var surname by remember { mutableStateOf(savedholderdata[0]) }
     var name by remember { mutableStateOf(savedholderdata[1]) }
     var index by remember { mutableStateOf(savedholderdata[6]) }
@@ -137,10 +135,10 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                 }
             }
         })
-    { innerPadding ->
+    { innerpadding ->
         LazyColumn(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(innerpadding)
         ) {
             item {
                 OutlinedCard(
@@ -305,7 +303,6 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                         Row {
                             OutlinedTextField(
                                 value = editbreakfast.intValue.toString(),
-                                placeholder = { Text("0") },
                                 onValueChange = {
                                     try {
                                         editbreakfast.intValue = it.toInt()
@@ -618,6 +615,6 @@ fun saveCardData(
 @Composable
 fun PreviewEditScreen() {
     MenzaNSTheme {
-        EditScreen(listOf("a", "b", "c", "d"), arrayOf(1, 2, 3, 4), DummyData.MealSample)
+        //EditScreen(listOf("a", "b", "c", "d"), arrayOf(1, 2, 3, 4), DummyData.MealSample)
     }
 }

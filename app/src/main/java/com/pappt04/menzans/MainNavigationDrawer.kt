@@ -61,8 +61,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
         1 -> stringResource(R.string.statistics)
-        2 -> stringResource(R.string.edit)
-        3 -> stringResource(R.string.info)
+        2 -> stringResource(R.string.info)
+        3 -> stringResource(R.string.edit)
         else -> stringResource(R.string.settings)
     }
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
@@ -140,8 +140,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                 selectedItemIndex = when (destination.route) {
                     "ScaffoldDesign" -> 0
                     "StatisticsScreen" -> 1
-                    "EditScreen" -> 2
-                    "InfoScreen" -> 3
+                    "InfoScreen" -> 2
+                    "EditScreen" -> 3
                     "SettingsScreen" -> 4
                     else -> 0
                 }
@@ -215,11 +215,11 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                     }
                     val jsonMeals: List<MealData> = MealSample
 
-                    EditScreen(splitstring, remainingOnCard,jsonMeals)
+                    EditScreen(splitstring, remainingOnCard,jsonMeals,innerpadding)
 
                 }
                 composable(route = Screen.InfoScreen.route) {
-                    InfoScreen()
+                    InfoScreen(innerpadding)
                 }
                 composable(route = Screen.SettingsScreen.route) {
                     SettingsScreen(innerpadding,darkTheme)

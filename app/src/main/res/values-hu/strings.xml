@@ -54,4 +54,23 @@
     <string name="settings">Beállítások</string>
     <string name="change_your_language">Változtasd meg a nyelvet</string>
     <string name="use_dark_theme">Változtass Sötét módra</string>
+    <string name="student_center_novi_sad">Egyetemista Központ Újvidék</string>
+    <string name="student_menza">Egyetemista Menza</string>
+    <string name="new_facebook_group_for_students_in_novi_sad">Új Facebook csoport az Újvidéki egyetmemistáknak</string>
+    <string name="center_for_career_and_work">Karrier és munka központ</string>
+    <string name="university_of_novi_sad">Újvidéki egyetem</string>
+    <string name="university_library">Egyetemi könyvtár</string>
+    <string name="moja_kartica_discounts_serbia">Moja Kartica engedmények(*Szerbia)</string>
+    <string name="international_student_identity_card_discounts">International Student Identity Card engedmények</string>
+    <string name="zavod_za_zdravstvenu_zastitu_studenata_novi_sad">Diák Egézségügyi Intézet Újvidéken</string>
+    <string name="faculty_of_technical_sciences">Műszaki Tudományok Kara</string>
+    <string name="faculty_of_agriculture">Mezőgazdasági Kar</string>
+    <string name="faculty_of_law">Jogtudományi Kar</string>
+    <string name="faculty_of_philosophy">Bölcsésztudományi Kar</string>
+    <string name="faculty_of_technology">Technológiai Kar</string>
+    <string name="faculty_of_medicine">Orvostudományi Kar</string>
+    <string name="faculty_of_sport_and_physical_education">Sport- és Testnevelési Kar</string>
+    <string name="faculty_of_sciences">Természettudományi- matematikai Kar</string>
+    <string name="academy_of_arts">Művészeti Akadémia</string>
+    <string name="faculty_of_economics_in_subotica">Közgazdasági Kar Szabadkán</string>
 </resources>

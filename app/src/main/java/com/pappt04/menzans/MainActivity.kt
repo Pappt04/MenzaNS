@@ -5,14 +5,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.DummyData.CardHolderFileName
@@ -31,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         setContent {
+            //TODO REQUEST PERMISSIONS ON APP LAUNCH
             val context = LocalContext.current
             var darkTheme = remember { mutableStateOf(true) }
             var saveddark=readFromFile(context = context,DummyData.FileDarkThemeEnabled)
