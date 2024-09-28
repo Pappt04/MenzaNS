@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             //TODO REQUEST PERMISSIONS ON APP LAUNCH
             val context = LocalContext.current
             var darkTheme = remember { mutableStateOf(true) }
-            var saveddark=readFromFile(context = context,DummyData.FileDarkThemeEnabled)
+            val saveddark=readFromFile(context = context,DummyData.FileDarkThemeEnabled)
 
             if(saveddark!= "" && saveddark.toInt()==1)
             {

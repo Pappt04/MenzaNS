@@ -32,6 +32,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -79,6 +80,9 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
+        item{
+            DisclaimerCard(context)
+        }
         item {
             LanguageChanger(context)
         }
@@ -269,6 +273,22 @@ fun LanguageChanger(context: Context) {
     }
 }
 
+@Composable
+fun DisclaimerCard(context: Context)
+{
+    Card(modifier = Modifier
+        .padding(8.dp)) {
+        Text(
+            text = stringResource(R.string.disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+    }
+}
 
 @Preview(name = "Light Mode")
 @Preview(

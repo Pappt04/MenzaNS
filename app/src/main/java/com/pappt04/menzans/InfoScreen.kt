@@ -129,7 +129,7 @@ fun FacultyCard(context: Context) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
+                    .fillMaxWidth()
                     .padding(8.dp)
             )
             RotatingIcon(isExpanded)

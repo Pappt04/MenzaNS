@@ -75,4 +75,7 @@
     <string name="faculty_of_sport_and_physical_education">Faculty of Sport and Physical Education</string>
     <string name="zavod_za_zdravstvenu_zastitu_studenata_novi_sad">Institute for Student Health Care Novi Sad</string>
     <string name="faculty_of_economics_in_subotica">Faculty of Economics in Subotica</string>
+    <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Disclaimer, this is a project by a student with no affiliation with the University of Novi Sad and the student mensa!</string>
+    <string name="you_should_top_up_your_card">You should top up your card</string>
+    <string name="reminder_that_you_only_have_tokens_on_your_card">Reminder that you only have %1$s %2$s tokens on your card</string>
 </resources>

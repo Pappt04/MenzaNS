@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MenzaNS</string>
     <string name="add_to_balance">Dodaj na račun</string>
     <string name="your_balance_is_still_rsd">Tvoj račun je i dalje %1$s rsd</string>
     <string name="dismiss">Otpusti</string>
@@ -73,4 +72,7 @@
     <string name="faculty_of_sciences">Prirodno Matematički Fakultet</string>
     <string name="academy_of_arts">Akademija Umetnosti</string>
     <string name="faculty_of_economics_in_subotica">Ekonomski Fakultet, Subotica</string>
+    <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Odricanje od odgovornosti, ovo je projekat studenta bey afiliacije Univerziteta u Novom Sadu i sa studentskom menzom!</string>
+    <string name="you_should_top_up_your_card">Trebalo bi da dopunite svoju karticu</string>
+    <string name="reminder_that_you_only_have_tokens_on_your_card">Podsetnik da na kartici imate samo %1$2 %2$s tokene</string>
 </resources>

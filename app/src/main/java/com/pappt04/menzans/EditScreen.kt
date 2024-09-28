@@ -60,7 +60,12 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals: List<MealData>, maindrawerpadding: PaddingValues) {
+fun EditScreen(
+    savedholderdata: List<String>,
+    remainingOnCard: Array<Int>,
+    meals: List<MealData>,
+    maindrawerpadding: PaddingValues
+) {
     var surname by remember { mutableStateOf(savedholderdata[0]) }
     var name by remember { mutableStateOf(savedholderdata[1]) }
     var index by remember { mutableStateOf(savedholderdata[6]) }
@@ -101,7 +106,14 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        onClick = {context.startActivity(Intent(context, MainActivity::class.java)) },
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    context,
+                                    MainActivity::class.java
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.5f)
@@ -123,7 +135,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                 ISICcardnumber,
                                 context
                             )
-                            saveCardData(context,editbreakfast,editlunch,editdinner,editbalance)
+                            saveCardData(context, editbreakfast, editlunch, editdinner, editbalance)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -215,7 +227,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                 .padding(4.dp)
                                 .fillMaxWidth()
                         )
-                        Row{
+                        Row {
                             OutlinedTextField(
                                 value = dateofBirth.value,
                                 onValueChange = { print("Clicked") },
@@ -311,7 +323,7 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.breakfast)) },
+                                label = { Text(stringResource(R.string.breakfast)+": ${remainingOnCard[0]}") },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -323,11 +335,10 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     try {
                                         editlunch.intValue = it.toInt()
                                     } catch (e: Exception) {
-                                        editlunch.intValue = 0
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.lunch)) },
+                                label = { Text(stringResource(R.string.lunch)+": ${remainingOnCard[1]}") },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -339,11 +350,10 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                     try {
                                         editdinner.intValue = it.toInt()
                                     } catch (e: Exception) {
-                                        editdinner.intValue = 0
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.dinner)) },
+                                label = { Text(stringResource(R.string.dinner)+": ${remainingOnCard[2]}") },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -356,11 +366,10 @@ fun EditScreen(savedholderdata: List<String>, remainingOnCard: Array<Int>, meals
                                 try {
                                     editbalance.intValue = it.toInt()
                                 } catch (e: Exception) {
-                                    editbalance.intValue = 0
                                 }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.balance)) },
+                            label = { Text(stringResource(R.string.balance)+": ${remainingOnCard[3]}") },
                             textStyle = LocalTextStyle.current.copy(
                                 textAlign = TextAlign.Right,
                                 fontSize = 22.sp
@@ -588,8 +597,10 @@ fun saveCardHolderInfotoFiles(
         success = true
     }
     if (success)
-        Toast.makeText(context,
-            context.getString(R.string.file_successfully_saved), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            context,
+            context.getString(R.string.file_successfully_saved), Toast.LENGTH_SHORT
+        ).show()
 }
 
 fun saveCardData(
@@ -599,10 +610,10 @@ fun saveCardData(
     dinner: MutableState<Int>,
     balance: MutableState<Int>
 ) {
-    saveToFile(context,DummyData.FileNames[0],breakfast.value)
-    saveToFile(context,DummyData.FileNames[1],lunch.value)
-    saveToFile(context,DummyData.FileNames[2],dinner.value)
-    saveToFile(context,DummyData.FileNames[3],balance.value)
+    saveToFile(context, DummyData.FileNames[0], breakfast.value)
+    saveToFile(context, DummyData.FileNames[1], lunch.value)
+    saveToFile(context, DummyData.FileNames[2], dinner.value)
+    saveToFile(context, DummyData.FileNames[3], balance.value)
 }
 
 
