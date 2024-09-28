@@ -1,5 +1,5 @@
 ## MenzaNS - Novi Sad Token Tracking Android Application for Students (README.md)
-![MenzaNSGithublogo](https://github.com/user-attachments/assets/cafd796c-a697-4296-b053-bb4672d69298)
+<img src="https://github.com/user-attachments/assets/cafd796c-a697-4296-b053-bb4672d69298" width="400" class="center">
 
 **MenzaNS** is a mobile application for students at the University of Novi Sad (UNS) that simplifies token tracking from student canteens ("Menza"). The app utilizes Google's Geofencing API to automate token management based on your location.
 
@@ -27,6 +27,12 @@
 * Mobile development framework: Kotlin with Jepack compose
 * Google Maps Platform (optional), with Geofencing API
 * Secure storage for ISIC card information (optional)
+<img src="https://github.com/user-attachments/assets/10b03310-0c5f-4313-a82a-0c718a5bba7c" width="300">
+
+
+
+<img src="https://github.com/user-attachments/assets/d1a6d6e7-cb95-4314-9b78-6cb3ddd10fae" width="300">
+
 
 
 ### Contributing
