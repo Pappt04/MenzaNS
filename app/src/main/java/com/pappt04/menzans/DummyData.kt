@@ -43,7 +43,13 @@ object DummyData {
     const val CUSTOM_REQUEST_CODE_GEOFENCE = 1100
 
     const val EATING_SPEED_TRESHOLD=15
+    const val MINIMUM_TOKEN_TRESHOLD=2
 
+
+
+
+
+    /*--------------------------------------------------------------------------------------------*/
     data class NavigationItem(
         val title: Uitext,
         val selectedIcon: ImageVector,

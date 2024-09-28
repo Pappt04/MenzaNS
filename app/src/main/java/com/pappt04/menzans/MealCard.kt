@@ -1,5 +1,6 @@
 package com.pappt04.menzans
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
 
@@ -173,6 +175,16 @@ fun saveToFile(context: Context, file: String, remaining: Int) {
     val s1 = remaining.toString()
     context.openFileOutput(file, Context.MODE_PRIVATE).use {
         it.write(s1.toByteArray())
+    }
+    if (file in DummyData.FileNames && remaining<=DummyData.MINIMUM_TOKEN_TRESHOLD)
+    {
+        val notificationManager = context?.let {
+            ContextCompat.getSystemService(
+                it,
+                NotificationManager::class.java
+            )
+        } as NotificationManager
+        notificationManager.sendTopUpReminder(context,file)
     }
 }
 
