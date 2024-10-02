@@ -610,10 +610,10 @@ fun saveCardData(
     dinner: MutableState<Int>,
     balance: MutableState<Int>
 ) {
-    saveToFile(context, DummyData.FileNames[0], breakfast.value)
-    saveToFile(context, DummyData.FileNames[1], lunch.value)
-    saveToFile(context, DummyData.FileNames[2], dinner.value)
-    saveToFile(context, DummyData.FileNames[3], balance.value)
+    saveToFile(context, DummyData.FileNames[0], breakfast.value,false)
+    saveToFile(context, DummyData.FileNames[1], lunch.value,false)
+    saveToFile(context, DummyData.FileNames[2], dinner.value,false)
+    saveToFile(context, DummyData.FileNames[3], balance.value,false)
 }
 
 

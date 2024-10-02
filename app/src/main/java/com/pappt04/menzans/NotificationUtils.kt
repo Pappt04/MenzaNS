@@ -90,7 +90,7 @@ fun NotificationManager.sendAutomaticDeductNotification(context: Context, minute
     notify(100, notification.build())
 }
 
-fun NotificationManager.sendTopUpReminder(context: Context, file: String) {
+fun NotificationManager.sendTopUpReminder(context: Context, file: String, remaining: Int) {
     var i = 0
     for (name in DummyData.FileNames) {
         if (file == name)
@@ -107,7 +107,7 @@ fun NotificationManager.sendTopUpReminder(context: Context, file: String) {
         .setContentText(
             context.getString(
                 R.string.reminder_that_you_only_have_tokens_on_your_card,
-                DummyData.MINIMUM_TOKEN_TRESHOLD.toString(),
+                remaining.toString(),
                 s1
             ))
         .setSmallIcon(R.mipmap.ic_launcher_monochrome_foreground)

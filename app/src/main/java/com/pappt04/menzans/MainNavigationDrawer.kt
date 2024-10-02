@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -48,7 +49,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>) {
+fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -57,6 +58,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
     val navController = rememberNavController()
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
+
+    var welcome by remember { mutableStateOf(true) }
 
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
@@ -75,7 +78,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                     .padding(vertical = 64.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = stringResource(id=R.string.app_name), fontSize = 40.sp)
+                Text(text = stringResource(id = R.string.app_name), fontSize = 40.sp)
             }
 
             //TODO CREATE A BETTER DESIGN FOR THIS CARD IN THIS STATE IT IS UNUSABLE
@@ -129,13 +132,13 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.Default.Menu, contentDescription = stringResource(R.string.menu_description)
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = stringResource(R.string.menu_description)
                         )
                     }
                 })
             },
-        ) {
-            innerpadding->
+        ) { innerpadding ->
             navController.addOnDestinationChangedListener { controller, destination, arguments ->
                 selectedItemIndex = when (destination.route) {
                     "ScaffoldDesign" -> 0
@@ -161,6 +164,16 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                                 }
                             }
                         } else {
+                            if (welcome) {
+                                WelcomeDialog(
+                                    onDismissRequest = {
+                                        welcome = false
+                                    },
+                                    context
+                                )
+
+                            }
+
                             s1 = "0"
                             context.openFileOutput(s, Context.MODE_PRIVATE).use {
                                 it.write(s1.toByteArray())
@@ -187,7 +200,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                                 }
                             }
                     } else {
-                        stemp=",,,,,,,,"
+                        stemp = ",,,,,,,,"
                         context.openFileOutput(CardHolderFileName, Context.MODE_PRIVATE).use {
                             it.write(stemp.toByteArray())
                         }
@@ -215,14 +228,14 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme:MutableState<Boolean>
                     }
                     val jsonMeals: List<MealData> = MealSample
 
-                    EditScreen(splitstring, remainingOnCard,jsonMeals,innerpadding)
+                    EditScreen(splitstring, remainingOnCard, jsonMeals, innerpadding)
 
                 }
                 composable(route = Screen.InfoScreen.route) {
                     InfoScreen(innerpadding)
                 }
                 composable(route = Screen.SettingsScreen.route) {
-                    SettingsScreen(innerpadding,darkTheme)
+                    SettingsScreen(innerpadding, darkTheme)
                 }
             }
         }

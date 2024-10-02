@@ -116,7 +116,7 @@ fun FacultyCard(context: Context) {
                 .padding(10.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.unslogo_k100_transparent),
+                painter = painterResource(id = R.drawable.unsimage),
                 contentDescription = stringResource(R.string.university_of_novi_sad),
                 modifier = Modifier
                     .height(80.dp)

@@ -8,8 +8,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.DummyData.CardHolderFileName
@@ -31,11 +33,11 @@ class MainActivity : AppCompatActivity() {
             //TODO REQUEST PERMISSIONS ON APP LAUNCH
             val context = LocalContext.current
             var darkTheme = remember { mutableStateOf(true) }
-            val saveddark=readFromFile(context = context,DummyData.FileDarkThemeEnabled)
+            val saveddark = readFromFile(context = context, DummyData.FileDarkThemeEnabled)
 
-            if(saveddark!= "" && saveddark.toInt()==1)
-            {
-                darkTheme.value=true
+
+            if (saveddark != "" && saveddark.toInt() == 1) {
+                darkTheme.value = true
             } else {
                 darkTheme.value = false
             }
@@ -118,7 +120,7 @@ class MainActivity : AppCompatActivity() {
             ALL_LOCATION_PERMISSIONS -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Toast.makeText(this, "Haha W", Toast.LENGTH_SHORT).show()
-                    for(geofence in DummyData.LANDMARK_DATA){
+                    for (geofence in DummyData.LANDMARK_DATA) {
                         geofenceManager.addGeofence(
                             geofence.key,
                             geofence.location,

@@ -34,8 +34,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.pappt04.menzans.DummyData.datetypeall
+import com.pappt04.menzans.DummyData.datetypeclock
+import com.pappt04.menzans.DummyData.datetypemonth
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.Month
+import java.util.Date
 
 
 @Composable
@@ -133,8 +139,8 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                     currentlyRemaining--
                                 }
                                 scope.launch {
-                                    saveToFile(context, DummyData.FileNames[3], balance.value)
-                                    saveToFile(context, fileToSave, currentlyRemaining)
+                                    saveToFile(context, DummyData.FileNames[3], balance.value,false)
+                                    saveToFile(context, fileToSave, currentlyRemaining,false)
                                 }
                             },
                         ) {
@@ -145,7 +151,9 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 if (currentlyRemaining > 0) {
                                     currentlyRemaining--
                                 }
-                                scope.launch { saveToFile(context, fileToSave, currentlyRemaining) }
+                                scope.launch { saveToFile(context, fileToSave, currentlyRemaining,true) }
+                                val statisticsMeal= EatingStatisticsData(datetypeall.format(Date()),datetypeclock.format(Date()),datetypeclock.format(Date()),meal)
+                                monthStatisticsSavetoFile(context,datetypemonth.format(Date()),statisticsMeal)
                             },
                         ) {
                             Text(stringResource(R.string.consume))
@@ -157,8 +165,8 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 currentlyRemaining++
                             }
                             scope.launch {
-                                saveToFile(context, DummyData.FileNames[3], balance.value)
-                                saveToFile(context, fileToSave, currentlyRemaining)
+                                saveToFile(context, DummyData.FileNames[3], balance.value,false)
+                                saveToFile(context, fileToSave, currentlyRemaining,false)
                             }
                         }) {
                             Text(stringResource(R.string.add))
@@ -171,12 +179,12 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
     }
 }
 
-fun saveToFile(context: Context, file: String, remaining: Int) {
+fun saveToFile(context: Context, file: String, remaining: Int, notify: Boolean) {
     val s1 = remaining.toString()
     context.openFileOutput(file, Context.MODE_PRIVATE).use {
         it.write(s1.toByteArray())
     }
-    if (file in DummyData.FileNames && remaining<=DummyData.MINIMUM_TOKEN_TRESHOLD)
+    if (file in DummyData.FileNames && remaining<=DummyData.MINIMUM_TOKEN_TRESHOLD && notify)
     {
         val notificationManager = context?.let {
             ContextCompat.getSystemService(
@@ -184,7 +192,7 @@ fun saveToFile(context: Context, file: String, remaining: Int) {
                 NotificationManager::class.java
             )
         } as NotificationManager
-        notificationManager.sendTopUpReminder(context,file)
+        notificationManager.sendTopUpReminder(context,file,remaining)
     }
 }
 

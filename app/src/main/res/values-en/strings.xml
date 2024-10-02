@@ -75,4 +75,6 @@
     <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Disclaimer, this is a project by a student with no affiliation with the University of Novi Sad and the student mensa!</string>
     <string name="you_should_top_up_your_card">You should top up your card</string>
     <string name="reminder_that_you_only_have_tokens_on_your_card">Reminder that you only have %1$s %2$s tokens on your card</string>
+    <string name="welcome_message">"Your all-in-one token management solution. Track your token balance effortlessly and receive notifications when you're running low. Enjoy peace of mind knowing your tokens are always accounted for. Let MenzaNS simplify your student life. Check out the settings for required permissions! "</string>
+    <string name="welcome_title">Welcome to MenzaNS!\n</string>
 </resources>

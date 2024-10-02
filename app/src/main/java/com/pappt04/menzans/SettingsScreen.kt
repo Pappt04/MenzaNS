@@ -191,7 +191,7 @@ fun DarkThemeSwitcher(context: Context, darkTheme: MutableState<Boolean>) {
                         dark = 0
                     }
 
-                    saveToFile(context,DummyData.FileDarkThemeEnabled,dark)
+                    saveToFile(context,DummyData.FileDarkThemeEnabled,dark,false)
                 },
                 modifier = Modifier
                     .weight(1f)
