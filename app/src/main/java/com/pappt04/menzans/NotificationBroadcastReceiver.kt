@@ -27,7 +27,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 DummyData.ACTION_TWICE -> usedMeals = 2
             }
             for (mealdata in MealSample) {
-                if(mealdata.start_hour <= (enteredsplit?.get(0)?.toInt() ?: 0) && mealdata.end_hour >= (exitedsplit?.get(0)?.toInt() ?: 0) && calculateTimeDifference(enteredsplit,exitedsplit)> DummyData.DWELL_TRESHOLD)
+                if(mealdata.start_hour <= (enteredsplit?.get(0)?.toInt() ?: 0) && mealdata.end_hour >= (exitedsplit?.get(0)?.toInt() ?: 0))// && calculateTimeDifference(enteredsplit,exitedsplit)> DummyData.DWELL_TRESHOLD)
                 {
                     //Maybe it should just check entered time
                     val currentTokens= context?.let { readFromFile(it,DummyData.FileNames[correctMeal]) }
@@ -46,14 +46,18 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 fun monthStatisticsSavetoFile(context: Context, month: String, meal: EatingStatisticsData)
 {
     val realmonth= DummyData.engmonths[month.toInt()-1]
-    val s1= "${meal.date};${meal.timeentered};${meal.timeexited};${meal.tokentype.name.asString(context)}"
+
+    var i=0
+    var s=""
+    for(m in DummyData.MealSample)
+    {
+        if(m.name.asString(context) == meal.tokentype.name.asString(context))
+           s=DummyData.engmeals[i]
+        i++
+    }
+
+    val s1= "${meal.date},${meal.timeentered},${meal.timeexited},$s;\n"
     context.openFileOutput(realmonth, Context.MODE_APPEND).use {
         it.write(s1.toByteArray())
     }
-}
-
-fun translate(context: Context,locale: Locale?, resId: Int): String {
-    val config: Configuration = Configuration(context.resources.configuration)
-    config.setLocale(locale)
-    return context.createConfigurationContext(config).getText(resId).toString()
 }

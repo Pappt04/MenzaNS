@@ -1,6 +1,7 @@
 package com.pappt04.menzans
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -10,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
@@ -38,13 +40,13 @@ fun PreviewDayView() {
 }
 
 @Composable
-fun WeekView(days: List<String>) {
+fun WeekView(days: List<Uitext>) {
     MenzaNSTheme {
         LazyRow(
             modifier = Modifier
-                .padding(3.dp)
+                .padding(8.dp)
         ) {
-            items(days) { day: String -> DayView(day) }
+            items(days) { day: Uitext -> DayView(day.asString(context = LocalContext.current)) }
         }
     }
 }

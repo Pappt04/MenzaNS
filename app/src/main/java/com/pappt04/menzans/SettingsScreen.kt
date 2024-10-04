@@ -55,25 +55,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
+import com.pappt04.menzans.DummyData.permissionsNeeded
 
 
 @Composable
 fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>) {
     val context = LocalContext.current
-    val permissionsNeeded = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        listOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-            Manifest.permission.POST_NOTIFICATIONS
-        )
-    } else {
-        listOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-        )
-    }
     LazyColumn(
         modifier = Modifier
             .padding(innerpadding)
@@ -257,7 +244,6 @@ fun LanguageChanger(context: Context) {
                         DropdownMenuItem(
                             onClick = {
                                 isExpanded = false
-                                // set app locale given the user's selected locale
                                 AppCompatDelegate.setApplicationLocales(
                                     LocaleListCompat.forLanguageTags(
                                         localeOptions[selectionLocale]

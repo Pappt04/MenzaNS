@@ -45,6 +45,16 @@ class MainActivity : AppCompatActivity() {
 
                 geofenceManager = GeofenceManager(context)
 
+                for (geofence in DummyData.LANDMARK_DATA) {
+                    geofenceManager.addGeofence(
+                        geofence.key,
+                        geofence.location,
+                        geofence.radiusInMeters,
+                        geofence.expirationTimeInMillis
+                    )
+                }
+                geofenceManager.registerGeofence()
+
                 requestAllPermissions()
                 createChannel(context)
 

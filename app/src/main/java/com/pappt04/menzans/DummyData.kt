@@ -1,6 +1,8 @@
 package com.pappt04.menzans
 
+import android.Manifest
 import android.location.Location
+import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import com.google.android.gms.location.Geofence
 import java.text.SimpleDateFormat
 
@@ -53,6 +56,22 @@ object DummyData {
 
     /*--------------------------------------------------------------------------------------------*/
 
+    val permissionsNeeded = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    } else {
+        listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+        )
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     val navigationItemData = listOf(
         NavigationItem(
             title = Uitext.StringResource(R.string.card),
@@ -87,18 +106,30 @@ object DummyData {
         )
     )
 
+    /*--------------------------------------------------------------------------------------------*/
+    val dataweek = listOf(
+        Uitext.StringResource(R.string.monday),
+        Uitext.StringResource(R.string.tuesday),
+        Uitext.StringResource(R.string.wednesday),
+        Uitext.StringResource(R.string.thursday),
+        Uitext.StringResource(R.string.friday),
+        Uitext.StringResource(R.string.saturday),
+        Uitext.StringResource(R.string.sunday)
+    )
+    /*--------------------------------------------------------------------------------------------*/
     val LANDMARK_DATA = arrayOf(
         LandmarkDataObject(
             "Menza",
             Location("").apply {
-                latitude = 45.2460952
-                longitude = 19.8493421
+                latitude = 45.245989
+                longitude = 19.849117
             },
-            15f,
+            50f,
             Geofence.NEVER_EXPIRE
         )
     )
 
+    /*--------------------------------------------------------------------------------------------*/
     data class linkContainer(val name: Uitext, val link: String)
 
     val usefullLinks = listOf(
@@ -140,6 +171,7 @@ object DummyData {
         ),
     )
 
+    /*--------------------------------------------------------------------------------------------*/
     val allUnsAcRswebsites = listOf(
         linkContainer(
             Uitext.StringResource(R.string.faculty_of_technical_sciences),
@@ -180,7 +212,8 @@ object DummyData {
         ),
     )
 
-    val engmonths= listOf(
+    /*--------------------------------------------------------------------------------------------*/
+    val engmonths = listOf(
         "january",
         "february",
         "march",
@@ -193,5 +226,10 @@ object DummyData {
         "october",
         "november",
         "december"
+    )
+    val engmeals = listOf(
+        "breakfast",
+        "lunch",
+        "dinner"
     )
 }

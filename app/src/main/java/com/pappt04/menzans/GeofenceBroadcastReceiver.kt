@@ -54,16 +54,16 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             }
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                val timeEntered = datetypeclock.format(Date())
-                var timeExited = ""
+                val timeExited = datetypeclock.format(Date())
+                var timeEntered = ""
                 val files: Array<String> = context.fileList()
 
                 if (DummyData.FileGeoFenceEntered in files) {
                     context.openFileInput(DummyData.FileGeoFenceEntered).bufferedReader()
                         .useLines { lines ->
                             lines.fold("") { some, text ->
-                                timeExited = "$some$text"
-                                timeExited
+                                timeEntered = "$some$text"
+                                timeEntered
                             }
                         }
                 }
@@ -77,7 +77,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 if (alldiff > DummyData.AUTOMATIC_EATING_SPEED_TRESHOLD) {
                     automaticallyDeductToken(context, timeEntered, timeExited)
                     notificationManager.sendAutomaticDeductNotification(context, alldiff)
-                } else {
+                } else if(true/*alldiff >= DummyData.DWELL_TRESHOLD*/){
                     notificationManager.sendAteMealNotification(
                         context,
                         timeEntered,

@@ -46,7 +46,7 @@ import java.util.Date
 
 @Composable
 fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: MutableState<Int>) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(true) }
     var currentlyRemaining by remember { mutableIntStateOf(remaining) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -111,21 +111,12 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                         )
                     )
             ) {
-                val dataprev = listOf(
-                    stringResource(R.string.monday),
-                    stringResource(R.string.tuesday),
-                    stringResource(R.string.wednesday),
-                    stringResource(R.string.thursday),
-                    stringResource(R.string.friday),
-                    stringResource(R.string.saturday),
-                    stringResource(R.string.sunday)
-                )
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WeekView(dataprev)
+                    //WeekView(DummyData.dataweek)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -151,7 +142,7 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 if (currentlyRemaining > 0) {
                                     currentlyRemaining--
                                 }
-                                scope.launch { saveToFile(context, fileToSave, currentlyRemaining,true) }
+                                scope.launch { saveToFile(context, fileToSave, currentlyRemaining,false) }
                                 val statisticsMeal= EatingStatisticsData(datetypeall.format(Date()),datetypeclock.format(Date()),datetypeclock.format(Date()),meal)
                                 monthStatisticsSavetoFile(context,datetypemonth.format(Date()),statisticsMeal)
                             },
