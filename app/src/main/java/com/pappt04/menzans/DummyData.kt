@@ -49,7 +49,7 @@ object DummyData {
     const val DWELL_TRESHOLD = 5
     const val MINIMUM_TOKEN_TRESHOLD = 2
 
-    val datetypeall: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd-HH:mm")
+    val datetypeall: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     val datetypeclock: SimpleDateFormat = SimpleDateFormat("HH:mm")
     val datetypemonth: SimpleDateFormat = SimpleDateFormat("M")
 

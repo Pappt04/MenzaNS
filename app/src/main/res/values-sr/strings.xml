@@ -42,7 +42,7 @@
     <string name="yes">Da</string>
     <string name="twice">Da, dva puta</string>
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">Automatski smo oduzeli jedan obrok</string>
-    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Mislimo da ste bili u menzi %1$s minuta i mislimo da ste jeli</string>
+    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Mislimo da ste bili u menzi %1$s minuta i mislimo da ste jeli %2$s</string>
     <string name="request_permission">Zatražite %1$s dozvolu</string>
     <string name="menu_description">Meni</string>
     <string name="language">Srpski</string>
@@ -75,4 +75,10 @@
     <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Odricanje od odgovornosti, ovo je projekat studenta bey afiliacije Univerziteta u Novom Sadu i sa studentskom menzom!</string>
     <string name="you_should_top_up_your_card">Trebalo bi da dopunite svoju karticu</string>
     <string name="reminder_that_you_only_have_tokens_on_your_card">Podsetnik da na kartici imate samo %1$2 %2$s tokene</string>
+    <string name="welcome_message">Vaše rešenje za upravljanje tokenima sve u jednom. Pratite stanje tokena bez napora i primajte obaveštenja kada vam ponestane. Uživajte u miru znajući da se vaši tokeni uvek uzimaju u obzir. Neka MenzaNS pojednostavi vaš studentski život. Proverite podešavanja</string>
+    <string name="welcome_title">Dobrodošli u MenzaNS!</string>
+    <string name="your_monthly_token_usage">Vaša mesečna upotreba tokena</string>
+    <string name="your_weekly_token_usage">Vaša nedeljna upotreba tokena</string>
+    <string name="predicted_spending">Predviđena potrošnja</string>
+    <string name="collected_data_from_current_month">Prikupljeni podaci iz tekućeg meseca</string>
 </resources>

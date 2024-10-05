@@ -26,7 +26,8 @@ fun createChannel(context: Context) {
 fun NotificationManager.sendAteMealNotification(
     context: Context,
     timeEntered: String,
-    timeExited: String
+    timeExited: String,
+    mealData: MealData
 ) {
     val flag =
         PendingIntent.FLAG_IMMUTABLE
@@ -41,6 +42,8 @@ fun NotificationManager.sendAteMealNotification(
         putExtra("ACTION", DummyData.ACTION_DISMISS)
         putExtra("START_TIME", timeEntered)
         putExtra("END_TIME", timeExited)
+        putExtra("MEAL",mealData.name.asString(context))
+
     }
     val DismisspendingIntent = PendingIntent.getBroadcast(context, 100, Dismissintent, flag)
 
@@ -48,6 +51,7 @@ fun NotificationManager.sendAteMealNotification(
         putExtra("ACTION", DummyData.ACTION_CONFIRM)
         putExtra("START_TIME", timeEntered)
         putExtra("END_TIME", timeExited)
+        putExtra("MEAL",mealData.name.asString(context))
     }
     val ConfirmpendingIntent = PendingIntent.getBroadcast(context, 200, Confrimintent, flag)
 
@@ -55,6 +59,7 @@ fun NotificationManager.sendAteMealNotification(
         putExtra("ACTION", DummyData.ACTION_TWICE)
         putExtra("START_TIME", timeEntered)
         putExtra("END_TIME", timeExited)
+        putExtra("MEAL",mealData.name.asString(context))
     }
     val TwicependingIntent = PendingIntent.getBroadcast(context, 300, Twiceintent, flag)
 
@@ -76,13 +81,14 @@ fun NotificationManager.sendAteMealNotification(
     notify(DummyData.NOTIFICATION_IDs.first, notification.build())
 }
 
-fun NotificationManager.sendAutomaticDeductNotification(context: Context, minutes: Int) {
+fun NotificationManager.sendAutomaticDeductNotification(context: Context, minutes: Int, mealData: MealData) {
     val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[0])
         .setContentTitle(context.getString(R.string.we_automatically_deducted_one_meal_token_for_you_notification))
         .setContentText(
             context.getString(
                 R.string.we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification,
-                minutes.toString()
+                minutes.toString(),
+                mealData.name.asString(context)
             )
         )
         .setSmallIcon(R.mipmap.ic_launcher_monochrome_foreground)

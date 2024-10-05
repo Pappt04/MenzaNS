@@ -42,7 +42,7 @@
     <string name="yes">YES</string>
     <string name="twice">YES, TWICE</string>
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">We automatically deducted one meal token for you</string>
-    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s there is a big chance you ate</string>
+    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s there is a big chance you ate %2$s</string>
     <string name="request_permission">Request %1$s permission</string>
     <string name="menu_description">Menu</string>
     <string name="language">English</string>
@@ -79,5 +79,9 @@
     <string name="you_should_top_up_your_card">You should top up your card</string>
     <string name="reminder_that_you_only_have_tokens_on_your_card">Reminder that you only have %1$s %2$s tokens on your card</string>
     <string name="welcome_message">"Your all-in-one token management solution. Track your token balance effortlessly and receive notifications when you're running low. Enjoy peace of mind knowing your tokens are always accounted for. Let MenzaNS simplify your student life. Check out the settings for required permissions! "</string>
-    <string name="welcome_title">Welcome to MenzaNS!\n</string>
+    <string name="welcome_title">"Welcome to MenzaNS! "</string>
+    <string name="your_monthly_token_usage">Your monthly token usage</string>
+    <string name="your_weekly_token_usage">Your weekly token usage</string>
+    <string name="predicted_spending">Predicted spending</string>
+    <string name="collected_data_from_current_month">Collected data from current month</string>
 </resources>

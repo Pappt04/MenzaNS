@@ -4,7 +4,7 @@ import android.content.Context
 import android.location.Location
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import java.text.SimpleDateFormat
+import java.time.LocalDate
 
 
 data class MealData(
@@ -49,8 +49,8 @@ data class LandmarkDataObject(
 )
 
 data class EatingStatisticsData(
-    val date: String,
+    val date: LocalDate,
     val timeentered: String,
     val timeexited: String,
-    val tokentype: MealData
+    val tokentype: String
 )

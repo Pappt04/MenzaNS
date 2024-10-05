@@ -10,10 +10,9 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.datetypeall
 import com.pappt04.menzans.DummyData.datetypeclock
 import com.pappt04.menzans.DummyData.datetypemonth
-import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Date
 import kotlin.math.abs
 
@@ -68,20 +67,22 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                         }
                 }
 
-
                 val enteredsplit = timeEntered.split(":").toTypedArray()
                 val exitedsplit = timeExited.split(":").toTypedArray()
 
-                val alldiff: Int = calculateTimeDifference(enteredsplit,exitedsplit)
+                val alldiff: Int = calculateTimeDifference(enteredsplit, exitedsplit)
 
-                if (alldiff > DummyData.AUTOMATIC_EATING_SPEED_TRESHOLD) {
-                    automaticallyDeductToken(context, timeEntered, timeExited)
-                    notificationManager.sendAutomaticDeductNotification(context, alldiff)
-                } else if(true/*alldiff >= DummyData.DWELL_TRESHOLD*/){
+                val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
+
+                if (alldiff > DummyData.AUTOMATIC_EATING_SPEED_TRESHOLD && correctmeal!= null) {
+                    automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
+                    notificationManager.sendAutomaticDeductNotification(context, alldiff,correctmeal)
+                } else if (correctmeal!=null /*&& alldiff >= DummyData.DWELL_TRESHOLD*/) {
                     notificationManager.sendAteMealNotification(
                         context,
                         timeEntered,
-                        timeExited
+                        timeExited,
+                        correctmeal
                     )
                 }
             }
@@ -95,31 +96,58 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private fun automaticallyDeductToken(
         context: Context,
         timeEntered: String,
-        timeExited: String
+        timeExited: String,
+        mealdata: MealData?
     ) {
         val enteredsplit = timeEntered.split(":").toTypedArray()
         val exitedsplit = timeExited.split(":").toTypedArray()
 
 
-        var correctMeal = 0
-        for (mealdata in MealSample) {
-            correctMeal++
-            if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt())
-            ) {
-                //Maybe it should just check entered time
-                val currentTokens =
-                    readFromFile(context, DummyData.FileNames[correctMeal])
-                saveToFile(context, DummyData.FileNames[correctMeal], currentTokens.toInt() - 1,true)
-
-                val statisticsMeal= EatingStatisticsData(datetypeall.format(Date()),timeEntered,timeExited,mealdata)
-                monthStatisticsSavetoFile(context,datetypemonth.format(Date()),statisticsMeal)
+        if(mealdata!= null){
+            var mealIndex=0
+            for(m in MealSample)
+            {
+                if(mealdata == m)
+                    break
+                mealIndex++
             }
+
+            val currentTokens =
+                readFromFile(context, DummyData.FileNames[mealIndex])
+            saveToFile(
+                context,
+                DummyData.FileNames[mealIndex],
+                currentTokens.toInt() - 1,
+                true
+            )
+
+            val statisticsMeal = EatingStatisticsData(
+                LocalDate.now(),
+                timeEntered,
+                timeExited,
+                mealdata.name.asString(context)
+            )
+            monthStatisticsSavetoFile(context, datetypemonth.format(Date()), statisticsMeal)
         }
     }
 }
 
-fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<String>): Int
-{
+
+fun calculateCorrectMeal(
+    timeEntered: String,
+    timeExited: String
+): MealData? {
+    val enteredsplit = timeEntered.split(":").toTypedArray()
+    val exitedsplit = timeExited.split(":").toTypedArray()
+
+    for (mealdata in MealSample) {
+        if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt()))
+            return mealdata
+    }
+    return null
+}
+
+fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<String>): Int {
 
     val hourdiff: Int = abs(enteredsplit[0].toInt() - exitedsplit[0].toInt())
     val mindiff: Int = abs(enteredsplit[1].toInt() - exitedsplit[1].toInt())
