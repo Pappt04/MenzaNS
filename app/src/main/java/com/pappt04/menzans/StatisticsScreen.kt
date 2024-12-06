@@ -1,6 +1,7 @@
 package com.pappt04.menzans
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.dataweek
 import com.pappt04.menzans.DummyData.engmeals
+import com.pappt04.menzans.DummyData.engtosresc
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -59,7 +61,7 @@ fun StatisticsScreen(innerpadding: PaddingValues, datafromcurrentMonth: String) 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        item{
+        item {
             MonthView(formattedStatisticsData)
         }
 
@@ -117,22 +119,17 @@ fun StatisticsScreen(innerpadding: PaddingValues, datafromcurrentMonth: String) 
 fun converttoStatisticsMeals(splitData: List<String>): List<EatingStatisticsData> {
     var elements = splitData[0].split(",")
 
-    var temp: EatingStatisticsData = EatingStatisticsData(
-        convertStringtoDate(elements[0]),
-        elements[1],
-        elements[2],
-        elements[3]
-    )
+    var temp: EatingStatisticsData
 
-    var formattedlist = listOf(temp)
+    val formattedlist = mutableListOf<EatingStatisticsData>()
     for (split in splitData) {
         if (split != "") {
             elements = split.split(",")
             temp = EatingStatisticsData(
-                convertStringtoDate(elements.get(0)),
-                elements.get(1),
-                elements.get(2),
-                elements.get(3)
+                convertStringtoDate(elements[0]),
+                elements[1],
+                elements[2],
+                Uitext.StringResource(engtosresc(elements[3]))
             )
             formattedlist += (temp)
         }
@@ -150,9 +147,9 @@ fun MealMonthChartColumn(data: List<EatingStatisticsData>) {
 
     }
 
-    val displayBreakfast = getMealNumber(data, engmeals[0])
-    val displayLunch = getMealNumber(data, engmeals[1])
-    val displayDinner = getMealNumber(data, engmeals[2])
+    val displayBreakfast = getMealNumber(data,Uitext.StringResource(engtosresc(engmeals[0])))
+    val displayLunch = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[1])))
+    val displayDinner = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[2])))
 
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {
@@ -204,9 +201,9 @@ fun MealWeekChartColumn(data: List<EatingStatisticsData>) {
         dataweek[x.toInt() % 7].asString(context)
     }
 
-    val displayBreakfast = getMealsOnDay(data, engmeals[0])
-    val displayLunch = getMealsOnDay(data, engmeals[1])
-    val displayDinner = getMealsOnDay(data, engmeals[2])
+    val displayBreakfast = getMealsOnDay(data, Uitext.StringResource(engtosresc(engmeals[0])))
+    val displayLunch = getMealsOnDay(data, Uitext.StringResource(engtosresc(engmeals[1])))
+    val displayDinner = getMealsOnDay(data, Uitext.StringResource(engtosresc(engmeals[2])))
 
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {
@@ -281,7 +278,7 @@ fun PredictedSpendingChart(data: List<EatingStatisticsData>) {
         modelProducer.runTransaction {
             lineSeries {
                 series(
-                    (1..31).toList(), getSpentMoney(data)
+                    (1..LocalDate.now().month.maxLength()).toList(), getSpentMoney(context,data)
                 )
             }
         }
@@ -295,7 +292,11 @@ fun PredictedSpendingChart(data: List<EatingStatisticsData>) {
                 LineCartesianLayer.LineProvider.series(
                     LineCartesianLayer.rememberLine(
                         fill = remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) },
-                        pointConnector = remember { LineCartesianLayer.PointConnector.cubic(curvature = 0f) },
+                        pointConnector = remember {
+                            LineCartesianLayer.PointConnector.cubic(
+                                curvature = 0f
+                            )
+                        },
                     )
                 )
             ),
@@ -316,7 +317,7 @@ fun PredictedSpendingChart(data: List<EatingStatisticsData>) {
     )
 }
 
-fun getMealNumber(data: List<EatingStatisticsData>, token: String): Number {
+fun getMealNumber(data: List<EatingStatisticsData>, token: Uitext): Number {
     var i = 0
     for (d in data) {
         if (d.tokentype == token)
@@ -325,7 +326,7 @@ fun getMealNumber(data: List<EatingStatisticsData>, token: String): Number {
     return i
 }
 
-fun getMealsOnDay(data: List<EatingStatisticsData>, token: String): List<Number> {
+fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number> {
     var listmeals = mutableListOf<Int>()
     repeat(
         7,
@@ -333,33 +334,34 @@ fun getMealsOnDay(data: List<EatingStatisticsData>, token: String): List<Number>
     )
     for (d in data) {
         if (d.tokentype == token)
-            listmeals[d.date.dayOfWeek.value-1] = listmeals[d.date.dayOfWeek.value-1] + 1
+            listmeals[d.date.dayOfWeek.value - 1] = listmeals[d.date.dayOfWeek.value - 1] + 1
     }
     return listmeals
 }
 
-fun getSpentMoney(data: List<EatingStatisticsData>): List<Number> {
+fun getSpentMoney(context: Context,data: List<EatingStatisticsData>): List<Number> {
     var moneyList = mutableListOf<Int>()
     var i = 0
     var sum = 0
     for (i in (1..LocalDate.now().month.maxLength()))
         moneyList += sum
 
-    for (d in data) {
-        var j = 0
-        for (e in engmeals) {
-            if (d.tokentype == e) {
-                moneyList[d.date.dayOfMonth-1] = sum + MealSample.get(j).price
-                sum += MealSample.get(j).price
-                break
-            }
-            j++
-        }
-        i++
-    }
 
-    for (i in (LocalDate.now().dayOfMonth..<moneyList.size))
-        moneyList[i] += sum
+    for (i in (1..<data[0].date.month.maxLength())) {
+        for (d in data) {
+            if (i == d.date.dayOfMonth) {
+                var j = 0
+                for (e in engmeals) {
+                    if (d.tokentype.asString(context) == e) {
+                        sum += MealSample[j].price
+                        break
+                    }
+                    j++
+                }
+            }
+        }
+        moneyList[i-1] = sum
+    }
 
     return moneyList
 }

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.DummyData.engmonths
 import java.time.format.DateTimeFormatter
 
 class NotificationBroadcastReceiver : BroadcastReceiver() {
@@ -19,11 +20,10 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         val enteredsplit = entered?.split(":")?.toTypedArray()
         val exitedsplit = exited?.split(":")?.toTypedArray()
 
-        if (message != null && entered != null && exited != null && enteredsplit != null && exitedsplit != null && context!= null && meal!= null) {
+        if (message != null && entered != null && exited != null && enteredsplit != null && exitedsplit != null && context != null && meal != null) {
 
-            for(m in MealSample)
-            {
-                if(meal == m.name.asString(context))
+            for (m in MealSample) {
+                if (meal == m.name.asString(context))
                     break
                 mealIndex++
             }
@@ -35,36 +35,17 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             }
 
             //Maybe it should just check entered time
-            val currentTokens = context?.let { readFromFile(it, DummyData.FileNames[mealIndex]) }
-            context?.let {
+            val currentTokens = context.let {
+                var fdao= FileDAO(it,DummyData.FileNames[mealIndex])
+                fdao.readFromFile()
+            }
+            context.let {
                 if (currentTokens != null && currentTokens.toInt() >= usedMeals) {
-                    saveToFile(
-                        it,
-                        DummyData.FileNames[mealIndex],
-                        currentTokens.toInt() - usedMeals,
-                        true
-                    )
+                    var fdao= FileDAO(it,DummyData.FileNames[mealIndex])
+                    fdao.saveToFile(currentTokens.toInt()-usedMeals,true)
                 }
             }
 
         }
-    }
-}
-
-fun monthStatisticsSavetoFile(context: Context, month: String, meal: EatingStatisticsData) {
-    val realmonth = DummyData.engmonths[month.toInt() - 1]
-
-    var i = 0
-    var s = ""
-    for (m in DummyData.MealSample) {
-        if (m.name.asString(context) == meal.tokentype)
-            s = DummyData.engmeals[i]
-        i++
-    }
-    val formatter= DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())
-
-    val s1 = "${meal.date.format(formatter)},${meal.timeentered},${meal.timeexited},$s;\n"
-    context.openFileOutput(realmonth, Context.MODE_APPEND).use {
-        it.write(s1.toByteArray())
     }
 }

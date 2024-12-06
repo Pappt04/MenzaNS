@@ -185,13 +185,13 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                         remainingOnCard += s1.toInt()
                     }
                     val jsonMeals: List<MealData> = MealSample
-                    ScaffoldDesign(jsonMeals, remainingOnCard)
+                    DashboardDesign(jsonMeals, remainingOnCard)
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
-                    val read =
-                        readFromFile(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
-                    if (read != "")
+                    var dao= FileDAO(context, engmonths[datetypemonth.format(Date()).toInt()-1])
+                    val read =dao.readFromFile()
+                    //if (read != "")
                         StatisticsScreen(innerpadding, read)
                 }
 

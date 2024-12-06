@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -59,7 +60,8 @@ fun DayView(day: String, used: Int, selected: MutableState<Int>) {
                 1 -> Icon(
                     imageVector = Icons.Outlined.Check,
                     contentDescription = null,
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                        .align(Alignment.CenterHorizontally),
                 )
                 2 -> Icon(
                     imageVector = Icons.Outlined.CheckCircle,

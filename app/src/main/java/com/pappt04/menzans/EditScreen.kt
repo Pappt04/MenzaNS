@@ -54,6 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -610,10 +611,14 @@ fun saveCardData(
     dinner: MutableState<Int>,
     balance: MutableState<Int>
 ) {
-    saveToFile(context, DummyData.FileNames[0], breakfast.value,false)
-    saveToFile(context, DummyData.FileNames[1], lunch.value,false)
-    saveToFile(context, DummyData.FileNames[2], dinner.value,false)
-    saveToFile(context, DummyData.FileNames[3], balance.value,false)
+    var meals= intArrayOf(breakfast.value,lunch.value,dinner.value,balance.value)
+
+    var i:Int= 0
+    for (x in meals)
+    {
+        var dao= FileDAO(context,DummyData.FileNames[i++])
+        dao.saveToFile(x,false)
+    }
 }
 
 

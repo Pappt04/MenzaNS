@@ -52,5 +52,5 @@ data class EatingStatisticsData(
     val date: LocalDate,
     val timeentered: String,
     val timeexited: String,
-    val tokentype: String
+    val tokentype: Uitext
 )

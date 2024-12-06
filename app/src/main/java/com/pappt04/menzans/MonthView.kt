@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,7 +39,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.DummyData.datetypemonth
 import com.pappt04.menzans.DummyData.engmeals
+import com.pappt04.menzans.DummyData.engmonths
+import java.util.Date
 
 @Composable
 fun MonthView(data: List<EatingStatisticsData>) {
@@ -93,7 +97,7 @@ fun MonthView(data: List<EatingStatisticsData>) {
                         )
                     )
             ) {
-                Column{
+                Column {
                     HorizontalDivider(modifier = Modifier.padding(10.dp))
                     ShowStatisticsDayData(selected = currentlySelected, data)
                     Button(
@@ -147,46 +151,60 @@ fun WeekHelper(days: List<Int>, data: List<EatingStatisticsData>, selected: Muta
 
 @Composable
 fun ShowStatisticsDayData(selected: MutableState<Int>, data: List<EatingStatisticsData>) {
+    val context= LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        for (meal in data)
+        for (meal in data) {
             if (meal.date.dayOfMonth == selected.value) {
                 var i = 0
                 for (e in engmeals) {
-                    if (meal.tokentype == e)
+                    if (meal.tokentype.asString(context) == e)
                         break
                     i++
                 }
+                val enteredsplit = meal.timeentered.split(":").toTypedArray()
+                val exitedsplit = meal.timeexited.split(":").toTypedArray()
+
                 val str = "${meal.timeentered}-${meal.timeexited} \t ${
                     MealSample[i].name.asString(
                         LocalContext.current
                     )
                 }"
-                Row(){
+                Row() {
                     OutlinedTextField(
                         value = str,
                         textStyle = LocalTextStyle.current.copy(
                             textAlign = TextAlign.Center,
                             fontSize = 16.sp
                         ),
+                        suffix = {
+                            Icon(
+                                imageVector = Icons.Filled.Clear,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(1f)
+                                    .clickable {
+                                        var sdao = StatisticsFileDAO(
+                                            context,
+                                            data[0].date.month.value.toString()
+                                        )
+                                        sdao.removeFromStatistics(data, meal)
+                                    }
+                            )
+                        },
                         onValueChange = {},
                         readOnly = true,
                         modifier = Modifier
                             .padding(4.dp)
-                            .fillMaxWidth()
+                            .weight(4f)
                     )
-                    Icon(
-                        imageVector = Icons.Filled.Clear,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(SwitchDefaults.IconSize)
-                            .clickable { /**MAKE IT CLILCKABLE AND DELETEABLE*/ },
-                        //TODO
-                    )
+
                 }
             }
+        }
     }
 }

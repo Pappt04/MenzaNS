@@ -1,6 +1,7 @@
 package com.pappt04.menzans
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -49,6 +51,7 @@ import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.engmeals
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import com.pappt04.menzans.DummyData.engtosresc
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -68,12 +71,13 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
     var showExitDialog = remember { mutableStateOf(false) }
     val exitPickerState = rememberTimePickerState(0, 0, true)
 
-    var selectedMeal by remember { mutableStateOf(getUniversalLanguageMeal(context, engmeals[0])) }
+    var selectedMeal by remember { mutableStateOf(Uitext.StringResource(R.string.breakfast)) }
 
     var isExpanded by remember { mutableStateOf(false) }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(
+            elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
@@ -96,19 +100,6 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
                 )
                 Row()
                 {
-//                    OutlinedTextField(
-//                        value = dateofMeal.value,
-//                        onValueChange = { print("Clicked") },
-//                        label = { Text(text = "Date of missing meal") },
-//                        enabled = false,
-//                        readOnly = true,
-//                        modifier = Modifier
-//                            .padding(4.dp)
-//                            .clickable { showMealDialog.value = !showMealDialog.value }
-//                            .weight(1f),
-//                    )
-//                    if (showMealDialog.value)
-//                        DateofMealPicker(dateofMeal, showMealDialog, mealDialogState)
 
                     OutlinedTextField(
                         value = timeofEnter.value,
@@ -163,7 +154,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
                     TextField(
                         modifier = Modifier.menuAnchor(),
                         readOnly = true,
-                        value = selectedMeal,
+                        value = selectedMeal.asString(context),
                         onValueChange = {},
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
                     )
@@ -174,9 +165,9 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
                             DropdownMenuItem(
                                 onClick = {
                                     isExpanded = false
-                                    selectedMeal = getUniversalLanguageMeal(context, meal)
+                                    selectedMeal = Uitext.StringResource(engtosresc(meal))
                                 },
-                                text = { Text(getUniversalLanguageMeal(context, meal)) }
+                                text = { Text(Uitext.StringResource(engtosresc(meal)).asString(context)) }
                             )
                         }
                     }
@@ -197,8 +188,10 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
                     Button(onClick = {
                         try {
                             val formatter= DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())
+
                             val eat= EatingStatisticsData(LocalDate.of(LocalDate.now().year,LocalDate.now().month,day),timeofEnter.value,timeofExit.value,selectedMeal)
-                            monthStatisticsSavetoFile(context,LocalDate.now().month.name,eat)
+                            var sdao= StatisticsFileDAO(context,LocalDate.now().month.value.toString())
+                            sdao.savetoFileMonth(eat)
                         } catch (_: Exception) {
                         }
                         onDismissRequest()
@@ -211,14 +204,14 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
     }
 }
 
-fun getUniversalLanguageMeal(context: Context, meal: String): String {
+fun getUniversalLanguageMeal(context: Context, meal: String): Uitext {
     var i = 0
     for (m in engmeals) {
         if (meal == m)
-            return MealSample[i].name.asString(context)
+            return MealSample[i].name
         i++
     }
-    return ""
+    return MealSample[0].name
 }
 
 fun getEngLanguageMeal(context: Context,meal: String): String

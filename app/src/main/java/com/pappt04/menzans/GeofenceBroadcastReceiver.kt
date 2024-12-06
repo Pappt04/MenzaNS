@@ -99,10 +99,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         timeExited: String,
         mealdata: MealData?
     ) {
-        val enteredsplit = timeEntered.split(":").toTypedArray()
-        val exitedsplit = timeExited.split(":").toTypedArray()
-
-
         if(mealdata!= null){
             var mealIndex=0
             for(m in MealSample)
@@ -112,22 +108,19 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 mealIndex++
             }
 
-            val currentTokens =
-                readFromFile(context, DummyData.FileNames[mealIndex])
-            saveToFile(
-                context,
-                DummyData.FileNames[mealIndex],
-                currentTokens.toInt() - 1,
-                true
-            )
+            var dao= FileDAO(context,DummyData.FileNames[mealIndex])
+
+            val currentTokens = dao.readFromFile()
+            dao.saveToFile(currentTokens.toInt()-1,true)
 
             val statisticsMeal = EatingStatisticsData(
                 LocalDate.now(),
                 timeEntered,
                 timeExited,
-                mealdata.name.asString(context)
+                mealdata.name
             )
-            monthStatisticsSavetoFile(context, datetypemonth.format(Date()), statisticsMeal)
+            var fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
+            fdao.savetoFileMonth(statisticsMeal)
         }
     }
 }

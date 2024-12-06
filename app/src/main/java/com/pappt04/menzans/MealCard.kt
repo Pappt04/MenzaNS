@@ -36,8 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.DummyData.datetypeclock
 import com.pappt04.menzans.DummyData.datetypemonth
+import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDate
 import java.util.Date
 
@@ -126,13 +128,10 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                     balance.value += meal.price
                                     currentlyRemaining--
                                     scope.launch {
-                                        saveToFile(
-                                            context,
-                                            DummyData.FileNames[3],
-                                            balance.value,
-                                            false
-                                        )
-                                        saveToFile(context, fileToSave, currentlyRemaining, false)
+                                        var f:FileDAO= FileDAO(context,DummyData.FileNames[3])
+                                        f.saveToFile(balance.value,false)
+                                        f.changeJob(context,fileToSave)
+                                        f.saveToFile(currentlyRemaining, false)
                                     }
                                 }
                             },
@@ -145,24 +144,17 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                     currentlyRemaining--
 
                                     scope.launch {
-                                        saveToFile(
-                                            context,
-                                            fileToSave,
-                                            currentlyRemaining,
-                                            false
-                                        )
+                                        var f= FileDAO(context,fileToSave)
+                                        f.saveToFile(currentlyRemaining,false)
                                     }
                                     val statisticsMeal = EatingStatisticsData(
                                         LocalDate.now(),
                                         datetypeclock.format(Date()),
                                         datetypeclock.format(Date()),
-                                        meal.name.asString(context)
+                                        meal.name
                                     )
-                                    monthStatisticsSavetoFile(
-                                        context,
-                                        datetypemonth.format(Date()),
-                                        statisticsMeal
-                                    )
+                                    var fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
+                                    fdao.savetoFileMonth(statisticsMeal)
                                 }
                             },
                         ) {
@@ -175,13 +167,10 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                                 currentlyRemaining++
 
                                 scope.launch {
-                                    saveToFile(
-                                        context,
-                                        DummyData.FileNames[3],
-                                        balance.value,
-                                        false
-                                    )
-                                    saveToFile(context, fileToSave, currentlyRemaining, false)
+                                    var f= FileDAO(context,DummyData.FileNames[3])
+                                    f.saveToFile(balance.value,false)
+                                    f.changeJob(context,fileToSave)
+                                    f.saveToFile(currentlyRemaining,false)
                                 }
                             }
                         }) {
@@ -195,35 +184,6 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
     }
 }
 
-fun saveToFile(context: Context, file: String, remaining: Int, notify: Boolean) {
-    val s1 = remaining.toString()
-    context.openFileOutput(file, Context.MODE_PRIVATE).use {
-        it.write(s1.toByteArray())
-    }
-    if (file in DummyData.FileNames && remaining <= DummyData.MINIMUM_TOKEN_TRESHOLD && notify) {
-        val notificationManager = context?.let {
-            ContextCompat.getSystemService(
-                it,
-                NotificationManager::class.java
-            )
-        } as NotificationManager
-        notificationManager.sendTopUpReminder(context, file, remaining)
-    }
-}
-
-fun readFromFile(context: Context, file: String): String {
-    var s1 = ""
-    val files: Array<String> = context.fileList()
-    if (file in files) {
-        context.openFileInput(file).bufferedReader().useLines { lines ->
-            lines.fold("") { some, text ->
-                s1 = "$some$text"
-                s1
-            }
-        }
-    }
-    return s1
-}
 
 @Preview(name = "Light Mode")
 @Preview(
