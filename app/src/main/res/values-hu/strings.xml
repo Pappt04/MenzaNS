@@ -34,7 +34,7 @@
     <string name="saturday">SZ</string>
     <string name="sunday">V</string>
     <string name="subtract">Levon</string>
-    <string name="consume">Elfogyasztan</string>
+    <string name="consume">Elfogyaszt</string>
     <string name="add">Hozzáad</string>
     <string name="record_your_consumed_meals_notification">Jegyzed az elfogyasztott zsetonod</string>
     <string name="we_think_you_were_at_menza_from_to_notification">Úgy gondoljuk a menzán voltál %1$s és %2$s között</string>
@@ -42,7 +42,7 @@
     <string name="yes">Igen</string>
     <string name="twice">Igen, kétszer is</string>
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">Automatikusan levontunk egy zsetont a számládról</string>
-    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Úgy gondoljuk a Menzán voltál %1$s percet és ettél</string>
+    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Úgy gondoljuk a Menzán voltál %1$s percet és ettél %2$s</string>
     <string name="request_permission">Kérelmezd %1$s engedélyt</string>
     <string name="menu_description">Menü</string>
     <string name="language">Magyar</string>
@@ -75,4 +75,10 @@
     <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Felelősségkizárás, ez egy diák projektje aki nincs munkaviszonyban az Újvidéki Egyetemmel és diák menzával!</string>
     <string name="you_should_top_up_your_card">Töltened kellene a kártyára</string>
     <string name="reminder_that_you_only_have_tokens_on_your_card">Emlékeztető, hogy csak %1$s %2$s zsetonod van a kártyádon</string>
+    <string name="welcome_message">Az Ön minden az egyben zsetonkezelési megoldása. Kövesse nyomon a token egyenlegét könnyedén, és kapjon értesítést, ha kifogy. Élvezze a nyugalmat, tudva, hogy a zsetonjait mindig elszámolják. Engedje, hogy a MenzaNS leegyszerűsítse diákéletét. Nézze meg a beállításokat a szükséges engedélyekhez!</string>
+    <string name="welcome_title">Üdvözöljük a MenzaNS-ben!</string>
+    <string name="your_monthly_token_usage">Ön havi zseton használata</string>
+    <string name="your_weekly_token_usage">Ön heti zseton használata</string>
+    <string name="predicted_spending">Jósolt költségek</string>
+    <string name="collected_data_from_current_month">Gyűjtött adatok az aktuális hónapból</string>
 </resources>

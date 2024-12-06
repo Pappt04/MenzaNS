@@ -44,8 +44,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.DummyData.CardHolderFileName
 import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.DummyData.datetypemonth
+import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -182,10 +185,14 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                         remainingOnCard += s1.toInt()
                     }
                     val jsonMeals: List<MealData> = MealSample
-                    ScaffoldDesign(jsonMeals, remainingOnCard)
+                    DashboardDesign(jsonMeals, remainingOnCard)
                 }
                 composable(route = Screen.StatisticsScreen.route) {
-                    StatisticsScreen(innerpadding)
+
+                    var dao= FileDAO(context, engmonths[datetypemonth.format(Date()).toInt()-1])
+                    val read =dao.readFromFile()
+                    //if (read != "")
+                        StatisticsScreen(innerpadding, read)
                 }
 
                 composable(route = Screen.EditScreen.route) {

@@ -102,7 +102,8 @@ fun BalanceDialog(
                                 context.getString(R.string.your_balance_is_still_rsd, balance.value.toString()),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            saveToFile(context, filename, balance.value,false)
+                            var f= FileDAO(context,filename)
+                            f.saveToFile(balance.value,false)
                             onDismissRequest()
                         },
                     ) {
@@ -115,7 +116,8 @@ fun BalanceDialog(
                             if (balance.value < 0)
                                 balance.value = 0
 
-                            saveToFile(context, filename, balance.value,false)
+                            var f= FileDAO(context,filename)
+                            f.saveToFile(balance.value,false)
                         } catch (_: Exception) {
                         }
                         Toast.makeText(

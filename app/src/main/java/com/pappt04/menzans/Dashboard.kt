@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldDesign(
+fun DashboardDesign(
     meals: List<MealData>,
     remainingOnCard: Array<Int>,
 ) {

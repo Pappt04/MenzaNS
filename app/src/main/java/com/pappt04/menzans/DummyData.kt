@@ -49,7 +49,7 @@ object DummyData {
     const val DWELL_TRESHOLD = 5
     const val MINIMUM_TOKEN_TRESHOLD = 2
 
-    val datetypeall: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd-HH:mm")
+    val datetypeall: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     val datetypeclock: SimpleDateFormat = SimpleDateFormat("HH:mm")
     val datetypemonth: SimpleDateFormat = SimpleDateFormat("M")
 
@@ -116,6 +116,7 @@ object DummyData {
         Uitext.StringResource(R.string.saturday),
         Uitext.StringResource(R.string.sunday)
     )
+
     /*--------------------------------------------------------------------------------------------*/
     val LANDMARK_DATA = arrayOf(
         LandmarkDataObject(
@@ -228,8 +229,17 @@ object DummyData {
         "december"
     )
     val engmeals = listOf(
-        "breakfast",
-        "lunch",
-        "dinner"
+        "Breakfast",
+        "Lunch",
+        "Dinner"
     )
+
+    fun engtosresc(s: String): Int {
+        when (s) {
+            engmeals[0] -> return R.string.breakfast
+            engmeals[1] -> return R.string.lunch
+            engmeals[2] -> return R.string.dinner
+        }
+        return R.string.info
+    }
 }
