@@ -162,7 +162,7 @@ fun EditScreen(
                     ),
                     border = BorderStroke(1.dp, Color.Black),
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(4.dp,innerpadding.calculateTopPadding()+4.dp,4.dp,4.dp)
                 ) {
                     Column(
                         modifier = Modifier

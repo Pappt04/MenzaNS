@@ -1,209 +1,162 @@
 package com.pappt04.menzans
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.datetypemonth
-import com.pappt04.menzans.DummyData.engmeals
-import com.pappt04.menzans.DummyData.engmonths
-import java.util.Date
+import java.time.LocalDate
+import java.time.Month
+import java.time.YearMonth
+import java.util.*
+import java.text.DateFormatSymbols
+import java.time.DayOfWeek
+import java.time.format.TextStyle
 
 @Composable
-fun MonthView(data: List<EatingStatisticsData>) {
-    val context = LocalContext.current
+fun CalendarMonthView(
+    monthName: String,
+    data: List<EatingStatisticsData>
+) {
+    val context= LocalContext.current
 
-    var currentlySelected = remember { mutableIntStateOf(0) }
+    val currentYear = LocalDate.now().year
+    val month = Month.valueOf(monthName.uppercase(Locale.getDefault()))
+    val yearMonth = YearMonth.of(currentYear, month)
+    val startOfMonth = yearMonth.atDay(1)
+    val totalDays = yearMonth.lengthOfMonth()
+    val startDayOfWeekIndex = (startOfMonth.dayOfWeek.value % 7) // Adjust for Monday start
+    val today = LocalDate.now()
 
-    var datelist = mutableListOf<Int>()
+    // Get localized names for days of the week
+    val daysOfWeek = DayOfWeek.entries.map { dayOfWeek ->
+        dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+    }
 
-    var showDialog = remember { mutableStateOf(false) }
+    // Generate the list of days
+    val days = (1..totalDays).map { day -> yearMonth.atDay(day) }
+
+    // Background color (same as the app's background color)
+    val backgroundColor = MaterialTheme.colorScheme.background
+
+    val selectedDay = remember { mutableIntStateOf(0) }
+
+    val showDialog = remember { mutableStateOf(false) }
 
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
-            .padding(8.dp)
-            .clickable { currentlySelected.intValue = 0 }
-    )
-    {
+            .fillMaxWidth()
+            .padding(16.dp),
+        border = BorderStroke(1.dp, Color.Gray),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
         Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            Text(
-                stringResource(R.string.collected_data_from_current_month),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            for (i in (1..31)) {
-                datelist += i
-                if (i % 7 == 0) {
-                    WeekHelper(days = datelist, data = data, currentlySelected)
-                    datelist = emptyList<Int>().toMutableList()
+        ) {
+            // Day Headers using localized day names
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                daysOfWeek.forEach { day ->
+                    Text(text = day, modifier = Modifier.weight(1f), maxLines = 1)
                 }
             }
-            while (datelist.size != 7)
-                datelist += 0
-            if (datelist.size == 7) {
-                WeekHelper(datelist, data, currentlySelected)
-                datelist = emptyList<Int>().toMutableList()
+
+            // Calendar Days
+            val calendarRows = mutableListOf<List<LocalDate?>>()
+            val tempRow = mutableListOf<LocalDate?>()
+
+            // Fill the initial gap days
+            repeat(startDayOfWeekIndex) {
+                tempRow.add(null)
             }
 
-            Spacer(modifier = Modifier.padding(5.dp))
+            // Fill calendar with actual days
+            for (day in days) {
+                if (tempRow.size == 7) {
+                    calendarRows.add(tempRow.toList())
+                    tempRow.clear()
+                }
+                tempRow.add(day)
+            }
+            // Add the last row
+            if (tempRow.isNotEmpty()) {
+                while (tempRow.size < 7) {
+                    tempRow.add(null) // Fill remaining days with nulls
+                }
+                calendarRows.add(tempRow)
+            }
 
-            AnimatedVisibility(
-                currentlySelected.intValue != 0,
-                modifier = Modifier
-                    .animateContentSize(
-                        animationSpec = spring(
+            // Display rows
+            calendarRows.forEach { week ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    week.forEach { day ->
+                        if (day != null) {
+                            val isToday = day == today
+
+                            Surface(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(4.dp)
+                                    .clickable { selectedDay.intValue = day.dayOfMonth },
+                                color = if (isToday) MaterialTheme.colorScheme.primary else backgroundColor
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.size(40.dp)
+                                ) {
+                                    Text(
+                                        text = day.dayOfMonth.toString(),
+                                        color = if (isToday) Color.White else MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f).padding(4.dp))
+                        }
+                    }
+                }
+            }
+        }
+        AnimatedVisibility(
+            selectedDay.intValue != 0,
+            modifier =
+            Modifier.run {
+                animateContentSize(
+                        animationSpec =
+                        spring(
                             dampingRatio = Spring.DampingRatioLowBouncy,
                             stiffness = Spring.StiffnessLow
                         )
                     )
-            ) {
-                Column {
-                    HorizontalDivider(modifier = Modifier.padding(10.dp))
-                    ShowStatisticsDayData(selected = currentlySelected, data)
-                    Button(
-                        onClick = {
-                            showDialog.value = true
-                        },
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .fillMaxWidth(),
-                    ) {
-                        Text("Add meal")
-                    }
-                    if (showDialog.value)
-                        AddMealDialog(
-                            onDismissRequest = {
-                                showDialog.value = false
-                            },
-                            context,
-                            currentlySelected.intValue
-                        )
-                }
             }
-        }
-    }
-
-}
-
-@Composable
-fun WeekHelper(days: List<Int>, data: List<EatingStatisticsData>, selected: MutableState<Int>) {
-    LazyRow(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        items(days) { day: Int ->
-            var i = 0
-            for (meal in data) {
-                if (day == meal.date.dayOfMonth)
-                    i++
-            }
-            if (day != 0) {
-                DayView(day.toString(), i, selected)
-            } else {
-                EmptyDayView()
-            }
-        }
-    }
-}
-
-@Composable
-fun ShowStatisticsDayData(selected: MutableState<Int>, data: List<EatingStatisticsData>) {
-    val context= LocalContext.current
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        for (meal in data) {
-            if (meal.date.dayOfMonth == selected.value) {
-                var i = 0
-                for (e in engmeals) {
-                    if (meal.tokentype.asString(context) == e)
-                        break
-                    i++
-                }
-                val enteredsplit = meal.timeentered.split(":").toTypedArray()
-                val exitedsplit = meal.timeexited.split(":").toTypedArray()
-
-                val str = "${meal.timeentered}-${meal.timeexited} \t ${
-                    MealSample[i].name.asString(
-                        LocalContext.current
+        ) {
+            Column {
+                HorizontalDivider(modifier = Modifier.padding(10.dp))
+                Button(
+                    onClick = { showDialog.value = true
+                              println(data) },
+                    modifier =
+                    Modifier.padding(10.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(),
+                ) { Text("Add meal") }
+                if (showDialog.value)
+                    AddMealDialog(
+                        onDismissRequest = { showDialog.value = false },
+                        context = context,
+                        selectedDay.intValue
                     )
-                }"
-                Row() {
-                    OutlinedTextField(
-                        value = str,
-                        textStyle = LocalTextStyle.current.copy(
-                            textAlign = TextAlign.Center,
-                            fontSize = 16.sp
-                        ),
-                        suffix = {
-                            Icon(
-                                imageVector = Icons.Filled.Clear,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .weight(1f)
-                                    .clickable {
-                                        var sdao = StatisticsFileDAO(
-                                            context,
-                                            data[0].date.month.value.toString()
-                                        )
-                                        sdao.removeFromStatistics(data, meal)
-                                    }
-                            )
-                        },
-                        onValueChange = {},
-                        readOnly = true,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .weight(4f)
-                    )
-
-                }
             }
         }
     }

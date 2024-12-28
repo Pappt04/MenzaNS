@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,13 +62,17 @@ import com.patrykandpatrick.vico.core.common.Defaults.COLUMN_ROUNDNESS_PERCENT
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import java.time.LocalDate
 import java.time.Month
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Date
+import androidx.compose.runtime.rememberCoroutineScope
 import java.util.Locale
 
 @Composable
 fun StatisticsScreen(innerpadding: PaddingValues) {
     val context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
 
     var selectedMonth by remember { mutableStateOf<String>(engmonths[datetypemonth.format(Date()).toInt()-1]) }
 
@@ -100,13 +106,14 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
                                 } else {
                                     month
                                 }
-                                formattedStatisticsData = converttoStatisticsMeals(
-                                    onMonthSelected(
-                                        context,
-                                        selectedMonth
-                                    ).split(";")
-                                )
-
+                                scope.launch{
+                                    formattedStatisticsData = converttoStatisticsMeals(
+                                        onMonthSelected(
+                                            context,
+                                            selectedMonth
+                                        ).split(";")
+                                    )
+                                }
                             },
                             label = { Text(localizedMonth) },
                             selected = selectedMonth == month
@@ -116,7 +123,8 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
             }
 
             item {
-                MonthView(formattedStatisticsData)
+                //MonthView(formattedStatisticsData)
+                CalendarMonthView(selectedMonth,formattedStatisticsData)
             }
 
             item {
@@ -191,7 +199,7 @@ fun converttoStatisticsMeals(splitData: List<String>): List<EatingStatisticsData
         if (split != "") {
             elements = split.split(",")
             temp = EatingStatisticsData(
-                convertStringtoDate(elements[0]),
+                LocalDate.parse(elements[0],DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())) ,
                 elements[1],
                 elements[2],
                 Uitext.StringResource(engtosresc(elements[3]))

@@ -63,12 +63,12 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
     var mealDialogState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
 
 
-    var timeofEnter = remember { mutableStateOf("") }
-    var showEnterDialog = remember { mutableStateOf(false) }
-    var enterPickerState = rememberTimePickerState(0, 0, true)
+    val timeofEnter = remember { mutableStateOf("") }
+    val showEnterDialog = remember { mutableStateOf(false) }
+    val enterPickerState = rememberTimePickerState(0, 0, true)
 
-    var timeofExit = remember { mutableStateOf("") }
-    var showExitDialog = remember { mutableStateOf(false) }
+    val timeofExit = remember { mutableStateOf("") }
+    val showExitDialog = remember { mutableStateOf(false) }
     val exitPickerState = rememberTimePickerState(0, 0, true)
 
     var selectedMeal by remember { mutableStateOf(Uitext.StringResource(R.string.breakfast)) }

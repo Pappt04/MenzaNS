@@ -63,7 +63,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
 
-    var welcome by remember { mutableStateOf(true) }
+    var welcome by remember { mutableStateOf(false) }
 
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
