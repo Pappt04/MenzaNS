@@ -168,10 +168,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
-                    var dao= FileDAO(context, engmonths[datetypemonth.format(Date()).toInt()-1])
-                    val read =dao.readFromFile()
                     //if (read != "")
-                        StatisticsScreen(innerpadding, read)
+                        StatisticsScreen(innerpadding)
                 }
                 composable(route = Screen.EditScreen.route) {
 

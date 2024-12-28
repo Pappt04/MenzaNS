@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,6 +76,7 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
         }
         item {
             DarkThemeSwitcher(context, darkTheme)
+            Log.i("Dark","$darkTheme")
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         item {

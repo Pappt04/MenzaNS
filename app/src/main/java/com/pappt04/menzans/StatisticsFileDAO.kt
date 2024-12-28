@@ -5,7 +5,8 @@ import java.time.format.DateTimeFormatter
 
 class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, month) {
 
-    private val realmonth = DummyData.engmonths[month.toInt() - 1]
+    private val realmonth= month
+    //private val realmonth = DummyData.engmonths[month.toInt() - 1]
     private val formatter = DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())
 
     fun savetoFileMonth(meal: EatingStatisticsData) {

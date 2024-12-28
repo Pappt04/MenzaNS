@@ -8,9 +8,12 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
@@ -27,8 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     var savedMeals: SnapshotStateList<Int> = SnapshotStateList<Int>()
 
-    var theme: Boolean=false
-
     lateinit var globalContext:Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,13 +40,6 @@ class MainActivity : AppCompatActivity() {
             //TODO REQUEST PERMISSIONS ON APP LAUNCH
             val context = LocalContext.current
             globalContext=context
-            var darkTheme = remember { mutableStateOf(true) }
-
-            var dao: FileDAO= FileDAO(context,DummyData.FileDarkThemeEnabled)
-            val saveddark = dao.getDAOData()
-
-            darkTheme.value = saveddark != "" && saveddark.toInt() == 1
-            theme=darkTheme.value
         }
     }
 
@@ -54,9 +48,19 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+
         setContent {
             val context= LocalContext.current
-            MenzaNSTheme(darkTheme = theme) {
+
+            var theme = remember { mutableStateOf(false) }
+
+            var dao: FileDAO= FileDAO(this,DummyData.FileDarkThemeEnabled)
+            val saveddark = dao.readFromFile()
+
+            theme.value = saveddark != "" && saveddark.toInt() == 1
+
+
+            MenzaNSTheme(darkTheme = theme.value) {
 
                 geofenceManager = GeofenceManager(context)
 
@@ -78,9 +82,7 @@ class MainActivity : AppCompatActivity() {
                 for(m in d )
                     savedMeals.add(m)
 
-                var dt= remember { mutableStateOf(theme) }
-
-                MainNavigationDrawer(loadCardHolder(context), dt,savedMeals)
+                MainNavigationDrawer(loadCardHolder(context), theme,savedMeals)
 
             }
         }
