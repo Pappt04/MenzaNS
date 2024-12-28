@@ -1,9 +1,6 @@
 package com.pappt04.menzans
 
 import android.content.Context
-import android.content.Intent
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,11 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.os.LocaleListCompat
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.engmeals
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import com.pappt04.menzans.DummyData.engtosresc
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -58,10 +52,12 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
+    /*
+    SAVED FOR FUTURE USE
     var dateofMeal = remember { mutableStateOf("") }
     var showMealDialog = remember { mutableStateOf(false) }
     var mealDialogState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-
+    */
 
     val timeofEnter = remember { mutableStateOf("") }
     val showEnterDialog = remember { mutableStateOf(false) }
@@ -187,8 +183,6 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
                     }
                     Button(onClick = {
                         try {
-                            val formatter= DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())
-
                             val eat= EatingStatisticsData(LocalDate.of(LocalDate.now().year,LocalDate.now().month,day),timeofEnter.value,timeofExit.value,selectedMeal)
                             var sdao= StatisticsFileDAO(context,LocalDate.now().month.value.toString())
                             sdao.savetoFileMonth(eat)

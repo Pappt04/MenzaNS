@@ -1,6 +1,5 @@
 package com.pappt04.menzans
 
-import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -45,11 +44,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.datetypemonth
-import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -173,7 +169,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                 }
                 composable(route = Screen.EditScreen.route) {
 
-                    EditScreen(cardData, savedMeals, MealSample, innerpadding)
+                    EditScreen(cardData, savedMeals, innerpadding)
 
                 }
                 composable(route = Screen.InfoScreen.route) {

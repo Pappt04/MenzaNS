@@ -55,7 +55,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -65,7 +64,6 @@ import java.util.Locale
 fun EditScreen(
     savedholderdata: List<String>,
     remainingOnCard: SnapshotStateList<Int>,
-    meals: List<MealData>,
     maindrawerpadding: PaddingValues
 ) {
     var surname by remember { mutableStateOf(savedholderdata[0]) }
@@ -588,7 +586,6 @@ fun saveCardHolderInfotoFiles(
     isicnumber: String,
     context: Context
 ) {
-    var success = false
     val strings =
         listOf(surname, name, faculty, birth, issued, valid, index, cardnumber, isicnumber)
     context.openFileOutput(DummyData.CardHolderFileName, Context.MODE_PRIVATE).use {
@@ -596,13 +593,11 @@ fun saveCardHolderInfotoFiles(
             val temp = "$attribute,\n"
             it.write(temp.toByteArray())
         }
-        success = true
     }
-    if (success)
-        Toast.makeText(
-            context,
-            context.getString(R.string.file_successfully_saved), Toast.LENGTH_SHORT
-        ).show()
+    Toast.makeText(
+        context,
+        context.getString(R.string.file_successfully_saved), Toast.LENGTH_SHORT
+    ).show()
 }
 
 fun saveCardData(
@@ -612,12 +607,12 @@ fun saveCardData(
     dinner: MutableState<Int>,
     balance: MutableState<Int>
 ) {
-    var meals= intArrayOf(breakfast.value,lunch.value,dinner.value,balance.value)
+    val meals= intArrayOf(breakfast.value,lunch.value,dinner.value,balance.value)
 
-    var i:Int= 0
+    var i = 0
     for (x in meals)
     {
-        var dao= FileDAO(context,DummyData.FileNames[i++])
+        val dao= FileDAO(context,DummyData.FileNames[i++])
         dao.saveToFile(x,false)
     }
 }

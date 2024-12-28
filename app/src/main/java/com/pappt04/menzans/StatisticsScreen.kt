@@ -2,10 +2,8 @@ package com.pappt04.menzans
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -76,7 +74,7 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
 
     var selectedMonth by remember { mutableStateOf<String>(engmonths[datetypemonth.format(Date()).toInt()-1]) }
 
-    var monthDAO= FileDAO(context, selectedMonth)
+    val monthDAO= FileDAO(context, selectedMonth)
     val read =monthDAO.readFromFile()
 
     var formattedStatisticsData = converttoStatisticsMeals(read.split(";"))
@@ -181,7 +179,7 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
 
 fun onMonthSelected(context: Context,month: String?): String
 {
-    var newDAO= month?.let { StatisticsFileDAO(context, it) }
+    val newDAO= month?.let { StatisticsFileDAO(context, it) }
     if (newDAO != null) {
         return newDAO.readFromFile()
     }
@@ -190,7 +188,7 @@ fun onMonthSelected(context: Context,month: String?): String
 
 
 fun converttoStatisticsMeals(splitData: List<String>): List<EatingStatisticsData> {
-    var elements = splitData[0].split(",")
+    lateinit var elements: List<String>
 
     var temp: EatingStatisticsData
 
@@ -400,7 +398,7 @@ fun getMealNumber(data: List<EatingStatisticsData>, token: Uitext): Number {
 }
 
 fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number> {
-    var listmeals = mutableListOf<Int>()
+    val listmeals = mutableListOf<Int>()
     repeat(
         7,
         { listmeals += 0 }
@@ -413,7 +411,7 @@ fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number>
 }
 
 fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatisticsData>): List<Number> {
-    var moneyList = mutableListOf<Int>()
+    val moneyList = mutableListOf<Int>()
     var sum = 0
 
     for (i in (1..Month.valueOf(selectedMonth.uppercase()).maxLength()))
