@@ -42,7 +42,7 @@
     <string name="yes">YES</string>
     <string name="twice">YES, TWICE</string>
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">We automatically deducted one meal token for you</string>
-    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s there is a big chance you ate %2$s</string>
+    <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s minutes there is a big chance you ate %2$s</string>
     <string name="request_permission">Request %1$s permission</string>
     <string name="menu_description">Menu</string>
     <string name="language">English</string>

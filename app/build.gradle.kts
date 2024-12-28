@@ -75,6 +75,7 @@ dependencies {
 
     // Houses the core logic for charts and other elements. Included in all other modules.
     implementation("com.patrykandpatrick.vico:core:2.0.0-beta.1")
+    implementation(libs.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

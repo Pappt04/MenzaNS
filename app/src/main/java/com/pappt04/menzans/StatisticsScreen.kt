@@ -2,13 +2,17 @@ package com.pappt04.menzans
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.dataweek
 import com.pappt04.menzans.DummyData.engmeals
+import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.DummyData.engtosresc
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -48,6 +53,9 @@ import com.patrykandpatrick.vico.core.common.Defaults.AXIS_LABEL_ROTATION_DEGREE
 import com.patrykandpatrick.vico.core.common.Defaults.COLUMN_ROUNDNESS_PERCENT
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import java.time.LocalDate
+import java.time.Month
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun StatisticsScreen(innerpadding: PaddingValues, datafromcurrentMonth: String) {
@@ -60,6 +68,26 @@ fun StatisticsScreen(innerpadding: PaddingValues, datafromcurrentMonth: String) 
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        item {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(engmonths) { month ->
+                    val localizedMonth = Month.valueOf(month.uppercase()).getDisplayName(
+                        TextStyle.SHORT,
+                        Locale.getDefault()
+                    )
+                    FilterChip(false, onClick = {
+
+                    },
+                        label = { Text(localizedMonth) },
+                        
+                    )
+                }
+            }
+        }
 
         item {
             MonthView(formattedStatisticsData)

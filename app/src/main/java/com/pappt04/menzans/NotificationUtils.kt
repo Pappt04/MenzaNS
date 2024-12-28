@@ -92,6 +92,7 @@ fun NotificationManager.sendAutomaticDeductNotification(context: Context, minute
             )
         )
         .setSmallIcon(R.mipmap.ic_launcher_monochrome_foreground)
+        .setAutoCancel(true)
 
     notify(100, notification.build())
 }
@@ -117,6 +118,7 @@ fun NotificationManager.sendTopUpReminder(context: Context, file: String, remain
                 s1
             ))
         .setSmallIcon(R.mipmap.ic_launcher_monochrome_foreground)
+        .setAutoCancel(true)
 
     notify(101, notification.build())
 }

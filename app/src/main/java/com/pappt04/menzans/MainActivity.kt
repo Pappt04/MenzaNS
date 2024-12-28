@@ -8,10 +8,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.DummyData.CardHolderFileName
@@ -25,6 +25,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var geofenceManager: GeofenceManager
 
+    var savedMeals: SnapshotStateList<Int> = SnapshotStateList<Int>()
+
+    var theme: Boolean=false
+
+    lateinit var globalContext:Context
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,16 +38,25 @@ class MainActivity : AppCompatActivity() {
         setContent {
             //TODO REQUEST PERMISSIONS ON APP LAUNCH
             val context = LocalContext.current
+            globalContext=context
             var darkTheme = remember { mutableStateOf(true) }
+
             var dao: FileDAO= FileDAO(context,DummyData.FileDarkThemeEnabled)
             val saveddark = dao.getDAOData()
 
-            if (saveddark != "" && saveddark.toInt() == 1) {
-                darkTheme.value = true
-            } else {
-                darkTheme.value = false
-            }
-            MenzaNSTheme(darkTheme = darkTheme.value) {
+            darkTheme.value = saveddark != "" && saveddark.toInt() == 1
+            theme=darkTheme.value
+        }
+    }
+
+
+    //TODO LOAD ALL FILES IN ON CREATE SO THERE IS KNOW MICROLAGS WHEN USER INTERACT WITH THE APP
+    override fun onStart() {
+        super.onStart()
+
+        setContent {
+            val context= LocalContext.current
+            MenzaNSTheme(darkTheme = theme) {
 
                 geofenceManager = GeofenceManager(context)
 
@@ -58,28 +73,74 @@ class MainActivity : AppCompatActivity() {
                 requestAllPermissions()
                 createChannel(context)
 
+                var d= calculateRemainingMeals(context)
+                savedMeals.clear()
+                for(m in d )
+                    savedMeals.add(m)
 
-                val files: Array<String> = context.fileList()
-                var stemp = ""
-                if (CardHolderFileName in files) {
-                    context.openFileInput(CardHolderFileName).bufferedReader()
-                        .useLines { lines ->
-                            lines.fold("") { some, text ->
-                                stemp = "$some$text"
-                                stemp
-                            }
-                        }
-                } else {
-                    stemp = ",,,,,,,,"
-                    context.openFileOutput(CardHolderFileName, Context.MODE_PRIVATE).use {
-                        it.write(stemp.toByteArray())
-                    }
-                }
-                val splitstring: List<String> = stemp.split(",")
-                MainNavigationDrawer(splitstring, darkTheme)
+                var dt= remember { mutableStateOf(theme) }
+
+                MainNavigationDrawer(loadCardHolder(context), dt,savedMeals)
 
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val context=this
+        for((i, m) in savedMeals.withIndex())
+        {
+            val fdao= FileDAO(context,DummyData.FileNames[i])
+            fdao.saveToFile(m)
+        }
+    }
+
+
+
+    fun calculateRemainingMeals(context: Context): Array<Int>
+    {
+        val files: Array<String> = context.fileList()
+        var remainingOnCard: Array<Int> = emptyArray()
+        var s1 = ""
+        for (s in DummyData.FileNames) {
+            if (s in files) {
+                context.openFileInput(s).bufferedReader().useLines { lines ->
+                    lines.fold("") { some, text ->
+                        s1 = "$some$text"
+                        s1
+                    }
+                }
+            } else {
+                s1 = "0"
+                context.openFileOutput(s, Context.MODE_PRIVATE).use {
+                    it.write(s1.toByteArray())
+                }
+            }
+            remainingOnCard += s1.toInt()
+        }
+        return remainingOnCard
+    }
+
+    private fun loadCardHolder(context: Context): List<String>
+    {
+        val files: Array<String> = context.fileList()
+        var stemp = ""
+        if (CardHolderFileName in files) {
+            context.openFileInput(CardHolderFileName).bufferedReader()
+                .useLines { lines ->
+                    lines.fold("") { some, text ->
+                        stemp = "$some$text"
+                        stemp
+                    }
+                }
+        } else {
+            stemp = ",,,,,,,,"
+            context.openFileOutput(CardHolderFileName, Context.MODE_PRIVATE).use {
+                it.write(stemp.toByteArray())
+            }
+        }
+        return stemp.split(",")
     }
 
     private fun requestAllPermissions() {

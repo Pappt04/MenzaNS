@@ -43,6 +43,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -63,7 +64,7 @@ import java.util.Locale
 @Composable
 fun EditScreen(
     savedholderdata: List<String>,
-    remainingOnCard: Array<Int>,
+    remainingOnCard: SnapshotStateList<Int>,
     meals: List<MealData>,
     maindrawerpadding: PaddingValues
 ) {

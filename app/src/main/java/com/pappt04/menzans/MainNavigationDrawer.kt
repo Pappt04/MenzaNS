@@ -2,6 +2,7 @@ package com.pappt04.menzans
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,7 +44,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pappt04.menzans.DummyData.CardHolderFileName
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.datetypemonth
 import com.pappt04.menzans.DummyData.engmonths
@@ -52,7 +53,7 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>) {
+fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>, savedMeals: SnapshotStateList<Int>) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -155,37 +156,15 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
             }
             NavHost(navController = navController, startDestination = "ScaffoldDesign") {
                 composable(route = Screen.MainScreen.route) {
-                    val files: Array<String> = context.fileList()
-                    var remainingOnCard: Array<Int> = emptyArray()
-                    var s1 = ""
-                    for (s in DummyData.FileNames) {
-                        if (s in files) {
-                            context.openFileInput(s).bufferedReader().useLines { lines ->
-                                lines.fold("") { some, text ->
-                                    s1 = "$some$text"
-                                    s1
-                                }
-                            }
-                        } else {
-                            if (welcome) {
-                                WelcomeDialog(
-                                    onDismissRequest = {
-                                        welcome = false
-                                    },
-                                    context
-                                )
-
-                            }
-
-                            s1 = "0"
-                            context.openFileOutput(s, Context.MODE_PRIVATE).use {
-                                it.write(s1.toByteArray())
-                            }
-                        }
-                        remainingOnCard += s1.toInt()
+                    if (welcome) {
+                        WelcomeDialog(
+                            onDismissRequest = {
+                                welcome = false }, context
+                        )
                     }
-                    val jsonMeals: List<MealData> = MealSample
-                    DashboardDesign(jsonMeals, remainingOnCard)
+
+                    DashboardDesign(MealSample,savedMeals)
+                    Log.i("MEALDATA","Just for debugging")
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
@@ -194,48 +173,9 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     //if (read != "")
                         StatisticsScreen(innerpadding, read)
                 }
-
                 composable(route = Screen.EditScreen.route) {
-                    val files: Array<String> = context.fileList()
-                    var stemp = ""
-                    if (CardHolderFileName in files) {
-                        context.openFileInput(CardHolderFileName).bufferedReader()
-                            .useLines { lines ->
-                                lines.fold("") { some, text ->
-                                    stemp = "$some$text"
-                                    stemp
-                                }
-                            }
-                    } else {
-                        stemp = ",,,,,,,,"
-                        context.openFileOutput(CardHolderFileName, Context.MODE_PRIVATE).use {
-                            it.write(stemp.toByteArray())
-                        }
-                    }
-                    val splitstring: List<String> = stemp.split(",")
 
-
-                    var remainingOnCard: Array<Int> = emptyArray()
-                    var s1 = ""
-                    for (s in DummyData.FileNames) {
-                        if (s in files) {
-                            context.openFileInput(s).bufferedReader().useLines { lines ->
-                                lines.fold("") { some, text ->
-                                    s1 = "$some$text"
-                                    s1
-                                }
-                            }
-                        } else {
-                            s1 = "0"
-                            context.openFileOutput(s, Context.MODE_PRIVATE).use {
-                                it.write(s1.toByteArray())
-                            }
-                        }
-                        remainingOnCard += s1.toInt()
-                    }
-                    val jsonMeals: List<MealData> = MealSample
-
-                    EditScreen(splitstring, remainingOnCard, jsonMeals, innerpadding)
+                    EditScreen(cardData, savedMeals, MealSample, innerpadding)
 
                 }
                 composable(route = Screen.InfoScreen.route) {
@@ -248,6 +188,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
         }
     }
 }
+
 
 @Preview(name = "Light Mode")
 @Preview(

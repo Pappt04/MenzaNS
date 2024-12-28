@@ -10,13 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 @Composable
-fun MealContainer(meals: List<MealData>,remainingOnCard: Array<Int>, currentbalance: MutableState<Int>) {
+fun MealContainer(meals: List<MealData>,remainingOnCard: SnapshotStateList<Int>, currentbalance: MutableState<Int>) {
     MenzaNSTheme {
         LazyColumn(
             modifier = Modifier
@@ -25,8 +26,9 @@ fun MealContainer(meals: List<MealData>,remainingOnCard: Array<Int>, currentbala
                 .padding(10.dp)
         ) {
             var i=0
-            items(meals) { meal: MealData -> MealCard(meal,remainingOnCard[i],DummyData.FileNames[i],currentbalance)
-                i++
+            items(meals) { meal: MealData ->
+                val rem = remember { mutableIntStateOf(remainingOnCard[i]) }
+                MealCard(meal,rem,DummyData.FileNames[i++],currentbalance)
             }
         }
     }
@@ -42,6 +44,6 @@ fun MealContainer(meals: List<MealData>,remainingOnCard: Array<Int>, currentbala
 fun PreviewMealContainer() {
     MenzaNSTheme {
         val counter = remember { mutableIntStateOf(500) }
-        MealContainer(DummyData.MealSample,DummyData.RemainingONCardSample,counter)
+        //MealContainer(DummyData.MealSample,DummyData.RemainingONCardSample,counter)
     }
 }

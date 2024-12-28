@@ -1,7 +1,6 @@
 package com.pappt04.menzans
 
-import android.app.NotificationManager
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -33,21 +32,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.pappt04.menzans.DummyData.datetypeclock
 import com.pappt04.menzans.DummyData.datetypemonth
-import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
-import java.io.File
 import java.time.LocalDate
 import java.util.Date
 
 
+@SuppressLint("DefaultLocale")
 @Composable
-fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: MutableState<Int>) {
+fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, balance: MutableState<Int>) {
     var isExpanded by remember { mutableStateOf(true) }
-    var currentlyRemaining by remember { mutableIntStateOf(remaining) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -92,15 +88,13 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                     .fillMaxWidth()
             )
             Text(
-                text = stringResource(R.string.remaining) + ": $currentlyRemaining",
+                text = stringResource(R.string.remaining) + ": ${remaining.value}",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .fillMaxWidth()
             )
-            //TODO DAYS IN WEEK
-            //TODO TWO BUTTONS TO ADD AND SUBTRACT
             AnimatedVisibility(
                 isExpanded,
                 modifier = Modifier
@@ -124,15 +118,15 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                     ) {
                         Button(
                             onClick = {
-                                if (currentlyRemaining > 0) {
+                                if (remaining.value > 0) {
                                     balance.value += meal.price
-                                    currentlyRemaining--
-                                    scope.launch {
-                                        var f:FileDAO= FileDAO(context,DummyData.FileNames[3])
-                                        f.saveToFile(balance.value,false)
-                                        f.changeJob(context,fileToSave)
-                                        f.saveToFile(currentlyRemaining, false)
-                                    }
+                                    remaining.value--
+//                                    scope.launch {
+//                                        var f:FileDAO= FileDAO(context,DummyData.FileNames[3])
+//                                        f.saveToFile(balance.value,false)
+//                                        f.changeJob(context,fileToSave)
+//                                        f.saveToFile(remaining.value, false)
+//                                    }
                                 }
                             },
                         ) {
@@ -140,21 +134,23 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                         }
                         Button(
                             onClick = {
-                                if (currentlyRemaining > 0) {
-                                    currentlyRemaining--
+                                if (remaining.value > 0) {
+                                    remaining.value--
 
-                                    scope.launch {
-                                        var f= FileDAO(context,fileToSave)
-                                        f.saveToFile(currentlyRemaining,false)
-                                    }
+//                                    scope.launch {
+//                                        val f= FileDAO(context,fileToSave)
+//                                        f.saveToFile(remaining.value,false)
+//                                    }
                                     val statisticsMeal = EatingStatisticsData(
                                         LocalDate.now(),
                                         datetypeclock.format(Date()),
                                         datetypeclock.format(Date()),
                                         meal.name
                                     )
-                                    var fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
-                                    fdao.savetoFileMonth(statisticsMeal)
+                                    scope.launch {
+                                        val fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
+                                        fdao.savetoFileMonth(statisticsMeal)
+                                    }
                                 }
                             },
                         ) {
@@ -164,14 +160,14 @@ fun MealCard(meal: MealData, remaining: Int, fileToSave: String, balance: Mutabl
                         Button(onClick = {
                             if (balance.value > meal.price) {
                                 balance.value -= meal.price
-                                currentlyRemaining++
+                                remaining.value++
 
-                                scope.launch {
-                                    var f= FileDAO(context,DummyData.FileNames[3])
-                                    f.saveToFile(balance.value,false)
-                                    f.changeJob(context,fileToSave)
-                                    f.saveToFile(currentlyRemaining,false)
-                                }
+//                                scope.launch {
+//                                    var f= FileDAO(context,DummyData.FileNames[3])
+//                                    f.saveToFile(balance.value,false)
+//                                    f.changeJob(context,fileToSave)
+//                                    f.saveToFile(remaining.value,false)
+//                                }
                             }
                         }) {
                             Text(stringResource(R.string.add))
