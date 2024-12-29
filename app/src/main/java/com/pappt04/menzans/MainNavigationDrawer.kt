@@ -165,7 +165,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                 composable(route = Screen.StatisticsScreen.route) {
 
                     //if (read != "")
-                        StatisticsScreen(innerpadding)
+                    StatisticsScreen(innerpadding)
                 }
                 composable(route = Screen.EditScreen.route) {
 

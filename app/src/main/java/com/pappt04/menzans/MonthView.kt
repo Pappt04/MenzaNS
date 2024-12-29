@@ -1,4 +1,6 @@
 package com.pappt04.menzans
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -6,17 +8,26 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.DummyData.engmeals
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
 import java.util.*
+
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 
@@ -43,10 +54,7 @@ fun CalendarMonthView(
     // Generate the list of days
     val days = (1..totalDays).map { day -> yearMonth.atDay(day) }
 
-    // Background color (same as the app's background color)
-    val backgroundColor = MaterialTheme.colorScheme.background
-
-    val selectedDay = remember { mutableIntStateOf(0) }
+    val selectedDay = remember { mutableStateOf(today) }
 
     val showDialog = remember { mutableStateOf(false) }
 
@@ -107,8 +115,14 @@ fun CalendarMonthView(
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(4.dp)
-                                    .clickable { selectedDay.intValue = day.dayOfMonth },
-                                color = if (isToday) MaterialTheme.colorScheme.primary else backgroundColor
+                                    .clickable {
+                                        selectedDay.value = day
+                                               },
+                                color = when {
+                                    isToday -> MaterialTheme.colorScheme.primary
+                                    day == selectedDay.value -> MaterialTheme.colorScheme.secondary
+                                    else -> MaterialTheme.colorScheme.surface
+                                }
                             ) {
                                 Box(
                                     contentAlignment = Alignment.Center,
@@ -128,7 +142,7 @@ fun CalendarMonthView(
             }
         }
         AnimatedVisibility(
-            selectedDay.intValue != 0,
+            selectedDay.value.dayOfMonth != 0,
             modifier =
             Modifier.run {
                 animateContentSize(
@@ -142,6 +156,9 @@ fun CalendarMonthView(
         ) {
             Column {
                 HorizontalDivider(modifier = Modifier.padding(10.dp))
+
+                ConsumedMealsDay(context,monthName,selectedDay,data)
+
                 Button(
                     onClick = { showDialog.value = true
                               println(data) },
@@ -154,9 +171,76 @@ fun CalendarMonthView(
                     AddMealDialog(
                         onDismissRequest = { showDialog.value = false },
                         context = context,
-                        selectedDay.intValue
+                        selectedDay
                     )
             }
         }
     }
+}
+
+
+@Composable
+fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalDate>, data: List<EatingStatisticsData>)
+{
+
+    val sdao= StatisticsFileDAO(context,monthName)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        for(d in data)
+        {
+            if(d.date == day.value)
+                MealView(context,sdao,d)
+        }
+    }
+
+}
+
+@Composable
+fun MealView(context: Context,sdao: StatisticsFileDAO, mealEvent: EatingStatisticsData)
+{
+    val scope = rememberCoroutineScope()
+
+    var i = 0
+    for (e in engmeals) {
+        if (mealEvent.tokentype.asString(context) == e)
+            break
+        i++
+    }
+
+    val str = "${mealEvent.timeentered}-${mealEvent.timeexited} \t ${
+        MealSample[i].name.asString(
+            LocalContext.current
+        )
+    }"
+
+    OutlinedTextField(
+        value = str,
+        textStyle = LocalTextStyle.current.copy(
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp
+        ),
+        suffix = {
+            Icon(
+                imageVector = Icons.Filled.Clear,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable {
+                        scope.launch {
+                            sdao.removeFromStatistics(mealEvent)
+                            sdao.saveStatisticsToFile()
+                        }
+                    }
+            )
+        },
+        onValueChange = {},
+        readOnly = true,
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+    )
 }

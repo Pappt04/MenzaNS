@@ -1,6 +1,7 @@
 package com.pappt04.menzans
 
 import android.content.Context
+import androidx.collection.LongList
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,7 +52,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
+fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableState<LocalDate>) {
     /*
     SAVED FOR FUTURE USE
     var dateofMeal = remember { mutableStateOf("") }
@@ -183,9 +184,9 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: Int) {
                     }
                     Button(onClick = {
                         try {
-                            val eat= EatingStatisticsData(LocalDate.of(LocalDate.now().year,LocalDate.now().month,day),timeofEnter.value,timeofExit.value,selectedMeal)
-                            var sdao= StatisticsFileDAO(context,LocalDate.now().month.value.toString())
-                            sdao.savetoFileMonth(eat)
+                            val eat= EatingStatisticsData(day.value,timeofEnter.value,timeofExit.value,selectedMeal)
+                            var sdao= StatisticsFileDAO(context,DummyData.engmonths[day.value.monthValue-1])
+                            sdao.appendToStatisticsFile(eat)
                         } catch (_: Exception) {
                         }
                         onDismissRequest()

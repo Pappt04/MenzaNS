@@ -120,7 +120,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 mealdata.name
             )
             var fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
-            fdao.savetoFileMonth(statisticsMeal)
+            fdao.appendToStatisticsFile(statisticsMeal)
         }
     }
 }

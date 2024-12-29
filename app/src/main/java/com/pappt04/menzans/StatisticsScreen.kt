@@ -72,12 +72,12 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
 
     val scope = rememberCoroutineScope()
 
-    var selectedMonth by remember { mutableStateOf<String>(engmonths[datetypemonth.format(Date()).toInt()-1]) }
+    var selectedMonth by remember { mutableStateOf(engmonths[datetypemonth.format(Date()).toInt()-1]) }
 
-    val monthDAO= FileDAO(context, selectedMonth)
-    val read =monthDAO.readFromFile()
+    val monthDAO= StatisticsFileDAO(context, selectedMonth)
+    var formattedStatisticsData = monthDAO.getStatisticsData()
 
-    var formattedStatisticsData = converttoStatisticsMeals(read.split(";"))
+
     key(formattedStatisticsData){
         LazyColumn(
             modifier = Modifier
@@ -105,12 +105,8 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
                                     month
                                 }
                                 scope.launch{
-                                    formattedStatisticsData = converttoStatisticsMeals(
-                                        onMonthSelected(
-                                            context,
-                                            selectedMonth
-                                        ).split(";")
-                                    )
+                                    monthDAO.changeJob(context,selectedMonth)
+                                    formattedStatisticsData= monthDAO.getStatisticsData()
                                 }
                             },
                             label = { Text(localizedMonth) },
@@ -121,7 +117,6 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
             }
 
             item {
-                //MonthView(formattedStatisticsData)
                 CalendarMonthView(selectedMonth,formattedStatisticsData)
             }
 
@@ -177,36 +172,6 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
     }
 }
 
-fun onMonthSelected(context: Context,month: String?): String
-{
-    val newDAO= month?.let { StatisticsFileDAO(context, it) }
-    if (newDAO != null) {
-        return newDAO.readFromFile()
-    }
-    return ""
-}
-
-
-fun converttoStatisticsMeals(splitData: List<String>): List<EatingStatisticsData> {
-    lateinit var elements: List<String>
-
-    var temp: EatingStatisticsData
-
-    val formattedlist = mutableListOf<EatingStatisticsData>()
-    for (split in splitData) {
-        if (split != "") {
-            elements = split.split(",")
-            temp = EatingStatisticsData(
-                LocalDate.parse(elements[0],DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())) ,
-                elements[1],
-                elements[2],
-                Uitext.StringResource(engtosresc(elements[3]))
-            )
-            formattedlist += (temp)
-        }
-    }
-    return formattedlist
-}
 
 @Composable
 fun MealMonthChartColumn(data: List<EatingStatisticsData>) {

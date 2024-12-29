@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 
 open class FileDAO(var context: Context, private var fileName:String) {
 
-    protected var data:String=""
+    protected var data:String= readFromFile()
 
     fun changeJob(con: Context,f:String)
     {
@@ -23,11 +23,6 @@ open class FileDAO(var context: Context, private var fileName:String) {
     fun getDAOFileName(): String
     {
         return fileName
-    }
-
-    fun LoadData()
-    {
-        data=readFromFile()
     }
 
     fun getDAOData(): String

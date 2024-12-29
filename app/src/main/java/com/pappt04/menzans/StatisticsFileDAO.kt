@@ -1,6 +1,8 @@
 package com.pappt04.menzans
 
 import android.content.Context
+import com.pappt04.menzans.DummyData.engtosresc
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, month) {
@@ -9,7 +11,9 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
     //private val realmonth = DummyData.engmonths[month.toInt() - 1]
     private val formatter = DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())
 
-    fun savetoFileMonth(meal: EatingStatisticsData) {
+    private var mealEventData: MutableList<EatingStatisticsData> = converttoStatisticsMeals(readFromFile().split(";"))
+
+    fun appendToStatisticsFile(meal: EatingStatisticsData) {
         var s=""
         s=findMeal(meal.tokentype)
 
@@ -22,13 +26,16 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
         }
     }
 
-    fun rewriteFileMonth(data: List<EatingStatisticsData>) {
+    fun getStatisticsData(): MutableList<EatingStatisticsData>
+    {
+        return mealEventData
+    }
+
+    fun saveStatisticsToFile(data: List<EatingStatisticsData> = mealEventData) {
         var flag=false
         data.forEach { meal ->
 
-            var s=""
-            s=findMeal(meal.tokentype)
-
+            var s=findMeal(meal.tokentype)
 
             if(s=="")
                 throw Exception("Something has gone wrong, meal does not fin in defined meals")
@@ -48,20 +55,41 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
         }
     }
 
-    fun removeFromStatistics(
-        data: List<EatingStatisticsData>,
-        meal: EatingStatisticsData
-    ) {
-        var d: MutableList<EatingStatisticsData> = data.toMutableList()
-        d.remove(meal)
-        rewriteFileMonth(d)
-        //monthStatisticsReWriteFile(context, (d[0].date.month.value).toString(), d)
+    fun converttoStatisticsMeals(splitData: List<String>): MutableList<EatingStatisticsData> {
+        lateinit var elements: List<String>
+
+        var temp: EatingStatisticsData
+
+        val formattedlist = mutableListOf<EatingStatisticsData>()
+        for (split in splitData) {
+            if (split != "") {
+                elements = split.split(",")
+                temp = EatingStatisticsData(
+                    LocalDate.parse(elements[0],DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())) ,
+                    elements[1],
+                    elements[2],
+                    Uitext.StringResource(engtosresc(elements[3]))
+                )
+                formattedlist += (temp)
+            }
+        }
+        return formattedlist
+    }
+
+    fun removeFromStatistics(meal: EatingStatisticsData): Boolean
+    {
+        return mealEventData.remove(meal)
+    }
+
+    fun addToStatistics(meal: EatingStatisticsData): MutableList<EatingStatisticsData>
+    {
+        mealEventData.add(meal)
+        return mealEventData
     }
 
     fun findMeal(type: Uitext): String
     {
         var i = 0
-        var s = ""
         for (m in DummyData.MealSample) {
             if (m.name == type) {
                  return DummyData.engmeals[i]

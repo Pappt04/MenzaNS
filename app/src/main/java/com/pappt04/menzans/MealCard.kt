@@ -141,15 +141,16 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
 //                                        val f= FileDAO(context,fileToSave)
 //                                        f.saveToFile(remaining.value,false)
 //                                    }
-                                    val statisticsMeal = EatingStatisticsData(
-                                        LocalDate.now(),
-                                        datetypeclock.format(Date()),
-                                        datetypeclock.format(Date()),
-                                        meal.name
-                                    )
                                     scope.launch {
+                                        val statisticsMeal = EatingStatisticsData(
+                                            LocalDate.now(),
+                                            datetypeclock.format(Date()),
+                                            datetypeclock.format(Date()),
+                                            meal.name
+                                        )
                                         val fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
-                                        fdao.savetoFileMonth(statisticsMeal)
+                                        fdao.appendToStatisticsFile(statisticsMeal)
+
                                     }
                                 }
                             },
