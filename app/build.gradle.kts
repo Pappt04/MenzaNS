@@ -74,15 +74,15 @@ dependencies {
     // Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
-    implementation (libs.okhttp)
+    implementation (libs.okhttp.v490)
 
     // Coroutines
     implementation (libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android.v141)
+    implementation (libs.kotlinx.coroutines.android.v190)
 
     // Coroutine Lifecycle Scopes
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v220)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx.v220)
+    implementation (libs.androidx.lifecycle.runtime.ktx.v287)
 
 
     // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.

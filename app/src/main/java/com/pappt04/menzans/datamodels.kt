@@ -55,6 +55,14 @@ data class EatingStatisticsData(
     val tokentype: Uitext
 )
 
+data class MealEventString(
+    var userid: String,
+    var date: String,
+    var entered: String,
+    var exited: String,
+    var token: String
+)
+
 data class EnterEventString(
     var userid: String,
     var date: String,

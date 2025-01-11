@@ -244,6 +244,6 @@ object DummyData {
     }
 
     //THIS IS JUST FOR TESTING
-    const val BASE_SERVER_URL="http://192.168.1.90:8080\"
+    const val BASE_SERVER_URL="http://192.168.1.90:8080"
 
 }
