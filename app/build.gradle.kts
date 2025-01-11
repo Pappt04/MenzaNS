@@ -68,13 +68,28 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.play.services.maps)
 
-    implementation("com.patrykandpatrick.vico:compose:2.0.0-beta.1")
+    implementation(libs.compose)
+
+
+    // Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.okhttp)
+
+    // Coroutines
+    implementation (libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android.v141)
+
+    // Coroutine Lifecycle Scopes
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v220)
+
 
     // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-beta.1")
+    implementation(libs.compose.m3)
 
     // Houses the core logic for charts and other elements. Included in all other modules.
-    implementation("com.patrykandpatrick.vico:core:2.0.0-beta.1")
+    implementation(libs.core)
     implementation(libs.material)
 
     testImplementation(libs.junit)

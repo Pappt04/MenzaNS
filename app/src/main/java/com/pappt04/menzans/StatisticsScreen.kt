@@ -376,13 +376,13 @@ fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number>
 }
 
 fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatisticsData>): List<Number> {
-    val moneyList = mutableListOf<Int>()
+
+    val daysInMonth: Int=Month.valueOf(selectedMonth.uppercase()).maxLength()
+
+    val moneyList = MutableList(daysInMonth) { 0 }
     var sum = 0
 
-    for (i in (1..Month.valueOf(selectedMonth.uppercase()).maxLength()))
-        moneyList += sum
-
-    for (i in (1..<Month.valueOf(selectedMonth.uppercase()).maxLength())) {
+    for (i in (1..Month.valueOf(selectedMonth.uppercase()).maxLength())) {
         for (d in data) {
             if (i == d.date.dayOfMonth) {
                 var j = 0

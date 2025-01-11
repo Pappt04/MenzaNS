@@ -54,3 +54,19 @@ data class EatingStatisticsData(
     val timeexited: String,
     val tokentype: Uitext
 )
+
+data class EnterEventString(
+    var userid: String,
+    var date: String,
+    var enteredTime: String,
+)
+
+data class ExitEventString(
+    var userid: String,
+    var exitedTime: String,
+    var token:String
+)
+
+data class UserIDString(
+    var userid: String
+)

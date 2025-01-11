@@ -242,4 +242,8 @@ object DummyData {
         }
         return R.string.info
     }
+
+    //THIS IS JUST FOR TESTING
+    const val BASE_SERVER_URL="http://192.168.1.90:8080\"
+
 }

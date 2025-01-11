@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.DummyData.datetypeclock
 import com.pappt04.menzans.DummyData.datetypemonth
+import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -148,7 +149,7 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
                                             datetypeclock.format(Date()),
                                             meal.name
                                         )
-                                        val fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
+                                        val fdao= StatisticsFileDAO(context, engmonths[LocalDate.now().monthValue-1])
                                         fdao.appendToStatisticsFile(statisticsMeal)
 
                                     }

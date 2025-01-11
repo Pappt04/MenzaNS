@@ -27,6 +27,7 @@ import java.time.YearMonth
 import java.util.*
 
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -58,6 +59,9 @@ fun CalendarMonthView(
 
     val showDialog = remember { mutableStateOf(false) }
 
+    //var isToday by remember { mutableStateOf(false) }
+    //var isSelected by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -66,7 +70,9 @@ fun CalendarMonthView(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Day Headers using localized day names
@@ -109,19 +115,21 @@ fun CalendarMonthView(
                 ) {
                     week.forEach { day ->
                         if (day != null) {
-                            val isToday = day == today
-
+                            var isToday = day==today
+                            var isSelected = day == selectedDay.value
                             Surface(
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(4.dp)
-                                    .clickable {
-                                        selectedDay.value = day
-                                               },
-                                color = when {
-                                    isToday -> MaterialTheme.colorScheme.primary
-                                    day == selectedDay.value -> MaterialTheme.colorScheme.secondary
-                                    else -> MaterialTheme.colorScheme.surface
+                                    .clickable { selectedDay.value = day },
+                                color = if (isToday)
+                                {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                } else if( isSelected) {
+                                    MaterialTheme.colorScheme.secondary
+                                } else
+                                {
+                                    MaterialTheme.colorScheme.surface
                                 }
                             ) {
                                 Box(
@@ -130,12 +138,20 @@ fun CalendarMonthView(
                                 ) {
                                     Text(
                                         text = day.dayOfMonth.toString(),
-                                        color = if (isToday) Color.White else MaterialTheme.colorScheme.onBackground
+                                        color = if (isToday || isSelected)
+                                        {
+                                            Color.White
+                                        } else
+                                        {
+                                           MaterialTheme.colorScheme.onBackground
+                                        }
                                     )
                                 }
                             }
                         } else {
-                            Spacer(modifier = Modifier.weight(1f).padding(4.dp))
+                            Spacer(modifier = Modifier
+                                .weight(1f)
+                                .padding(4.dp))
                         }
                     }
                 }
@@ -163,7 +179,8 @@ fun CalendarMonthView(
                     onClick = { showDialog.value = true
                               println(data) },
                     modifier =
-                    Modifier.padding(10.dp)
+                    Modifier
+                        .padding(10.dp)
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(),
                 ) { Text("Add meal") }
@@ -190,6 +207,14 @@ fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalD
             .fillMaxWidth()
             .padding(10.dp)
     ) {
+        Text(
+            text = "${day.value}",
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
         for(d in data)
         {
             if(d.date == day.value)
