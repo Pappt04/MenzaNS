@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.DummyData.engmeals
 import com.pappt04.menzans.DummyData.engmonths
 import java.time.format.DateTimeFormatter
 
@@ -37,12 +38,16 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             //Maybe it should just check entered time
             val currentTokens = context.let {
                 var fdao= FileDAO(it,DummyData.FileNames[mealIndex])
-                fdao.readFromFile()
+                fdao.getDAOData()
             }
             context.let {
-                if (currentTokens != null && currentTokens.toInt() >= usedMeals) {
+                if (currentTokens.toInt() >= usedMeals) {
                     var fdao= FileDAO(it,DummyData.FileNames[mealIndex])
                     fdao.saveToFile(currentTokens.toInt()-usedMeals,true)
+
+                    if(UserID.userid != "")
+                        sendExitEvent(fdao.getDAOData(),exited, engmeals[mealIndex],context )
+
                 }
             }
 

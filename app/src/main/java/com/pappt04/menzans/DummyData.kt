@@ -14,8 +14,6 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import com.google.android.gms.location.Geofence
 import java.text.SimpleDateFormat
 
@@ -23,7 +21,7 @@ object DummyData {
     var MealSample = listOf(
         MealData(Uitext.StringResource(R.string.breakfast), 56, 7, 0, 9, 30),
         MealData(Uitext.StringResource(R.string.lunch), 120, 11, 0, 15, 0),
-        MealData(Uitext.StringResource(R.string.dinner), 90, 18, 0, 20, 30)
+        MealData(Uitext.StringResource(R.string.dinner), 90, 17, 0, 20, 30)
     )
 
     var RemainingONCardSample = arrayOf(1, 2, 3, 4)
@@ -32,6 +30,7 @@ object DummyData {
     val CardHolderFileName = "cardholderdata"
     val FileGeoFenceEntered = "geofenceentered"
     val FileDarkThemeEnabled = "darkthemeenabled"
+    val FileUserID ="userid"
 
 
     val CHANNEL_IDs = listOf("Record Meals", "Reminders")
@@ -49,7 +48,7 @@ object DummyData {
     const val DWELL_TRESHOLD = 5
     const val MINIMUM_TOKEN_TRESHOLD = 2
 
-    val datetypeall: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+    val datetypedate: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     val datetypeclock: SimpleDateFormat = SimpleDateFormat("HH:mm")
     val datetypemonth: SimpleDateFormat = SimpleDateFormat("M")
 

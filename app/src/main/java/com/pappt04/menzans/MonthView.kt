@@ -1,6 +1,5 @@
 package com.pappt04.menzans
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -27,9 +26,10 @@ import java.time.YearMonth
 import java.util.*
 
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.res.stringResource
+import com.pappt04.menzans.DummyData.datetypedate
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.ZoneId
 import java.time.format.TextStyle
 
 @Composable
@@ -202,24 +202,27 @@ fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalD
 
     val sdao= StatisticsFileDAO(context,monthName)
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        Text(
-            text = "${day.value}",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleLarge,
+    key(data) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-        )
-        for(d in data)
-        {
-            if(d.date == day.value)
-                MealView(context,sdao,d)
+                .padding(10.dp)
+        ) {
+            Text(
+                text = "${day.value}",
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            for(d in data)
+            {
+                if(d.date == day.value)
+                    MealView(context,sdao,d)
+            }
         }
+
     }
 
 }
@@ -231,7 +234,8 @@ fun MealView(context: Context,sdao: StatisticsFileDAO, mealEvent: EatingStatisti
 
     var i = 0
     for (e in engmeals) {
-        if (mealEvent.tokentype.asString(context) == e)
+
+        if(findEngMeal(mealEvent.tokentype)== e)
             break
         i++
     }
@@ -258,6 +262,12 @@ fun MealView(context: Context,sdao: StatisticsFileDAO, mealEvent: EatingStatisti
                         scope.launch {
                             sdao.removeFromStatistics(mealEvent)
                             sdao.saveStatisticsToFile()
+
+                            var es= MealEventString(UserID.userid, datetypedate.format(Date.from(mealEvent.date.atStartOfDay(
+                                ZoneId.systemDefault()).toInstant())),mealEvent.timeentered,mealEvent.timeexited,
+                                findEngMeal(mealEvent.tokentype))
+
+                            sendRemoveMeal(es,context)
                         }
                     }
             )

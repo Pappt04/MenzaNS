@@ -9,7 +9,7 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
 
     private val realmonth= month
     //private val realmonth = DummyData.engmonths[month.toInt() - 1]
-    private val formatter = DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())
+    private val formatter = DateTimeFormatter.ofPattern(DummyData.datetypedate.toPattern())
 
     private var mealEventData: MutableList<EatingStatisticsData> = converttoStatisticsMeals(readFromFile().split(";"))
 
@@ -65,7 +65,7 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
             if (split != "") {
                 elements = split.split(",")
                 temp = EatingStatisticsData(
-                    LocalDate.parse(elements[0],DateTimeFormatter.ofPattern(DummyData.datetypeall.toPattern())) ,
+                    LocalDate.parse(elements[0],DateTimeFormatter.ofPattern(DummyData.datetypedate.toPattern())) ,
                     elements[1],
                     elements[2],
                     Uitext.StringResource(engtosresc(elements[3]))

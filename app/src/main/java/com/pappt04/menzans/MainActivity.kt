@@ -5,21 +5,25 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.DummyData.CardHolderFileName
+import com.pappt04.menzans.DummyData.FileUserID
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.js.ExperimentalJsFileName
 
+lateinit var UserID: UserIDString
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,9 +32,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var geofenceManager: GeofenceManager
 
-    var savedMeals: SnapshotStateList<Int> = SnapshotStateList<Int>()
+    private var savedMeals: SnapshotStateList<Int> = SnapshotStateList<Int>()
 
-    lateinit var globalContext:Context
+    private lateinit var globalContext:Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +52,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-
         setContent {
             val context= LocalContext.current
 
@@ -59,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 
             theme.value = saveddark != "" && saveddark.toInt() == 1
 
+            UserID= getUserID(context)
 
             MenzaNSTheme(darkTheme = theme.value) {
 
@@ -77,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 requestAllPermissions()
                 createChannel(context)
 
-                var d= calculateRemainingMeals(context)
+                val d= calculateRemainingMeals(context)
                 savedMeals.clear()
                 for(m in d )
                     savedMeals.add(m)
@@ -96,11 +100,38 @@ class MainActivity : AppCompatActivity() {
             val fdao= FileDAO(context,DummyData.FileNames[i])
             fdao.saveToFile(m)
         }
+
+        saveUserID(context, UserID.userid)
+
+    }
+
+    private fun saveUserID(context: Context, idstring: String)
+    {
+        if (idstring == "")
+            return
+
+        context.openFileOutput(FileUserID, Context.MODE_PRIVATE).use {
+            it.write(idstring.toByteArray())
+        }
     }
 
 
+    private fun getUserID(context: Context): UserIDString
+    {
+        val fileDAO= FileDAO(context, FileUserID)
 
-    fun calculateRemainingMeals(context: Context): Array<Int>
+        val ids= UserIDString(fileDAO.getDAOData())
+        if (ids.userid == "")
+        {
+            registerNewUser(context) { newId ->
+                ids.userid=newId
+                saveUserID(context,newId)
+            }
+        }
+        return ids
+    }
+
+    private fun calculateRemainingMeals(context: Context): Array<Int>
     {
         val files: Array<String> = context.fileList()
         var remainingOnCard: Array<Int> = emptyArray()
@@ -147,7 +178,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestAllPermissions() {
         requestAllLocationPermission()
-        requestNotifcationLocationPermission()
+        requestNotificationLocationPermission()
     }
 
     private fun requestAllLocationPermission() {
@@ -162,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun requestNotifcationLocationPermission() {
+    private fun requestNotificationLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
                 this,

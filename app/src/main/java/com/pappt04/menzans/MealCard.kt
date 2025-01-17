@@ -32,8 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.datetypeclock
-import com.pappt04.menzans.DummyData.datetypemonth
+import com.pappt04.menzans.DummyData.datetypedate
 import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ import java.util.Date
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, balance: MutableState<Int>) {
+fun MealCard(meal: MealData, remaining: MutableState<Int>, balance: MutableState<Int>) {
     var isExpanded by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -52,7 +53,8 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .padding(8.dp)
-            .clickable { isExpanded = !isExpanded }
+            //POSTPONE ANIMATION FOR SOME TIME
+            //.clickable { isExpanded = !isExpanded }
     ) {
         Column(
             modifier = Modifier
@@ -122,12 +124,6 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
                                 if (remaining.value > 0) {
                                     balance.value += meal.price
                                     remaining.value--
-//                                    scope.launch {
-//                                        var f:FileDAO= FileDAO(context,DummyData.FileNames[3])
-//                                        f.saveToFile(balance.value,false)
-//                                        f.changeJob(context,fileToSave)
-//                                        f.saveToFile(remaining.value, false)
-//                                    }
                                 }
                             },
                         ) {
@@ -138,10 +134,6 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
                                 if (remaining.value > 0) {
                                     remaining.value--
 
-//                                    scope.launch {
-//                                        val f= FileDAO(context,fileToSave)
-//                                        f.saveToFile(remaining.value,false)
-//                                    }
                                     scope.launch {
                                         val statisticsMeal = EatingStatisticsData(
                                             LocalDate.now(),
@@ -152,6 +144,10 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
                                         val fdao= StatisticsFileDAO(context, engmonths[LocalDate.now().monthValue-1])
                                         fdao.appendToStatisticsFile(statisticsMeal)
 
+                                        var es= MealEventString(UserID.userid, datetypedate.format(Date()),statisticsMeal.timeentered,statisticsMeal.timeexited,
+                                            findEngMeal(statisticsMeal.tokentype))
+
+                                        sendAddMeal(es,context)
                                     }
                                 }
                             },
@@ -164,12 +160,6 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
                                 balance.value -= meal.price
                                 remaining.value++
 
-//                                scope.launch {
-//                                    var f= FileDAO(context,DummyData.FileNames[3])
-//                                    f.saveToFile(balance.value,false)
-//                                    f.changeJob(context,fileToSave)
-//                                    f.saveToFile(remaining.value,false)
-//                                }
                             }
                         }) {
                             Text(stringResource(R.string.add))
@@ -193,6 +183,7 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, fileToSave: String, b
 fun PreviewMealCard() {
     MenzaNSTheme {
         val counter = remember { mutableIntStateOf(500) }
-        // MealCard(MealData("Breakfast", 67, 7, 0, 9, 30), 6, DummyData.FileNames[0], counter)
+        val remaining = remember { mutableIntStateOf(5) }
+         MealCard(MealSample[0], remaining, counter)
     }
 }

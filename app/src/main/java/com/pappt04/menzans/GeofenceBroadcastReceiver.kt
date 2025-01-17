@@ -11,6 +11,7 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.DummyData.datetypeclock
+import com.pappt04.menzans.DummyData.datetypedate
 import com.pappt04.menzans.DummyData.datetypemonth
 import java.time.LocalDate
 import java.util.Date
@@ -45,11 +46,13 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                //val sdf = SimpleDateFormat("'Date\n'dd-MM-yyyy '\n\nand\n\nTime\n'HH:mm:ss z")
-                val currentDateAndTime = datetypeclock.format(Date())
+                val currentTime = datetypeclock.format(Date())
                 context.openFileOutput(DummyData.FileGeoFenceEntered, Context.MODE_PRIVATE).use {
-                    it.write(currentDateAndTime.toByteArray())
+                    it.write(currentTime.toByteArray())
                 }
+
+                    sendEnterEvent(UserID.userid, datetypedate.format(Date()),currentTime,context)
+
             }
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
@@ -67,6 +70,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                         }
                 }
 
+
                 val enteredsplit = timeEntered.split(":").toTypedArray()
                 val exitedsplit = timeExited.split(":").toTypedArray()
 
@@ -77,6 +81,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 if (alldiff > DummyData.AUTOMATIC_EATING_SPEED_TRESHOLD && correctmeal!= null) {
                     automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
                     notificationManager.sendAutomaticDeductNotification(context, alldiff,correctmeal)
+
+                    if(UserID.userid != "")
+                        sendExitEvent(UserID.userid,timeExited,findEngMeal(correctmeal.name),context )
+
                 } else if (correctmeal!=null /*&& alldiff >= DummyData.DWELL_TRESHOLD*/) {
                     notificationManager.sendAteMealNotification(
                         context,
@@ -84,6 +92,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                         timeExited,
                         correctmeal
                     )
+
                 }
             }
 
@@ -125,6 +134,20 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     }
 }
 
+/**
+ * Returns the meals english name
+ */
+fun findEngMeal(type: Uitext): String
+{
+    var i = 0
+    for (m in DummyData.MealSample) {
+        if (m.name == type) {
+            return DummyData.engmeals[i]
+        }
+        i++
+    }
+    return ""
+}
 
 fun calculateCorrectMeal(
     timeEntered: String,

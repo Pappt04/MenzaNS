@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -160,7 +161,7 @@ fun EditScreen(
                     ),
                     border = BorderStroke(1.dp, Color.Black),
                     modifier = Modifier
-                        .padding(4.dp,innerpadding.calculateTopPadding()+4.dp,4.dp,4.dp)
+                        .padding(4.dp,innerpadding.calculateTopPadding()+8.dp,4.dp,4.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -618,6 +619,10 @@ fun saveCardData(
 }
 
 
+fun indexToLetter(index: Int): String {
+    return ('A' + index).toString()
+}
+
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -627,6 +632,12 @@ fun saveCardData(
 @Composable
 fun PreviewEditScreen() {
     MenzaNSTheme {
-        //EditScreen(listOf("a", "b", "c", "d"), arrayOf(1, 2, 3, 4), DummyData.MealSample)
+        val savedholderdata = remember {
+            List(9) { "Data ${indexToLetter(it)}" } // Create a list with 9 elements
+        }
+        val remainingOnCard = remember { mutableStateListOf(10, 20, 30, 40, 50, 60, 70, 80,90) }
+        MaterialTheme {
+            EditScreen(savedholderdata, remainingOnCard, PaddingValues(0.dp))
+        }
     }
 }

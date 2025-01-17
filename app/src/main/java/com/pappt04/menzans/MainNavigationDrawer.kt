@@ -3,9 +3,12 @@ package com.pappt04.menzans
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,9 +26,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,9 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,6 +52,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.DummyData.MealSample
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +62,10 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
     val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
+
+    val waittime= remember { mutableIntStateOf(999) }
+
+    val trajectory= remember { mutableIntStateOf(0) }
 
     val navController = rememberNavController()
 
@@ -136,7 +148,29 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                             contentDescription = stringResource(R.string.menu_description)
                         )
                     }
-                })
+                }, actions = {
+
+                   MinuteTicker {
+                       getWaitTime(context) { wt ->
+                           if (wt != null) {
+                               var temp= waittime.intValue
+                               waittime.intValue = wt.waittime.toInt()
+
+                               if( temp == 999) {
+                                 trajectory.intValue=wt.trajectory.toInt()
+                               } else if(temp <waittime.intValue) {
+                                   trajectory.intValue=1
+                               } else if (temp > waittime.intValue) {
+                                   trajectory.intValue=-1
+                               } else {
+                                   trajectory.intValue=0
+                               }
+                           }
+                       }
+                   }
+                    WaitTimeDisplay(waittime.intValue,trajectory.intValue)
+                }
+                )
             },
         ) { innerpadding ->
             navController.addOnDestinationChangedListener { controller, destination, arguments ->
@@ -160,11 +194,9 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     }
 
                     DashboardDesign(MealSample,savedMeals)
-                    Log.i("MEALDATA","Just for debugging")
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
-                    //if (read != "")
                     StatisticsScreen(innerpadding)
                 }
                 composable(route = Screen.EditScreen.route) {
@@ -183,6 +215,51 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
     }
 }
 
+@Composable
+fun MinuteTicker(onTick: () -> Unit) {
+    LaunchedEffect(Unit) {
+        while (true) {
+            onTick()
+            delay(60_000L) // Delay for 60 seconds
+        }
+    }
+}
+
+@Composable
+fun WaitTimeDisplay(waitTime: Int, trajectory: Int) {
+    val textColor = when (trajectory) {
+        -1 -> Color.Green // Green for downward trend
+        1 -> Color.Red     // Red for upward trend
+        else -> MaterialTheme.colorScheme.secondary // Default color
+    }
+
+    val arrowIcon = when (trajectory) {
+        1 -> Icons.Filled.KeyboardArrowUp
+        -1 -> Icons.Filled.KeyboardArrowDown
+        else -> null // No arrow if trajectory is 0 or other values
+    }
+
+    val str = when (waitTime) {
+        999 -> "Wait time: No data"
+        else -> "Wait time: $waitTime min"
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically) { // Use Row for icon and text
+        Text(
+            text = str,
+            color = textColor,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(end = 4.dp) // Add spacing between text and icon
+        )
+        if (arrowIcon != null) {
+            Icon(
+                imageVector = arrowIcon,
+                contentDescription = if (trajectory == -1) "Downward Trend" else "Upward Trend",
+                tint = textColor // Match icon color to text color
+            )
+        }
+    }
+}
 
 @Preview(name = "Light Mode")
 @Preview(
@@ -190,8 +267,11 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
 )
 @Composable
 fun PreviewSideNavigationDrawer() {
+    val cardData = remember { listOf("Item 1", "Item 2", "Item 3") }
+    val darkTheme = remember { mutableStateOf(false) }
+    val savedMeals = remember { mutableStateListOf(1, 2, 3) }
+
     MenzaNSTheme {
-        //Navigation()
-        //SideNavigationDrawer()
+        MainNavigationDrawer(cardData,darkTheme,savedMeals)
     }
 }

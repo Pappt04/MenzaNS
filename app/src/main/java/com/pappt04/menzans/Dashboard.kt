@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -119,7 +120,7 @@ fun DashboardDesign(
                 items(meals) { meal: MealData ->
                     val index = remember { mutableIntStateOf(i) }
 
-                    MealCard(meal,mealValueList[index.intValue],DummyData.FileNames[index.intValue],balance)
+                    MealCard(meal,mealValueList[index.intValue],balance)
 
                     remainingOnCard[index.intValue] = mealValueList[index.intValue].intValue
                     remainingOnCard[3]=balance.intValue
@@ -148,11 +149,15 @@ fun DashboardDesign(
 @Composable
 fun PreviewScaffold() {
     MenzaNSTheme {
-//        ScaffoldDesign(
-//            DummyData.MealSample,
-//            DummyData.RemainingONCardSample,
-//            drawerState = DrawerState(false),
-//            scope =
-//            )
+        val meals = listOf(
+            MealData(Uitext.StringResource(R.string.breakfast), 56, 7, 0, 9, 30),
+            MealData(Uitext.StringResource(R.string.lunch), 120, 11, 0, 15, 0),
+            MealData(Uitext.StringResource(R.string.dinner), 90, 18, 0, 20, 30)
+        )
+
+        val remainingOnCard = remember { mutableStateListOf(50, 25, 75, 100) }
+        MaterialTheme {
+            DashboardDesign(meals, remainingOnCard)
+        }
     }
 }

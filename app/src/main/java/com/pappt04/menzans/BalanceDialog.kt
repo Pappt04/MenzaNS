@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,7 +50,7 @@ fun BalanceDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .fillMaxHeight(0.3f)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
@@ -65,6 +66,7 @@ fun BalanceDialog(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(8.dp)
                 )
                 Row {
                     TextField(

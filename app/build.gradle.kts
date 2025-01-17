@@ -84,6 +84,10 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.ktx.v220)
     implementation (libs.androidx.lifecycle.runtime.ktx.v287)
 
+    implementation(libs.logging.interceptor) // Or latest version
+    implementation(libs.okhttp) // Or latest version
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
     implementation(libs.compose.m3)

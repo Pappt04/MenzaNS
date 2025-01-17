@@ -3,6 +3,12 @@ package com.pappt04.menzans
 import android.content.Context
 import android.location.Location
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import java.time.LocalDate
 
@@ -66,15 +72,22 @@ data class MealEventString(
 data class EnterEventString(
     var userid: String,
     var date: String,
-    var enteredTime: String,
+    var enterTime: String,
 )
 
 data class ExitEventString(
     var userid: String,
-    var exitedTime: String,
+    var exitTime: String,
     var token:String
 )
 
 data class UserIDString(
     var userid: String
+)
+
+data class  WaitTime(
+    var linelength: String,
+    var waittime: String,
+    var validtime: String,
+    var trajectory: String
 )

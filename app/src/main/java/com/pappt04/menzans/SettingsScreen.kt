@@ -76,7 +76,7 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
         }
         item {
             DarkThemeSwitcher(context, darkTheme)
-            Log.i("Dark","$darkTheme")
+            Log.i("DarkTheme status","$darkTheme")
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         item {
@@ -287,6 +287,7 @@ fun DisclaimerCard(context: Context)
 @Composable
 fun PreviewSettingsScreen() {
     MenzaNSTheme {
-        //SettingsScreen(PaddingValues(20.dp),false)
+        val dark = remember { mutableStateOf(false) }
+        SettingsScreen(PaddingValues(20.dp),dark)
     }
 }

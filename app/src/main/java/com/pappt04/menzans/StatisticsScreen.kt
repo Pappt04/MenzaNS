@@ -2,6 +2,7 @@ package com.pappt04.menzans
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import kotlinx.coroutines.launch
@@ -12,8 +13,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,6 +68,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Date
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.tooling.preview.Preview
 import java.util.Locale
 
 @Composable
@@ -314,7 +319,7 @@ fun PredictedSpendingChart(selectedMonth: String,data: List<EatingStatisticsData
         modelProducer.runTransaction {
             lineSeries {
                 series(
-                    (1..LocalDate.now().month.maxLength()).toList(), getSpentMoney(context,selectedMonth,data)
+                    (1..Month.valueOf(selectedMonth.uppercase(Locale.ROOT)).maxLength()).toList(), getSpentMoney(context,selectedMonth,data)
                 )
             }
         }
@@ -387,7 +392,7 @@ fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatis
             if (i == d.date.dayOfMonth) {
                 var j = 0
                 for (e in engmeals) {
-                    if (d.tokentype.asString(context) == e) {
+                    if (findEngMeal(d.tokentype) == e) {
                         sum += MealSample[j].price
                         break
                     }
@@ -399,4 +404,24 @@ fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatis
     }
 
     return moneyList
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Light Mode")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun StatisticsScreenPreview() {
+
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
+        }
+    ) { innerPadding ->
+        StatisticsScreen(innerPadding)
+    }
 }
