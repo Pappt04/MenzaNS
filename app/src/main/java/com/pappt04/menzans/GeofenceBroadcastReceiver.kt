@@ -21,6 +21,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val TAG = "GeofenceBroadcastReceiver"
 
     override fun onReceive(context: Context?, intent: Intent?) {
+
+        Log.i(TAG, "Activated")
         val notificationManager = context?.let {
             ContextCompat.getSystemService(
                 it,
@@ -46,16 +48,19 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
+
+                Log.i(TAG,"GEOFENCE ENTERED")
                 val currentTime = datetypeclock.format(Date())
                 context.openFileOutput(DummyData.FileGeoFenceEntered, Context.MODE_PRIVATE).use {
                     it.write(currentTime.toByteArray())
                 }
 
-                    sendEnterEvent(UserID.userid, datetypedate.format(Date()),currentTime,context)
+                sendEnterEvent(UserID.userid, datetypedate.format(Date()),currentTime,context)
 
             }
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
+                Log.i(TAG,"GEOFENCE EXITED")
                 val timeExited = datetypeclock.format(Date())
                 var timeEntered = ""
                 val files: Array<String> = context.fileList()
@@ -97,7 +102,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             }
 
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
+                val currentTime = datetypeclock.format(Date())
 
+                sendEnterEvent(UserID.userid, datetypedate.format(Date()),currentTime,context)
             }
         }
     }

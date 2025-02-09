@@ -10,14 +10,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,12 +47,13 @@ import com.pappt04.menzans.DummyData.engmonths
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun MealCard(meal: MealData, remaining: MutableState<Int>, balance: MutableState<Int>) {
+fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>) {
     var isExpanded by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -54,7 +63,7 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, balance: MutableState
         modifier = Modifier
             .padding(8.dp)
             //POSTPONE ANIMATION FOR SOME TIME
-            //.clickable { isExpanded = !isExpanded }
+            .clickable { isExpanded = !isExpanded }
     ) {
         Column(
             modifier = Modifier
@@ -90,23 +99,29 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, balance: MutableState
                 modifier = Modifier
                     .fillMaxWidth()
             )
-            Text(
-                text = stringResource(R.string.remaining) + ": ${remaining.value}",
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            Row( modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text(
+                    text = stringResource(R.string.remaining) + ": ",
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                AnimatedNumber(remaining)
+            }
+
             AnimatedVisibility(
                 isExpanded,
-                modifier = Modifier
-                    .animateContentSize(
-                        animationSpec = spring(
+                modifier =
+                Modifier.run {
+                    animateContentSize(
+                        animationSpec =
+                        spring(
                             dampingRatio = Spring.DampingRatioLowBouncy,
                             stiffness = Spring.StiffnessLow
                         )
                     )
+                }
             ) {
                 Column(
                     modifier = Modifier
@@ -127,7 +142,11 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, balance: MutableState
                                 }
                             },
                         ) {
-                            Text(stringResource(R.string.subtract))
+                            //Text(stringResource(R.string.subtract))
+                            Icon(
+                                imageVector = Icons.Outlined.Remove,
+                                contentDescription = null,
+                            )
                         }
                         Button(
                             onClick = {
@@ -162,7 +181,11 @@ fun MealCard(meal: MealData, remaining: MutableState<Int>, balance: MutableState
 
                             }
                         }) {
-                            Text(stringResource(R.string.add))
+                            //Text(stringResource(R.string.add))
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = null,
+                            )
                         }
                     }
                 }

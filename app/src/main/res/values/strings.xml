@@ -84,4 +84,11 @@
     <string name="your_weekly_token_usage">Your weekly token usage</string>
     <string name="predicted_spending">Predicted spending</string>
     <string name="collected_data_from_current_month">Collected data from current month</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="add_meal">Add meal</string>
+    <string name="add_meal_to_statistics">Add meal to statistics</string>
+    <string name="time_of_enter">Time of enter</string>
+    <string name="time_of_exit">Time of exit</string>
+    <string name="wait_time">Wait Time</string>
+    <string name="no_data">No data</string>
 </resources>

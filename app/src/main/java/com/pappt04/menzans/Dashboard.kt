@@ -1,14 +1,20 @@
 package com.pappt04.menzans
 
 import android.content.res.Configuration
-import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -22,8 +28,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -32,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -47,7 +56,10 @@ import kotlinx.coroutines.launch
 fun DashboardDesign(
     meals: List<MealData>,
     remainingOnCard: SnapshotStateList<Int>,
+    lazyListState: LazyListState = rememberLazyListState()
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
+
     val mealValueList = remember {
         MutableList(3) { index ->
             mutableIntStateOf(remainingOnCard[index])
@@ -87,13 +99,24 @@ fun DashboardDesign(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = MaterialTheme.colorScheme.primary,
             ) {
-                Text(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
-                    text = stringResource(R.string.balance)+": ${balance.intValue} rsd",
-                )
+                    horizontalArrangement = Arrangement.Center
+                    ){
+                    Text(
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        text = stringResource(R.string.balance)+": ",
+                    )
+                    AnimatedNumber(balance)
+                    Text(
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        text =" rsd",
+                    )
+                }
+
             }
         },
         floatingActionButton = {
@@ -104,18 +127,19 @@ fun DashboardDesign(
             }
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxWidth(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .fillMaxWidth(1f)
         ) {
             LazyColumn(
+                state = lazyListState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(10.dp)
-            ) {
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
                 var i=0
                 items(meals) { meal: MealData ->
                     val index = remember { mutableIntStateOf(i) }
@@ -140,6 +164,44 @@ fun DashboardDesign(
     }
 }
 
+@Composable
+fun AnimatedNumber(number: MutableIntState) {
+
+    var oldCount by remember {
+        mutableIntStateOf(number.intValue)
+    }
+    SideEffect {
+        oldCount = number.intValue
+    }
+    Row() {
+        val countString = number.intValue.toString()
+        val oldCountString = oldCount.toString()
+
+            for(i in countString.indices) {
+                val oldChar = oldCountString.getOrNull(i)
+                val newChar = countString[i]
+                val char = if(oldChar == newChar) {
+                    oldCountString[i]
+                } else {
+                    countString[i]
+                }
+                AnimatedContent(
+                    targetState = char,
+                    transitionSpec = {
+                        slideInVertically { it } togetherWith slideOutVertically { -it }
+                    }
+                ) { char ->
+                    Text(
+                        text = char.toString(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
+                        softWrap = false
+                    )
+                }
+            }
+    }
+}
+
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -156,6 +218,7 @@ fun PreviewScaffold() {
         )
 
         val remainingOnCard = remember { mutableStateListOf(50, 25, 75, 100) }
+        val wt= remember { mutableIntStateOf(15) }
         MaterialTheme {
             DashboardDesign(meals, remainingOnCard)
         }

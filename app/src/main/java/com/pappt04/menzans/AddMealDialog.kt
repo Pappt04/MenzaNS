@@ -77,8 +77,8 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
             elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-                .padding(16.dp),
+                .height(400.dp)
+                .padding(8.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
@@ -87,7 +87,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Add meal to statistics",
+                    text = stringResource(R.string.add_meal_to_statistics),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge,
@@ -101,7 +101,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     OutlinedTextField(
                         value = timeofEnter.value,
                         onValueChange = { print("Clicked") },
-                        label = { Text(text = "Time of enter") },
+                        label = { Text(text = stringResource(R.string.time_of_enter)) },
                         enabled = false,
                         readOnly = true,
                         modifier = Modifier
@@ -123,7 +123,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     OutlinedTextField(
                         value = timeofExit.value,
                         onValueChange = { print("Clicked") },
-                        label = { Text(text = "Time of exit") },
+                        label = { Text(text = stringResource(R.string.time_of_exit)) },
                         enabled = false,
                         readOnly = true,
                         modifier = Modifier

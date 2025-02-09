@@ -66,6 +66,7 @@ class GeofenceManager(context: Context) {
     }
 
     private fun createGeofencingRequest(): GeofencingRequest {
+        Log.d(TAG,"Trying to register ${geofenceList["House"]}")
         return GeofencingRequest.Builder().apply {
             setInitialTrigger(GEOFENCE_TRANSITION_ENTER)
             addGeofences(geofenceList.values.toList())
@@ -82,6 +83,7 @@ class GeofenceManager(context: Context) {
             .setRequestId(key)
             .setCircularRegion(location.latitude, location.longitude, radiusInMeters)
             .setExpirationDuration(expirationTimeInMillis)
+            .setLoiteringDelay(300000/10)
             .setTransitionTypes(GEOFENCE_TRANSITION_ENTER or GEOFENCE_TRANSITION_EXIT)
             .build()
     }

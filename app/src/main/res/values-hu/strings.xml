@@ -81,4 +81,11 @@
     <string name="your_weekly_token_usage">Ön heti zseton használata</string>
     <string name="predicted_spending">Jósolt költségek</string>
     <string name="collected_data_from_current_month">Gyűjtött adatok az aktuális hónapból</string>
+    <string name="dashboard">Műszerfal</string>
+    <string name="add_meal">Adj étkezést hozzá</string>
+    <string name="wait_time">Várakozási idő</string>
+    <string name="no_data">Nincs adat</string>
+    <string name="add_meal_to_statistics">Adj étkezést a statistikához</string>
+    <string name="time_of_enter">Belépés ideje</string>
+    <string name="time_of_exit">Kilépés ideje</string>
 </resources>

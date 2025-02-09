@@ -81,4 +81,11 @@
     <string name="your_weekly_token_usage">Vaša nedeljna upotreba tokena</string>
     <string name="predicted_spending">Predviđena potrošnja</string>
     <string name="collected_data_from_current_month">Prikupljeni podaci iz tekućeg meseca</string>
+    <string name="dashboard">Kontrolna tabla</string>
+    <string name="add_meal">Dodaj obrok</string>
+    <string name="add_meal_to_statistics">Dodaj obrok u statistiku</string>
+    <string name="time_of_enter">Vreme ulaska</string>
+    <string name="time_of_exit">Vreme izlaska</string>
+    <string name="wait_time">Vreme čekanja</string>
+    <string name="no_data">Nema podataka</string>
 </resources>

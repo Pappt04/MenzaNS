@@ -1,15 +1,24 @@
 package com.pappt04.menzans
 
 import android.content.res.Configuration
+import android.text.style.ClickableSpan
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -27,7 +36,9 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -42,7 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -151,14 +161,15 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                 }, actions = {
 
                    MinuteTicker {
+                       Log.d("WAIT_TIME","Refresh request sent")
                        getWaitTime(context) { wt ->
                            if (wt != null) {
-                               var temp= waittime.intValue
+                               val temp= waittime.intValue
                                waittime.intValue = wt.waittime.toInt()
 
                                if( temp == 999) {
                                  trajectory.intValue=wt.trajectory.toInt()
-                               } else if(temp <waittime.intValue) {
+                               } else if(temp < waittime.intValue) {
                                    trajectory.intValue=1
                                } else if (temp > waittime.intValue) {
                                    trajectory.intValue=-1
@@ -168,7 +179,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                            }
                        }
                    }
-                    WaitTimeDisplay(waittime.intValue,trajectory.intValue)
+                    WaitTimeDisplay(waittime,trajectory.intValue)
                 }
                 )
             },
@@ -226,39 +237,100 @@ fun MinuteTicker(onTick: () -> Unit) {
 }
 
 @Composable
-fun WaitTimeDisplay(waitTime: Int, trajectory: Int) {
-    val textColor = when (trajectory) {
+fun WaitTimeDisplay(waitTime: MutableIntState, trj: Int) {
+    val context= LocalContext.current
+    val scope = rememberCoroutineScope() // For launching coroutines
+
+    val trajectory= remember { mutableIntStateOf(trj) }
+
+    val textColor = when (trj) {
         -1 -> Color.Green // Green for downward trend
         1 -> Color.Red     // Red for upward trend
         else -> MaterialTheme.colorScheme.secondary // Default color
     }
 
-    val arrowIcon = when (trajectory) {
+    val arrowIcon = when (trj) {
         1 -> Icons.Filled.KeyboardArrowUp
         -1 -> Icons.Filled.KeyboardArrowDown
         else -> null // No arrow if trajectory is 0 or other values
     }
 
-    val str = when (waitTime) {
-        999 -> "Wait time: No data"
-        else -> "Wait time: $waitTime min"
+    var oldCount by remember {
+        mutableIntStateOf(waitTime.intValue)
     }
 
-    Row(verticalAlignment = Alignment.CenterVertically) { // Use Row for icon and text
-        Text(
-            text = str,
-            color = textColor,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(end = 4.dp) // Add spacing between text and icon
-        )
-        if (arrowIcon != null) {
-            Icon(
-                imageVector = arrowIcon,
-                contentDescription = if (trajectory == -1) "Downward Trend" else "Upward Trend",
-                tint = textColor // Match icon color to text color
-            )
-        }
+    SideEffect {
+        oldCount = waitTime.intValue
     }
+        Row(modifier = Modifier
+            .fillMaxHeight()
+            .clickable(true) {
+                Toast
+                    .makeText(context, "Refreshing...", Toast.LENGTH_SHORT)
+                    .show()
+                getWaitTime(context) { wt ->
+                    Log.d("WAIT_TIME", "Refresh request sent")
+                    if (wt != null) {
+                        val temp = waitTime.intValue
+                        waitTime.intValue = wt.waittime.toInt()
+
+                        if (temp == 999) {
+                            trajectory.intValue = wt.trajectory.toInt()
+                        } else if (temp < waitTime.intValue) {
+                            trajectory.intValue = 1
+                        } else if (temp > waitTime.intValue) {
+                            trajectory.intValue = -1
+                        } else {
+                            trajectory.intValue = 0
+                        }
+                    }
+                }
+            },
+            verticalAlignment = Alignment.CenterVertically) {
+            val countString = waitTime.intValue.toString()
+            val oldCountString = oldCount.toString()
+
+            Text(stringResource(R.string.wait_time) +":")
+
+            if (waitTime.intValue == 999)
+            {
+                //Text(stringResource(R.string.no_data))
+                Text("? min")
+            } else {
+                for(i in countString.indices) {
+                    val oldChar = oldCountString.getOrNull(i)
+                    val newChar = countString[i]
+                    val char = if(oldChar == newChar) {
+                        oldCountString[i]
+                    } else {
+                        countString[i]
+                    }
+                    AnimatedContent(
+                        targetState = char,
+                        transitionSpec = {
+                            slideInVertically { it } togetherWith slideOutVertically { -it }
+                        }
+                    ) { char ->
+                        Text(
+                            text = char.toString(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            softWrap = false
+                        )
+                    }
+                }
+
+                Text(" min")
+
+                if (arrowIcon != null) {
+                    Icon(
+                        imageVector = arrowIcon,
+                        contentDescription = if (trj == -1) "Downward Trend" else "Upward Trend",
+                        tint = textColor // Match icon color to text color
+                    )
+                }
+            }
+        }
+
 }
 
 @Preview(name = "Light Mode")

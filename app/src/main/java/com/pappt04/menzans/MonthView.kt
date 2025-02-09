@@ -26,6 +26,7 @@ import java.time.YearMonth
 import java.util.*
 
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import com.pappt04.menzans.DummyData.datetypedate
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -35,13 +36,17 @@ import java.time.format.TextStyle
 @Composable
 fun CalendarMonthView(
     monthName: String,
-    data: List<EatingStatisticsData>
+    data: MutableList<EatingStatisticsData>
 ) {
     val context= LocalContext.current
 
     val currentYear = LocalDate.now().year
+    val currentMonth= LocalDate.now().month
     val month = Month.valueOf(monthName.uppercase(Locale.getDefault()))
-    val yearMonth = YearMonth.of(currentYear, month)
+    val yearMonth = when (currentMonth.value >= month.value) {
+        true -> YearMonth.of(currentYear, month)
+        false -> YearMonth.of(currentYear-1,month)
+    }
     val startOfMonth = yearMonth.atDay(1)
     val totalDays = yearMonth.lengthOfMonth()
     val startDayOfWeekIndex = (startOfMonth.dayOfWeek.value % 7) // Adjust for Monday start
@@ -183,7 +188,7 @@ fun CalendarMonthView(
                         .padding(10.dp)
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(),
-                ) { Text("Add meal") }
+                ) { Text(stringResource(R.string.add_meal)) }
                 if (showDialog.value)
                     AddMealDialog(
                         onDismissRequest = { showDialog.value = false },
@@ -197,7 +202,7 @@ fun CalendarMonthView(
 
 
 @Composable
-fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalDate>, data: List<EatingStatisticsData>)
+fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalDate>, data: MutableList<EatingStatisticsData>)
 {
 
     val sdao= StatisticsFileDAO(context,monthName)
@@ -219,7 +224,7 @@ fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalD
             for(d in data)
             {
                 if(d.date == day.value)
-                    MealView(context,sdao,d)
+                    MealView(context,sdao,data,d)
             }
         }
 
@@ -228,7 +233,7 @@ fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalD
 }
 
 @Composable
-fun MealView(context: Context,sdao: StatisticsFileDAO, mealEvent: EatingStatisticsData)
+fun MealView(context: Context, sdao: StatisticsFileDAO, data: MutableList<EatingStatisticsData>, mealEvent: EatingStatisticsData)
 {
     val scope = rememberCoroutineScope()
 
@@ -260,14 +265,24 @@ fun MealView(context: Context,sdao: StatisticsFileDAO, mealEvent: EatingStatisti
                     .fillMaxHeight()
                     .clickable {
                         scope.launch {
+                            data.removeAt(data.indexOf(mealEvent))
                             sdao.removeFromStatistics(mealEvent)
                             sdao.saveStatisticsToFile()
 
-                            var es= MealEventString(UserID.userid, datetypedate.format(Date.from(mealEvent.date.atStartOfDay(
-                                ZoneId.systemDefault()).toInstant())),mealEvent.timeentered,mealEvent.timeexited,
-                                findEngMeal(mealEvent.tokentype))
+                            val es = MealEventString(
+                                UserID.userid, datetypedate.format(
+                                    Date.from(
+                                        mealEvent.date
+                                            .atStartOfDay(
+                                                ZoneId.systemDefault()
+                                            )
+                                            .toInstant()
+                                    )
+                                ), mealEvent.timeentered, mealEvent.timeexited,
+                                findEngMeal(mealEvent.tokentype)
+                            )
 
-                            sendRemoveMeal(es,context)
+                            sendRemoveMeal(es, context)
                         }
                     }
             )

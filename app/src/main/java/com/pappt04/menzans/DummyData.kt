@@ -73,7 +73,7 @@ object DummyData {
     /*--------------------------------------------------------------------------------------------*/
     val navigationItemData = listOf(
         NavigationItem(
-            title = Uitext.StringResource(R.string.card),
+            title = Uitext.StringResource(R.string.dashboard),
             selectedIcon = Icons.Filled.AccountCircle,
             unselectedIcon = Icons.Outlined.AccountCircle,
             route = "ScaffoldDesign"
@@ -126,7 +126,7 @@ object DummyData {
             },
             50f,
             Geofence.NEVER_EXPIRE
-        )
+        ),
     )
 
     /*--------------------------------------------------------------------------------------------*/
@@ -242,7 +242,6 @@ object DummyData {
         return R.string.info
     }
 
-    //THIS IS JUST FOR TESTING
-    const val BASE_SERVER_URL="http://192.168.1.90:8080"
+    const val BASE_SERVER_URL="https://apollo4.duckdns.org/menzaapi/"
 
 }

@@ -84,7 +84,7 @@ fun registerNewUser(context: Context, onIdGenerated: (String) -> Unit) {
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error reaching out to server ${e.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error reaching out to server ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -115,7 +115,7 @@ fun sendEnterEvent(
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -146,7 +146,7 @@ fun sendExitEvent(
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -195,7 +195,7 @@ fun sendAddMeal(
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -218,7 +218,7 @@ fun sendRemoveMeal(
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -240,7 +240,7 @@ fun getWaitTime(context: Context, onGotWaitTime: (WaitTime?) -> Unit) {
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error reaching out to server ${e.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error reaching out to server ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
