@@ -88,4 +88,8 @@
     <string name="time_of_exit">Vreme izlaska</string>
     <string name="wait_time">Vreme čekanja</string>
     <string name="no_data">Nema podataka</string>
+    <string name="explanation_COARSE_LOCATION">Koristimo ovo da kažemo da li ćete verovatno otići u kantinu da jedete</string>
+    <string name="explanation_FINE_LOCATION">Koristimo preciznu lokaciju da kažemo da li ste u kantini ili ne</string>
+    <string name="explanation_BACKGROUND_LOCATION">Ne pratimo lokaciju u pozadini, snimamo sistemske događaje kada ste u kantini, da li ne morate ručno da evidentirate svoje obroke</string>
+    <string name="explanation_NOTIFICATION_ACCESS">Potreban nam je pristup obaveštenjima da bismo mogli da šaljemo korisne podsetnike</string>
 </resources>

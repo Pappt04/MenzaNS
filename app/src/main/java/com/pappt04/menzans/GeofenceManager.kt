@@ -66,7 +66,7 @@ class GeofenceManager(context: Context) {
     }
 
     private fun createGeofencingRequest(): GeofencingRequest {
-        Log.d(TAG,"Trying to register ${geofenceList["House"]}")
+        Log.d(TAG,"Trying to register ${geofenceList["Menza"]}")
         return GeofencingRequest.Builder().apply {
             setInitialTrigger(GEOFENCE_TRANSITION_ENTER)
             addGeofences(geofenceList.values.toList())

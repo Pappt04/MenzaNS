@@ -11,8 +11,8 @@ android {
         applicationId = "com.pappt04.menzans"
         minSdk = 29
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0-alpha"
+        versionCode = 3
+        versionName = "1.0.3-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

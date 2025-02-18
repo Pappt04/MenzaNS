@@ -88,4 +88,8 @@
     <string name="time_of_exit">Time of exit</string>
     <string name="wait_time">Wait Time</string>
     <string name="no_data">No data</string>
+    <string name="explanation_COARSE_LOCATION">We use this to tell if you are likely to go to the canteen to eat</string>
+    <string name="explanation_FINE_LOCATION">We use precise location to tell if you are at the canteen or not</string>
+    <string name="explanation_BACKGROUND_LOCATION">We do not monitor the background location, we capture system events when you are at the canteen so you do not have to manually log your meals</string>
+    <string name="explanation_NOTIFICATION_ACCESS">We need notification access so we can send useful reminders</string>
 </resources>

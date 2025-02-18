@@ -1,6 +1,7 @@
 package com.pappt04.menzans
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Build
 import androidx.compose.material.icons.Icons
@@ -24,8 +25,6 @@ object DummyData {
         MealData(Uitext.StringResource(R.string.dinner), 90, 17, 0, 20, 30)
     )
 
-    var RemainingONCardSample = arrayOf(1, 2, 3, 4)
-
     val FileNames = listOf("breakfast", "lunch", "dinner", "balance")
     val CardHolderFileName = "cardholderdata"
     val FileGeoFenceEntered = "geofenceentered"
@@ -48,8 +47,11 @@ object DummyData {
     const val DWELL_TRESHOLD = 5
     const val MINIMUM_TOKEN_TRESHOLD = 2
 
+    @SuppressLint("SimpleDateFormat")
     val datetypedate: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+    @SuppressLint("SimpleDateFormat")
     val datetypeclock: SimpleDateFormat = SimpleDateFormat("HH:mm")
+    @SuppressLint("SimpleDateFormat")
     val datetypemonth: SimpleDateFormat = SimpleDateFormat("M")
 
 
@@ -69,6 +71,13 @@ object DummyData {
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
         )
     }
+
+    val permissionsExplanations = listOf (
+        Uitext.StringResource(R.string.explanation_COARSE_LOCATION),
+        Uitext.StringResource(R.string.explanation_FINE_LOCATION),
+        Uitext.StringResource(R.string.explanation_BACKGROUND_LOCATION),
+        Uitext.StringResource(R.string.explanation_NOTIFICATION_ACCESS),
+    )
 
     /*--------------------------------------------------------------------------------------------*/
     val navigationItemData = listOf(
@@ -242,6 +251,7 @@ object DummyData {
         return R.string.info
     }
 
-    const val BASE_SERVER_URL="https://apollo4.duckdns.org/menzaapi/"
+    const val BASE_SERVER_URL="https://apollo4.duckdns.org/"
+    const val BASE_API_NAME="/menzaapi"
 
 }

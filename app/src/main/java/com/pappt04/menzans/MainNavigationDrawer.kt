@@ -1,7 +1,6 @@
 package com.pappt04.menzans
 
 import android.content.res.Configuration
-import android.text.style.ClickableSpan
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -67,7 +65,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>, savedMeals: SnapshotStateList<Int>) {
+fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>, savedMeals: SnapshotStateList<Int>, firstWelcome: MutableState<Boolean>) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -80,8 +78,6 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
     val navController = rememberNavController()
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
-
-    var welcome by remember { mutableStateOf(false) }
 
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
@@ -143,6 +139,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ), title = {
+                    if(!firstWelcome.value)
                     Text(
                         screenTitle,
                         fontWeight = FontWeight.Bold,
@@ -179,7 +176,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                            }
                        }
                    }
-                    WaitTimeDisplay(waittime,trajectory.intValue)
+                    if(!firstWelcome.value)
+                        WaitTimeDisplay(waittime,trajectory.intValue)
                 }
                 )
             },
@@ -197,14 +195,12 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
             }
             NavHost(navController = navController, startDestination = "ScaffoldDesign") {
                 composable(route = Screen.MainScreen.route) {
-                    if (welcome) {
-                        WelcomeDialog(
-                            onDismissRequest = {
-                                welcome = false }, context
-                        )
+                    if (firstWelcome.value) {
+                        WelcomeScreen(onCompleted = {firstWelcome.value=false},innerpadding)
+                    } else
+                    {
+                        DashboardDesign(MealSample,savedMeals)
                     }
-
-                    DashboardDesign(MealSample,savedMeals)
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
@@ -239,7 +235,6 @@ fun MinuteTicker(onTick: () -> Unit) {
 @Composable
 fun WaitTimeDisplay(waitTime: MutableIntState, trj: Int) {
     val context= LocalContext.current
-    val scope = rememberCoroutineScope() // For launching coroutines
 
     val trajectory= remember { mutableIntStateOf(trj) }
 
@@ -310,9 +305,9 @@ fun WaitTimeDisplay(waitTime: MutableIntState, trj: Int) {
                         transitionSpec = {
                             slideInVertically { it } togetherWith slideOutVertically { -it }
                         }
-                    ) { char ->
+                    ) { ch ->
                         Text(
-                            text = char.toString(),
+                            text = ch.toString(),
                             style = MaterialTheme.typography.bodyLarge,
                             softWrap = false
                         )
@@ -343,7 +338,9 @@ fun PreviewSideNavigationDrawer() {
     val darkTheme = remember { mutableStateOf(false) }
     val savedMeals = remember { mutableStateListOf(1, 2, 3) }
 
+    val welcome= remember { mutableStateOf(false) }
+
     MenzaNSTheme {
-        MainNavigationDrawer(cardData,darkTheme,savedMeals)
+        MainNavigationDrawer(cardData,darkTheme,savedMeals,welcome)
     }
 }

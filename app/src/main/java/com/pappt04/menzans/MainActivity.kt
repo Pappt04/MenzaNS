@@ -2,10 +2,8 @@ package com.pappt04.menzans
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,11 +15,6 @@ import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.DummyData.CardHolderFileName
 import com.pappt04.menzans.DummyData.FileUserID
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.js.ExperimentalJsFileName
 
 lateinit var UserID: UserIDString
 
@@ -30,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private val NOTIFICATION_PERMISSION_CODE = 1004
     private val ALL_LOCATION_PERMISSIONS = 1010
 
-    private lateinit var geofenceManager: GeofenceManager
 
     private var savedMeals: SnapshotStateList<Int> = SnapshotStateList<Int>()
 
@@ -55,9 +47,9 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val context= LocalContext.current
 
-            var theme = remember { mutableStateOf(false) }
+            val theme = remember { mutableStateOf(false) }
 
-            var dao: FileDAO= FileDAO(this,DummyData.FileDarkThemeEnabled)
+            val dao = FileDAO(this,DummyData.FileDarkThemeEnabled)
             val saveddark = dao.readFromFile()
 
             theme.value = saveddark != "" && saveddark.toInt() == 1
@@ -65,18 +57,6 @@ class MainActivity : AppCompatActivity() {
             UserID= getUserID(context)
 
             MenzaNSTheme(darkTheme = theme.value) {
-
-                geofenceManager = GeofenceManager(context)
-
-                for (geofence in DummyData.LANDMARK_DATA) {
-                    geofenceManager.addGeofence(
-                        geofence.key,
-                        geofence.location,
-                        geofence.radiusInMeters,
-                        geofence.expirationTimeInMillis
-                    )
-                }
-                geofenceManager.registerGeofence()
 
                 requestAllPermissions()
                 createChannel(context)
@@ -86,8 +66,13 @@ class MainActivity : AppCompatActivity() {
                 for(m in d )
                     savedMeals.add(m)
 
-                MainNavigationDrawer(loadCardHolder(context), theme,savedMeals)
+                val firstwelcome = remember { mutableStateOf(true) }
 
+                val files: Array<String> = context.fileList()
+                if (CardHolderFileName in files) {
+                    firstwelcome.value=false
+                }
+                MainNavigationDrawer(loadCardHolder(context), theme,savedMeals,firstwelcome)
             }
         }
     }
@@ -203,34 +188,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            ALL_LOCATION_PERMISSIONS -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Toast.makeText(this, "Haha W", Toast.LENGTH_SHORT).show()
-                    for (geofence in DummyData.LANDMARK_DATA) {
-                        geofenceManager.addGeofence(
-                            geofence.key,
-                            geofence.location,
-                            geofence.radiusInMeters,
-                            geofence.expirationTimeInMillis
-                        )
-                    }
-                    geofenceManager.registerGeofence()
-                } else {
-                    //TODO NOTHING?
-                }
-            }
-
-            NOTIFICATION_PERMISSION_CODE -> {
-                //TODO
-            }
-
-        }
-    }
 }

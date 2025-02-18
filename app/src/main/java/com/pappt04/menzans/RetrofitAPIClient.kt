@@ -2,8 +2,8 @@ package com.pappt04.menzans
 
 import android.content.Context
 import android.widget.Toast
+import com.pappt04.menzans.DummyData.BASE_API_NAME
 import com.pappt04.menzans.DummyData.BASE_SERVER_URL
-import com.pappt04.menzans.DummyData.FileUserID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,32 +15,46 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
+
 interface MenzaAPIService {
 
-    @GET("/registerUser")
+    @Headers("Accept: application/json")
+    @GET("$BASE_API_NAME/registerUser")
     suspend fun registerUser(): Response<UserIDString>
 
-    @POST("/deleteUser")
+
+    @Headers("Accept: application/json")
+    @POST("$BASE_API_NAME/deleteUser")
     suspend fun deleteUser(@Body id: UserIDString): Response<Void>
 
-    @POST("/enterMenza")
+
+    @Headers("Accept: application/json")
+    @POST("$BASE_API_NAME/enterMenza")
     suspend fun enterMenza(@Body ee: EnterEventString): Response<Void>
 
-    @POST("/exitMenza")
+
+    @Headers("Accept: application/json")
+    @POST("$BASE_API_NAME/exitMenza")
     suspend fun exitMenza(@Body ee: ExitEventString): Response<Void>
 
-    @POST("/addmeal")
+
+    @Headers("Content-Type: application/json")
+    @POST("$BASE_API_NAME/addmeal")
     suspend fun addMeal(@Body meal: MealEventString): Response<Void>
 
-    @PUT("/removemeal")
+
+    @Headers("Accept: application/json")
+    @PUT("$BASE_API_NAME/removemeal")
     suspend fun removeMeal(@Body meal: MealEventString): Response<Void>
 
-    @GET("/waittime")
-    suspend fun  getWaitTime(): Response<WaitTime>
 
+    @Headers("Accept: application/json")
+    @GET("$BASE_API_NAME/waittime")
+    suspend fun  getWaitTime(): Response<WaitTime>
 }
 
 object RetrofitAPIClient {
@@ -48,7 +62,7 @@ object RetrofitAPIClient {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         //level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         level= HttpLoggingInterceptor.Level.BODY
-        level= HttpLoggingInterceptor.Level.NONE
+        //level= HttpLoggingInterceptor.Level.NONE
     }
 
     private val okHttpClient = OkHttpClient.Builder()
@@ -77,9 +91,9 @@ fun registerNewUser(context: Context, onIdGenerated: (String) -> Unit) {
                     val newId = response.body()?.userid ?: ""
 
                     onIdGenerated(newId)
-                    Toast.makeText(context, "Registered ID: $newId", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Registered ID: $newId", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(context, "Failed to register ID: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Failed to register ID: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
@@ -106,6 +120,8 @@ fun sendEnterEvent(
     CoroutineScope(Dispatchers.IO).launch {
         try {
             val response = RetrofitAPIClient.apiService.enterMenza(eventData)
+
+
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     //Toast.makeText(context, "Event submitted successfully", Toast.LENGTH_SHORT).show()
@@ -195,7 +211,7 @@ fun sendAddMeal(
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
-                //Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }

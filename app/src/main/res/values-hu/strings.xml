@@ -88,4 +88,8 @@
     <string name="add_meal_to_statistics">Adj étkezést a statistikához</string>
     <string name="time_of_enter">Belépés ideje</string>
     <string name="time_of_exit">Kilépés ideje</string>
+    <string name="explanation_BACKGROUND_LOCATION">Nem figyeljük a háttérben a helyet, rögzítjük a rendszereseményeket, amikor a kantinban tartózkodik, így nem kell manuálisan naplózni az étkezéseket</string>
+    <string name="explanation_NOTIFICATION_ACCESS">Értesítési hozzáférésre van szükségünk, hogy hasznos emlékeztetőket küldhessünk</string>
+    <string name="explanation_COARSE_LOCATION">Ezt arra használjuk, hogy megmondjuk, valószínűleg elmész-e a kantinba enni</string>
+    <string name="explanation_FINE_LOCATION">Pontos helymeghatározást használunk annak megállapítására, hogy a kantinban tartózkodik-e vagy sem</string>
 </resources>
