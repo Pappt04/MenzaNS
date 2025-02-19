@@ -12,8 +12,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
-import com.pappt04.menzans.DummyData.CardHolderFileName
-import com.pappt04.menzans.DummyData.FileUserID
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.CardHolderFileName
+import com.pappt04.menzans.data.DummyData.FileUserID
+import com.pappt04.menzans.data.FileDAO
+import com.pappt04.menzans.data.UserIDString
+import com.pappt04.menzans.data.registerNewUser
+import com.pappt04.menzans.navigationdrawer.MainNavigationDrawer
+import com.pappt04.menzans.notifications.createChannel
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 lateinit var UserID: UserIDString
@@ -49,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
             val theme = remember { mutableStateOf(false) }
 
-            val dao = FileDAO(this,DummyData.FileDarkThemeEnabled)
+            val dao = FileDAO(this, DummyData.FileDarkThemeEnabled)
             val saveddark = dao.readFromFile()
 
             theme.value = saveddark != "" && saveddark.toInt() == 1
@@ -82,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         val context=this
         for((i, m) in savedMeals.withIndex())
         {
-            val fdao= FileDAO(context,DummyData.FileNames[i])
+            val fdao= FileDAO(context, DummyData.FileNames[i])
             fdao.saveToFile(m)
         }
 

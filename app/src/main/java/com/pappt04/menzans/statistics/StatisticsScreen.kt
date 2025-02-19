@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.statistics
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -33,12 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.dataweek
-import com.pappt04.menzans.DummyData.datetypemonth
-import com.pappt04.menzans.DummyData.engmeals
-import com.pappt04.menzans.DummyData.engmonths
-import com.pappt04.menzans.DummyData.engtosresc
+import com.pappt04.menzans.data.DummyData.MealSample
+import com.pappt04.menzans.data.DummyData.dataweek
+import com.pappt04.menzans.data.DummyData.datetypemonth
+import com.pappt04.menzans.data.DummyData.engmeals
+import com.pappt04.menzans.data.DummyData.engmonths
+import com.pappt04.menzans.data.DummyData.engtosresc
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -64,11 +64,13 @@ import com.patrykandpatrick.vico.core.common.Defaults.COLUMN_ROUNDNESS_PERCENT
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import java.time.LocalDate
 import java.time.Month
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Date
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
+import com.pappt04.menzans.data.EatingStatisticsData
+import com.pappt04.menzans.R
+import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.geolocation.findEngMeal
 import java.util.Locale
 
 @Composable
@@ -188,7 +190,7 @@ fun MealMonthChartColumn(data: List<EatingStatisticsData>) {
 
     }
 
-    val displayBreakfast = getMealNumber(data,Uitext.StringResource(engtosresc(engmeals[0])))
+    val displayBreakfast = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[0])))
     val displayLunch = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[1])))
     val displayDinner = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[2])))
 

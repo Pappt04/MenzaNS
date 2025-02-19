@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -6,6 +6,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.MainActivity
+import com.pappt04.menzans.data.MealData
+import com.pappt04.menzans.R
 
 fun createChannel(context: Context) {
     for (channel in DummyData.CHANNEL_IDs) {

@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.navigationdrawer
 
 import android.content.res.Configuration
 import android.util.Log
@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,8 +59,18 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.EditScreen
+import com.pappt04.menzans.InfoScreen
+import com.pappt04.menzans.R
+import com.pappt04.menzans.Screen
+import com.pappt04.menzans.SettingsScreen
+import com.pappt04.menzans.data.DummyData.MealSample
+import com.pappt04.menzans.dashboard.DashboardDesign
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.getWaitTime
+import com.pappt04.menzans.statistics.StatisticsScreen
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import com.pappt04.menzans.welcome.WelcomeScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -71,9 +82,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
 
     val context = LocalContext.current
 
-    val waittime= remember { mutableIntStateOf(999) }
-
-    val trajectory= remember { mutableIntStateOf(0) }
+    val waittime = remember { mutableIntStateOf(999) }
 
     val navController = rememberNavController()
 
@@ -143,6 +152,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     Text(
                         screenTitle,
                         fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }, navigationIcon = {
                     IconButton(onClick = {
@@ -155,29 +166,6 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                             contentDescription = stringResource(R.string.menu_description)
                         )
                     }
-                }, actions = {
-
-                   MinuteTicker {
-                       Log.d("WAIT_TIME","Refresh request sent")
-                       getWaitTime(context) { wt ->
-                           if (wt != null) {
-                               val temp= waittime.intValue
-                               waittime.intValue = wt.waittime.toInt()
-
-                               if( temp == 999) {
-                                 trajectory.intValue=wt.trajectory.toInt()
-                               } else if(temp < waittime.intValue) {
-                                   trajectory.intValue=1
-                               } else if (temp > waittime.intValue) {
-                                   trajectory.intValue=-1
-                               } else {
-                                   trajectory.intValue=0
-                               }
-                           }
-                       }
-                   }
-                    if(!firstWelcome.value)
-                        WaitTimeDisplay(waittime,trajectory.intValue)
                 }
                 )
             },
@@ -199,7 +187,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                         WelcomeScreen(onCompleted = {firstWelcome.value=false},innerpadding)
                     } else
                     {
-                        DashboardDesign(MealSample,savedMeals)
+                        DashboardDesign(MealSample,savedMeals,waittime, innerpadding)
                     }
                 }
                 composable(route = Screen.StatisticsScreen.route) {
@@ -222,111 +210,6 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
     }
 }
 
-@Composable
-fun MinuteTicker(onTick: () -> Unit) {
-    LaunchedEffect(Unit) {
-        while (true) {
-            onTick()
-            delay(60_000L) // Delay for 60 seconds
-        }
-    }
-}
-
-@Composable
-fun WaitTimeDisplay(waitTime: MutableIntState, trj: Int) {
-    val context= LocalContext.current
-
-    val trajectory= remember { mutableIntStateOf(trj) }
-
-    val textColor = when (trj) {
-        -1 -> Color.Green // Green for downward trend
-        1 -> Color.Red     // Red for upward trend
-        else -> MaterialTheme.colorScheme.secondary // Default color
-    }
-
-    val arrowIcon = when (trj) {
-        1 -> Icons.Filled.KeyboardArrowUp
-        -1 -> Icons.Filled.KeyboardArrowDown
-        else -> null // No arrow if trajectory is 0 or other values
-    }
-
-    var oldCount by remember {
-        mutableIntStateOf(waitTime.intValue)
-    }
-
-    SideEffect {
-        oldCount = waitTime.intValue
-    }
-        Row(modifier = Modifier
-            .fillMaxHeight()
-            .clickable(true) {
-                Toast
-                    .makeText(context, "Refreshing...", Toast.LENGTH_SHORT)
-                    .show()
-                getWaitTime(context) { wt ->
-                    Log.d("WAIT_TIME", "Refresh request sent")
-                    if (wt != null) {
-                        val temp = waitTime.intValue
-                        waitTime.intValue = wt.waittime.toInt()
-
-                        if (temp == 999) {
-                            trajectory.intValue = wt.trajectory.toInt()
-                        } else if (temp < waitTime.intValue) {
-                            trajectory.intValue = 1
-                        } else if (temp > waitTime.intValue) {
-                            trajectory.intValue = -1
-                        } else {
-                            trajectory.intValue = 0
-                        }
-                    }
-                }
-            },
-            verticalAlignment = Alignment.CenterVertically) {
-            val countString = waitTime.intValue.toString()
-            val oldCountString = oldCount.toString()
-
-            Text(stringResource(R.string.wait_time) +":")
-
-            if (waitTime.intValue == 999)
-            {
-                //Text(stringResource(R.string.no_data))
-                Text("? min")
-            } else {
-                for(i in countString.indices) {
-                    val oldChar = oldCountString.getOrNull(i)
-                    val newChar = countString[i]
-                    val char = if(oldChar == newChar) {
-                        oldCountString[i]
-                    } else {
-                        countString[i]
-                    }
-                    AnimatedContent(
-                        targetState = char,
-                        transitionSpec = {
-                            slideInVertically { it } togetherWith slideOutVertically { -it }
-                        }
-                    ) { ch ->
-                        Text(
-                            text = ch.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
-                            softWrap = false
-                        )
-                    }
-                }
-
-                Text(" min")
-
-                if (arrowIcon != null) {
-                    Icon(
-                        imageVector = arrowIcon,
-                        contentDescription = if (trj == -1) "Downward Trend" else "Upward Trend",
-                        tint = textColor // Match icon color to text color
-                    )
-                }
-            }
-        }
-
-}
 
 @Preview(name = "Light Mode")
 @Preview(

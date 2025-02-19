@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.geolocation
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -12,7 +12,7 @@ import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER
 import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-import com.pappt04.menzans.DummyData.CUSTOM_REQUEST_CODE_GEOFENCE
+import com.pappt04.menzans.data.DummyData.CUSTOM_REQUEST_CODE_GEOFENCE
 import kotlinx.coroutines.tasks.await
 
 class GeofenceManager(context: Context) {

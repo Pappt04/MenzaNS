@@ -1,9 +1,9 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.data
 
 import android.content.Context
 import android.widget.Toast
-import com.pappt04.menzans.DummyData.BASE_API_NAME
-import com.pappt04.menzans.DummyData.BASE_SERVER_URL
+import com.pappt04.menzans.data.DummyData.BASE_API_NAME
+import com.pappt04.menzans.data.DummyData.BASE_SERVER_URL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

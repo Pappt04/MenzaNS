@@ -1,6 +1,5 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.dashboard
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.pappt04.menzans.data.FileDAO
+import com.pappt04.menzans.R
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 

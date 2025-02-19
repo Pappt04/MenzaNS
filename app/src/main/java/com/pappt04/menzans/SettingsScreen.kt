@@ -1,21 +1,14 @@
 package com.pappt04.menzans
 
-import android.Manifest
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -52,11 +44,11 @@ import androidx.core.content.ContextCompat
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
-import com.pappt04.menzans.DummyData.permissionsNeeded
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.permissionsNeeded
+import com.pappt04.menzans.data.FileDAO
 
 
 @Composable
@@ -179,7 +171,7 @@ fun DarkThemeSwitcher(context: Context, darkTheme: MutableState<Boolean>) {
                     else {
                         dark = 0
                     }
-                    var fdao= FileDAO(context,DummyData.FileDarkThemeEnabled)
+                    var fdao= FileDAO(context, DummyData.FileDarkThemeEnabled)
                     fdao.saveToFile(dark,false)
                 },
                 modifier = Modifier

@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.statistics
 
 import android.annotation.SuppressLint
 import android.text.Layout
