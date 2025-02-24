@@ -1,4 +1,5 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.dashboard
+
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -40,10 +41,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.datetypeclock
-import com.pappt04.menzans.DummyData.datetypedate
-import com.pappt04.menzans.DummyData.engmonths
+import com.pappt04.menzans.R
+import com.pappt04.menzans.UserID
+import com.pappt04.menzans.animations.AnimatedNumber
+import com.pappt04.menzans.animations.AnimatedWord
+import com.pappt04.menzans.data.DummyData.datetypeclock
+import com.pappt04.menzans.data.DummyData.datetypedate
+import com.pappt04.menzans.data.DummyData.engmonths
+import com.pappt04.menzans.data.EatingStatisticsData
+import com.pappt04.menzans.data.MealData
+import com.pappt04.menzans.data.MealEventString
+import com.pappt04.menzans.data.sendAddMeal
+import com.pappt04.menzans.geolocation.findEngMeal
+import com.pappt04.menzans.statistics.StatisticsFileDAO
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -53,17 +63,14 @@ import java.util.Date
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>) {
-    var isExpanded by remember { mutableStateOf(true) }
+fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .padding(8.dp)
-            //POSTPONE ANIMATION FOR SOME TIME
-            .clickable { isExpanded = !isExpanded }
+            .clickable {onClicked()}
     ) {
         Column(
             modifier = Modifier
@@ -107,22 +114,10 @@ fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<I
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                AnimatedNumber(remaining)
+                AnimatedNumber(remaining, style=MaterialTheme.typography.titleLarge)
             }
 
-            AnimatedVisibility(
-                isExpanded,
-                modifier =
-                Modifier.run {
-                    animateContentSize(
-                        animationSpec =
-                        spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    )
-                }
-            ) {
+
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
@@ -142,7 +137,6 @@ fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<I
                                 }
                             },
                         ) {
-                            //Text(stringResource(R.string.subtract))
                             Icon(
                                 imageVector = Icons.Outlined.Remove,
                                 contentDescription = null,
@@ -163,10 +157,7 @@ fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<I
                                         val fdao= StatisticsFileDAO(context, engmonths[LocalDate.now().monthValue-1])
                                         fdao.appendToStatisticsFile(statisticsMeal)
 
-                                        var es= MealEventString(UserID.userid, datetypedate.format(Date()),statisticsMeal.timeentered,statisticsMeal.timeexited,
-                                            findEngMeal(statisticsMeal.tokentype))
 
-                                        sendAddMeal(es,context)
                                     }
                                 }
                             },
@@ -178,10 +169,11 @@ fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<I
                             if (balance.value > meal.price) {
                                 balance.value -= meal.price
                                 remaining.value++
-
+                            } else
+                            {
+                                noFunds()
                             }
                         }) {
-                            //Text(stringResource(R.string.add))
                             Icon(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = null,
@@ -189,24 +181,8 @@ fun MealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<I
                         }
                     }
                 }
-            }
+
         }
 
-    }
-}
-
-
-@Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Composable
-fun PreviewMealCard() {
-    MenzaNSTheme {
-        val counter = remember { mutableIntStateOf(500) }
-        val remaining = remember { mutableIntStateOf(5) }
-         MealCard(MealSample[0], remaining, counter)
     }
 }

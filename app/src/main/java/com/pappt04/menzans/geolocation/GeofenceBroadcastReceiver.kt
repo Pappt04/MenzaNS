@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.geolocation
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -9,10 +9,22 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
-import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.datetypeclock
-import com.pappt04.menzans.DummyData.datetypedate
-import com.pappt04.menzans.DummyData.datetypemonth
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.datetypeclock
+import com.pappt04.menzans.data.DummyData.datetypedate
+import com.pappt04.menzans.data.DummyData.datetypemonth
+import com.pappt04.menzans.data.EatingStatisticsData
+import com.pappt04.menzans.data.FileDAO
+import com.pappt04.menzans.data.MealData
+import com.pappt04.menzans.statistics.StatisticsFileDAO
+import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.UserID
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.DummyData.MealSampleSelfFinancing
+import com.pappt04.menzans.notifications.sendAteMealNotification
+import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
+import com.pappt04.menzans.data.sendEnterEvent
+import com.pappt04.menzans.data.sendExitEvent
 import java.time.LocalDate
 import java.util.Date
 import kotlin.math.abs
@@ -88,7 +100,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     notificationManager.sendAutomaticDeductNotification(context, alldiff,correctmeal)
 
                     if(UserID.userid != "")
-                        sendExitEvent(UserID.userid,timeExited,findEngMeal(correctmeal.name),context )
+                        sendExitEvent(
+                            UserID.userid,timeExited,
+                            findEngMeal(correctmeal.name),context )
 
                 } else if (correctmeal!=null /*&& alldiff >= DummyData.DWELL_TRESHOLD*/) {
                     notificationManager.sendAteMealNotification(
@@ -116,15 +130,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         mealdata: MealData?
     ) {
         if(mealdata!= null){
-            var mealIndex=0
-            for(m in MealSample)
-            {
-                if(mealdata == m)
-                    break
-                mealIndex++
-            }
+            var mealIndex= findMealIndex(mealdata)
 
-            var dao= FileDAO(context,DummyData.FileNames[mealIndex])
+            var dao= FileDAO(context, DummyData.FileNames[mealIndex])
 
             val currentTokens = dao.readFromFile()
             dao.saveToFile(currentTokens.toInt()-1,true)
@@ -147,7 +155,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 fun findEngMeal(type: Uitext): String
 {
     var i = 0
-    for (m in DummyData.MealSample) {
+    for (m in DummyData.MealSampleBudget) {
         if (m.name == type) {
             return DummyData.engmeals[i]
         }
@@ -163,7 +171,7 @@ fun calculateCorrectMeal(
     val enteredsplit = timeEntered.split(":").toTypedArray()
     val exitedsplit = timeExited.split(":").toTypedArray()
 
-    for (mealdata in MealSample) {
+    for (mealdata in MealSampleBudget) {
         if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt()))
             return mealdata
     }
@@ -176,4 +184,31 @@ fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<Stri
     val mindiff: Int = abs(enteredsplit[1].toInt() - exitedsplit[1].toInt())
 
     return hourdiff * 60 + mindiff
+}
+
+fun findMealIndex(mealdata: MealData): Int
+{
+    var found=false
+    var mealIndex=0
+    for(m in MealSampleBudget)
+    {
+        if(mealdata == m)
+        {
+            found=true
+            break
+        }
+        mealIndex++
+    }
+
+    if(!found) {
+        mealIndex=0
+        for(m in MealSampleSelfFinancing)
+        {
+            if(mealdata == m)
+                break
+            mealIndex++
+        }
+    }
+    return mealIndex
+
 }

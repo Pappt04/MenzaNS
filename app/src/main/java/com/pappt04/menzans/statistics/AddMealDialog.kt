@@ -1,7 +1,6 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.statistics
 
 import android.content.Context
-import androidx.collection.LongList
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -30,7 +28,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -44,11 +41,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.engmeals
-import com.pappt04.menzans.DummyData.engtosresc
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.engmeals
+import com.pappt04.menzans.data.DummyData.engtosresc
+import com.pappt04.menzans.data.EatingStatisticsData
+import com.pappt04.menzans.R
+import com.pappt04.menzans.UserID
+import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.convertMillisToDate
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.DummyData.datetypedate
+import com.pappt04.menzans.data.MealEventString
+import com.pappt04.menzans.data.sendAddMeal
+import com.pappt04.menzans.geolocation.findEngMeal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -184,9 +191,16 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     }
                     Button(onClick = {
                         try {
-                            val eat= EatingStatisticsData(day.value,timeofEnter.value,timeofExit.value,selectedMeal)
-                            var sdao= StatisticsFileDAO(context,DummyData.engmonths[day.value.monthValue-1])
-                            sdao.appendToStatisticsFile(eat)
+                            val statisticsMeal= EatingStatisticsData(day.value,timeofEnter.value,timeofExit.value,selectedMeal)
+                            var sdao= StatisticsFileDAO(context, DummyData.engmonths[day.value.monthValue-1])
+                            sdao.appendToStatisticsFile(statisticsMeal)
+
+                            var es= MealEventString(
+                                UserID.userid, datetypedate.format(Date()),statisticsMeal.timeentered,statisticsMeal.timeexited,
+                                findEngMeal(statisticsMeal.tokentype)
+                            )
+
+                            sendAddMeal(es,context)
                         } catch (_: Exception) {
                         }
                         onDismissRequest()
@@ -203,16 +217,12 @@ fun getUniversalLanguageMeal(context: Context, meal: String): Uitext {
     var i = 0
     for (m in engmeals) {
         if (meal == m)
-            return MealSample[i].name
+            return MealSampleBudget[i].name
         i++
     }
-    return MealSample[0].name
+    return MealSampleBudget[0].name
 }
 
-fun getEngLanguageMeal(context: Context,meal: String): String
-{
-    return ""
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

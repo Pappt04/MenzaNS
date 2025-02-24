@@ -1,21 +1,10 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.navigationdrawer
 
 import android.content.res.Configuration
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,10 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -47,10 +33,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,26 +44,44 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pappt04.menzans.DummyData.MealSample
+import com.pappt04.menzans.EditScreen
+import com.pappt04.menzans.InfoScreen
+import com.pappt04.menzans.R
+import com.pappt04.menzans.Screen
+import com.pappt04.menzans.SettingsScreen
+import com.pappt04.menzans.dashboard.DashboardScreen
+import com.pappt04.menzans.dashboard.MyViewModel
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.DummyData.MealSampleSelfFinancing
+import com.pappt04.menzans.statistics.StatisticsScreen
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import kotlinx.coroutines.delay
+import com.pappt04.menzans.welcome.WelcomeScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>, savedMeals: SnapshotStateList<Int>, firstWelcome: MutableState<Boolean>) {
+fun MainNavigationDrawer(
+    cardData: List<String>,
+    darkTheme: MutableState<Boolean>,
+    materialtheme: MutableState<Boolean>,
+    onBudgetPricing: MutableState<Boolean>,
+    firstWelcome: MutableState<Boolean>,
+    savedMeals: SnapshotStateList<Int>,
+    linegraphmap: Map<String,Double>
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
 
-    val waittime= remember { mutableIntStateOf(999) }
-
-    val trajectory= remember { mutableIntStateOf(0) }
+    val waittime = remember { mutableIntStateOf(999) }
 
     val navController = rememberNavController()
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
+
+    var mvm= MyViewModel()
 
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
@@ -143,6 +147,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     Text(
                         screenTitle,
                         fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }, navigationIcon = {
                     IconButton(onClick = {
@@ -155,29 +161,6 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                             contentDescription = stringResource(R.string.menu_description)
                         )
                     }
-                }, actions = {
-
-                   MinuteTicker {
-                       Log.d("WAIT_TIME","Refresh request sent")
-                       getWaitTime(context) { wt ->
-                           if (wt != null) {
-                               val temp= waittime.intValue
-                               waittime.intValue = wt.waittime.toInt()
-
-                               if( temp == 999) {
-                                 trajectory.intValue=wt.trajectory.toInt()
-                               } else if(temp < waittime.intValue) {
-                                   trajectory.intValue=1
-                               } else if (temp > waittime.intValue) {
-                                   trajectory.intValue=-1
-                               } else {
-                                   trajectory.intValue=0
-                               }
-                           }
-                       }
-                   }
-                    if(!firstWelcome.value)
-                        WaitTimeDisplay(waittime,trajectory.intValue)
                 }
                 )
             },
@@ -199,12 +182,15 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                         WelcomeScreen(onCompleted = {firstWelcome.value=false},innerpadding)
                     } else
                     {
-                        DashboardDesign(MealSample,savedMeals)
+                        DashboardScreen(when(onBudgetPricing.value) {
+                            true -> MealSampleBudget
+                            else -> MealSampleSelfFinancing
+                        },savedMeals, MyViewModel(),waittime, innerpadding)
                     }
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
-                    StatisticsScreen(innerpadding)
+                    StatisticsScreen(innerpadding,onBudgetPricing)
                 }
                 composable(route = Screen.EditScreen.route) {
 
@@ -215,118 +201,13 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     InfoScreen(innerpadding)
                 }
                 composable(route = Screen.SettingsScreen.route) {
-                    SettingsScreen(innerpadding, darkTheme)
+                    SettingsScreen(innerpadding, darkTheme,materialtheme,onBudgetPricing)
                 }
             }
         }
     }
 }
 
-@Composable
-fun MinuteTicker(onTick: () -> Unit) {
-    LaunchedEffect(Unit) {
-        while (true) {
-            onTick()
-            delay(60_000L) // Delay for 60 seconds
-        }
-    }
-}
-
-@Composable
-fun WaitTimeDisplay(waitTime: MutableIntState, trj: Int) {
-    val context= LocalContext.current
-
-    val trajectory= remember { mutableIntStateOf(trj) }
-
-    val textColor = when (trj) {
-        -1 -> Color.Green // Green for downward trend
-        1 -> Color.Red     // Red for upward trend
-        else -> MaterialTheme.colorScheme.secondary // Default color
-    }
-
-    val arrowIcon = when (trj) {
-        1 -> Icons.Filled.KeyboardArrowUp
-        -1 -> Icons.Filled.KeyboardArrowDown
-        else -> null // No arrow if trajectory is 0 or other values
-    }
-
-    var oldCount by remember {
-        mutableIntStateOf(waitTime.intValue)
-    }
-
-    SideEffect {
-        oldCount = waitTime.intValue
-    }
-        Row(modifier = Modifier
-            .fillMaxHeight()
-            .clickable(true) {
-                Toast
-                    .makeText(context, "Refreshing...", Toast.LENGTH_SHORT)
-                    .show()
-                getWaitTime(context) { wt ->
-                    Log.d("WAIT_TIME", "Refresh request sent")
-                    if (wt != null) {
-                        val temp = waitTime.intValue
-                        waitTime.intValue = wt.waittime.toInt()
-
-                        if (temp == 999) {
-                            trajectory.intValue = wt.trajectory.toInt()
-                        } else if (temp < waitTime.intValue) {
-                            trajectory.intValue = 1
-                        } else if (temp > waitTime.intValue) {
-                            trajectory.intValue = -1
-                        } else {
-                            trajectory.intValue = 0
-                        }
-                    }
-                }
-            },
-            verticalAlignment = Alignment.CenterVertically) {
-            val countString = waitTime.intValue.toString()
-            val oldCountString = oldCount.toString()
-
-            Text(stringResource(R.string.wait_time) +":")
-
-            if (waitTime.intValue == 999)
-            {
-                //Text(stringResource(R.string.no_data))
-                Text("? min")
-            } else {
-                for(i in countString.indices) {
-                    val oldChar = oldCountString.getOrNull(i)
-                    val newChar = countString[i]
-                    val char = if(oldChar == newChar) {
-                        oldCountString[i]
-                    } else {
-                        countString[i]
-                    }
-                    AnimatedContent(
-                        targetState = char,
-                        transitionSpec = {
-                            slideInVertically { it } togetherWith slideOutVertically { -it }
-                        }
-                    ) { ch ->
-                        Text(
-                            text = ch.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
-                            softWrap = false
-                        )
-                    }
-                }
-
-                Text(" min")
-
-                if (arrowIcon != null) {
-                    Icon(
-                        imageVector = arrowIcon,
-                        contentDescription = if (trj == -1) "Downward Trend" else "Upward Trend",
-                        tint = textColor // Match icon color to text color
-                    )
-                }
-            }
-        }
-
-}
 
 @Preview(name = "Light Mode")
 @Preview(
@@ -340,7 +221,9 @@ fun PreviewSideNavigationDrawer() {
 
     val welcome= remember { mutableStateOf(false) }
 
+    val map = emptyMap<String,Double>()
+
     MenzaNSTheme {
-        MainNavigationDrawer(cardData,darkTheme,savedMeals,welcome)
+        MainNavigationDrawer(cardData,darkTheme,darkTheme,darkTheme,welcome,savedMeals,map)
     }
 }

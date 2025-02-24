@@ -34,8 +34,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".GeofenceBroadcastReceiver"/>
-        <receiver android:name=".NotificationBroadcastReceiver"/>
+        <receiver android:name=".geolocation.GeofenceBroadcastReceiver"/>
+        <receiver android:name=".notifications.NotificationBroadcastReceiver"/>
     </application>
 
 </manifest>

@@ -51,7 +51,7 @@
     <string name="edit">Szerkesztés</string>
     <string name="info">Infó</string>
     <string name="settings">Beállítások</string>
-    <string name="change_your_language">Változtasd meg a nyelvet</string>
+    <string name="change_your_language">Aplikáció nyelve</string>
     <string name="use_dark_theme">Változtass Sötét módra</string>
     <string name="student_center_novi_sad">Egyetemista Központ Újvidék</string>
     <string name="student_menza">Egyetemista Menza</string>
@@ -92,4 +92,11 @@
     <string name="explanation_NOTIFICATION_ACCESS">Értesítési hozzáférésre van szükségünk, hogy hasznos emlékeztetőket küldhessünk</string>
     <string name="explanation_COARSE_LOCATION">Ezt arra használjuk, hogy megmondjuk, valószínűleg elmész-e a kantinba enni</string>
     <string name="explanation_FINE_LOCATION">Pontos helymeghatározást használunk annak megállapítására, hogy a kantinban tartózkodik-e vagy sem</string>
+    <string name="time_of_day_hours">Napszak[óra]</string>
+    <string name="self_financing">Önköltséges</string>
+    <string name="budget">Államilag támogatott</string>
+    <string name="use_materialyou_theme">Használd a MaterialYou-t</string>
+    <string name="not_enough_funds">Nincs elég pénzed</string>
+    <string name="wait_time_min">Várakozási idő[min]</string>
+    <string name="precision">Pontosság: %1$s</string>
 </resources>

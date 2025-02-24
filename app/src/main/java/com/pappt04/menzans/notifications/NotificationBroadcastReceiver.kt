@@ -1,12 +1,14 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.notifications
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.pappt04.menzans.DummyData.MealSample
-import com.pappt04.menzans.DummyData.engmeals
-import com.pappt04.menzans.DummyData.engmonths
-import java.time.format.DateTimeFormatter
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.engmeals
+import com.pappt04.menzans.data.FileDAO
+import com.pappt04.menzans.UserID
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.sendExitEvent
 
 class NotificationBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -23,7 +25,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
         if (message != null && entered != null && exited != null && enteredsplit != null && exitedsplit != null && context != null && meal != null) {
 
-            for (m in MealSample) {
+            for (m in MealSampleBudget) {
                 if (meal == m.name.asString(context))
                     break
                 mealIndex++
@@ -37,12 +39,12 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
             //Maybe it should just check entered time
             val currentTokens = context.let {
-                var fdao= FileDAO(it,DummyData.FileNames[mealIndex])
+                var fdao= FileDAO(it, DummyData.FileNames[mealIndex])
                 fdao.getDAOData()
             }
             context.let {
                 if (currentTokens.toInt() >= usedMeals) {
-                    var fdao= FileDAO(it,DummyData.FileNames[mealIndex])
+                    var fdao= FileDAO(it, DummyData.FileNames[mealIndex])
                     fdao.saveToFile(currentTokens.toInt()-usedMeals,true)
 
                     if(UserID.userid != "")

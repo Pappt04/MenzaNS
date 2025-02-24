@@ -1,15 +1,17 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.data
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
-import com.pappt04.menzans.DummyData.BASE_API_NAME
-import com.pappt04.menzans.DummyData.BASE_SERVER_URL
+import com.pappt04.menzans.data.DummyData.BASE_API_NAME
+import com.pappt04.menzans.data.DummyData.BASE_SERVER_URL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -55,6 +57,11 @@ interface MenzaAPIService {
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/waittime")
     suspend fun  getWaitTime(): Response<WaitTime>
+
+    @Headers("Accept: application/json")
+    @GET("$BASE_API_NAME/lineGraph")
+    suspend fun getLineGraph(): Response<Map<String, Double>>
+
 }
 
 object RetrofitAPIClient {
@@ -249,6 +256,28 @@ fun getWaitTime(context: Context, onGotWaitTime: (WaitTime?) -> Unit) {
                     val wt = response.body()
 
                     onGotWaitTime(wt)
+                    //Toast.makeText(context, "Registered ID: $newId", Toast.LENGTH_SHORT).show()
+                } else {
+                    //Toast.makeText(context, "Failed to register ID: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                //Toast.makeText(context, "Error reaching out to server ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+fun getLineGraph(onGotMap: (Map<String,Double>?) -> Unit){
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitAPIClient.apiService.getLineGraph()
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    val timedata = response.body()
+
+                    onGotMap(timedata)
                     //Toast.makeText(context, "Registered ID: $newId", Toast.LENGTH_SHORT).show()
                 } else {
                     //Toast.makeText(context, "Failed to register ID: ${response.code()}", Toast.LENGTH_SHORT).show()

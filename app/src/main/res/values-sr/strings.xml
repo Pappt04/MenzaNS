@@ -16,7 +16,7 @@
     <string name="date_of_birth">Datum rođenja</string>
     <string name="issued_date">Datum izdavanja</string>
     <string name="valid_until">Važi do</string>
-    <string name="index">Index</string>
+    <string name="index">Indeks</string>
     <string name="card_number">Broj kartice</string>
     <string name="isic_card_number">ISIC broj kartice</string>
     <string name="breakfast">Doručak</string>
@@ -51,7 +51,7 @@
     <string name="edit">Uređivanje</string>
     <string name="info">Info</string>
     <string name="settings">Postavke</string>
-    <string name="change_your_language">Menjaj jezik</string>
+    <string name="change_your_language">Jezik aplikacije</string>
     <string name="use_dark_theme">Koristi Tamnu temu</string>
     <string name="zavod_za_zdravstvenu_zastitu_studenata_novi_sad">Zavod za Zdravstvenu Zastitu Studenata Novi Sad</string>
     <string name="student_center_novi_sad">Studentski Centar Novi Sad</string>
@@ -92,4 +92,11 @@
     <string name="explanation_FINE_LOCATION">Koristimo preciznu lokaciju da kažemo da li ste u kantini ili ne</string>
     <string name="explanation_BACKGROUND_LOCATION">Ne pratimo lokaciju u pozadini, snimamo sistemske događaje kada ste u kantini, da li ne morate ručno da evidentirate svoje obroke</string>
     <string name="explanation_NOTIFICATION_ACCESS">Potreban nam je pristup obaveštenjima da bismo mogli da šaljemo korisne podsetnike</string>
+    <string name="time_of_day_hours">Doba dana[sat]</string>
+    <string name="self_financing">Samofinansiranje</string>
+    <string name="budget">Budžet</string>
+    <string name="use_materialyou_theme">Koristi MaterialYou temu</string>
+    <string name="not_enough_funds">Nema dvoljno sredstva</string>
+    <string name="wait_time_min">Vreme čekanja[min]</string>
+    <string name="precision">Preciznost: %1$s</string>
 </resources>

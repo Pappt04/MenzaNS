@@ -1,21 +1,14 @@
 package com.pappt04.menzans
 
-import android.Manifest
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -54,13 +46,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
-import com.pappt04.menzans.DummyData.permissionsNeeded
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.DummyData.permissionsNeeded
+import com.pappt04.menzans.data.FileDAO
 
 
 @Composable
-fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>) {
+fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>, materialyoutheme: MutableState<Boolean>, onBudget: MutableState<Boolean>) {
     val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
@@ -72,11 +65,21 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             DisclaimerCard(context)
         }
         item {
+            PriceSwitcher(context,onBudget)
+        }
+        item {
+            HorizontalDivider(modifier = Modifier.padding(10.dp))
+        }
+        item {
             LanguageChanger(context)
         }
+
         item {
             DarkThemeSwitcher(context, darkTheme)
             Log.i("DarkTheme status","$darkTheme")
+        }
+        item {
+            MaterialThemeSwitcher(context,materialyoutheme)
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         item {
@@ -179,7 +182,7 @@ fun DarkThemeSwitcher(context: Context, darkTheme: MutableState<Boolean>) {
                     else {
                         dark = 0
                     }
-                    var fdao= FileDAO(context,DummyData.FileDarkThemeEnabled)
+                    var fdao= FileDAO(context, DummyData.FileDarkThemeEnabled)
                     fdao.saveToFile(dark,false)
                 },
                 modifier = Modifier
@@ -188,6 +191,124 @@ fun DarkThemeSwitcher(context: Context, darkTheme: MutableState<Boolean>) {
         }
     }
 }
+
+
+@Composable
+fun MaterialThemeSwitcher(context: Context, materialyoutheme: MutableState<Boolean>) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            Text(
+                stringResource(R.string.use_materialyou_theme),
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
+                    )
+                ),
+                modifier = Modifier
+                    .weight(4f)
+            )
+            Switch(
+                checked = materialyoutheme.value,
+                onCheckedChange = {
+                    materialyoutheme.value = it
+                    var matyou=0
+                    matyou = if(materialyoutheme.value) {
+                        1
+                    } else {
+                        0
+                    }
+                    val fdao= FileDAO(context, DummyData.FileMaterialYouEnabled)
+                    fdao.saveToFile(matyou)
+                },
+                modifier = Modifier
+                    .weight(1f)
+            )
+        }
+    }
+}
+
+
+
+@Composable
+fun PriceSwitcher(context: Context, onBudget: MutableState<Boolean>) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            Text(
+                stringResource(R.string.self_financing),
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
+                    )
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            )
+            Switch(
+                checked = onBudget.value,
+                onCheckedChange = {
+                    onBudget.value = it
+                    var bgt=0
+                    bgt = if(onBudget.value) {
+                        1
+                    } else {
+                        0
+                    }
+                    val fdao= FileDAO(context, DummyData.FileMealPricing)
+                    fdao.saveToFile(bgt,false)
+                },
+                modifier = Modifier
+                    .weight(2f)
+                    .align(Alignment.CenterVertically)
+            )
+            Text(
+                stringResource(R.string.budget),
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
+                    )
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -288,6 +409,6 @@ fun DisclaimerCard(context: Context)
 fun PreviewSettingsScreen() {
     MenzaNSTheme {
         val dark = remember { mutableStateOf(false) }
-        SettingsScreen(PaddingValues(20.dp),dark)
+        SettingsScreen(PaddingValues(20.dp),dark,dark,dark)
     }
 }

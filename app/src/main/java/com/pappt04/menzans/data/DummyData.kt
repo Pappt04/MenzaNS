@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.data
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -6,29 +6,49 @@ import android.location.Location
 import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
 import com.google.android.gms.location.Geofence
+import com.pappt04.menzans.R
 import java.text.SimpleDateFormat
 
 object DummyData {
-    var MealSample = listOf(
+    var MealSampleBudget = listOf(
         MealData(Uitext.StringResource(R.string.breakfast), 56, 7, 0, 9, 30),
         MealData(Uitext.StringResource(R.string.lunch), 120, 11, 0, 15, 0),
         MealData(Uitext.StringResource(R.string.dinner), 90, 17, 0, 20, 30)
+    )
+
+    var MealSampleSelfFinancing = listOf(
+        MealData(MealSampleBudget[0].name, 138, MealSampleBudget[0].start_hour, MealSampleBudget[0].start_minute, MealSampleBudget[0].end_hour, MealSampleBudget[0].end_minute),
+        MealData(MealSampleBudget[1].name, 326, MealSampleBudget[1].start_hour, MealSampleBudget[1].start_minute, MealSampleBudget[1].end_hour, MealSampleBudget[1].end_minute),
+        MealData(MealSampleBudget[0].name, 262, MealSampleBudget[2].start_hour, MealSampleBudget[2].start_minute, MealSampleBudget[2].end_hour, MealSampleBudget[2].end_minute)
+    )
+
+    val mealIcons = listOf(
+        Icons.Default.Coffee,
+        Icons.Filled.Restaurant,
+        Icons.Outlined.Fastfood
     )
 
     val FileNames = listOf("breakfast", "lunch", "dinner", "balance")
     val CardHolderFileName = "cardholderdata"
     val FileGeoFenceEntered = "geofenceentered"
     val FileDarkThemeEnabled = "darkthemeenabled"
+    val FileMaterialYouEnabled = "materialyouenabled"
+    val FileDataSharingEnabled= "datasharingenabled"
+    val FileMealPricing="mealpricing"
     val FileUserID ="userid"
 
 

@@ -55,6 +55,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -613,7 +615,7 @@ fun saveCardData(
     var i = 0
     for (x in meals)
     {
-        val dao= FileDAO(context,DummyData.FileNames[i++])
+        val dao= FileDAO(context, DummyData.FileNames[i++])
         dao.saveToFile(x,false)
     }
 }
