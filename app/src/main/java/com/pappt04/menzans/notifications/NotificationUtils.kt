@@ -110,7 +110,7 @@ fun NotificationManager.sendTopUpReminder(context: Context, file: String, remain
     }
     var s1 = ""
     try {
-        s1 = DummyData.MealSample[i].name.asString(context)
+        s1 = DummyData.MealSampleBudget[i].name.asString(context)
     } catch (_: Exception) {}
 
     val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[1])

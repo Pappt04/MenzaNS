@@ -54,7 +54,7 @@
     <string name="edit">Edit</string>
     <string name="info">Info</string>
     <string name="settings">Settings</string>
-    <string name="change_your_language">Change your language</string>
+    <string name="change_your_language">App language</string>
     <string name="use_dark_theme">Use Dark Theme</string>
     <string name="student_center_novi_sad">Student Center Novi Sad</string>
     <string name="student_menza">Student Menza</string>
@@ -95,4 +95,11 @@
     <string name="explanation_FINE_LOCATION">We use precise location to tell if you are at the canteen or not</string>
     <string name="explanation_BACKGROUND_LOCATION">We do not monitor the background location, we capture system events when you are at the canteen so you do not have to manually log your meals</string>
     <string name="explanation_NOTIFICATION_ACCESS">We need notification access so we can send useful reminders</string>
+    <string name="not_enough_funds">Not enough funds</string>
+    <string name="wait_time_min">Wait time[min]</string>
+    <string name="time_of_day_hours">Time of Day[hours]</string>
+    <string name="self_financing">Self Financing</string>
+    <string name="budget">Budget</string>
+    <string name="use_materialyou_theme">Use MaterialYou theme</string>
+    <string name="precision">Precision: %1$s</string>
 </resources>

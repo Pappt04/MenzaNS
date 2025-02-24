@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,44 +22,66 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.RotatingIcon
 import com.pappt04.menzans.data.DummyData
 import com.pappt04.menzans.data.DummyData.mealIcons
 import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.data.getLineGraph
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardDesign(
+fun DashboardScreen(
     meals: List<MealData>,
     remainingOnCard: SnapshotStateList<Int>,
+    viewModel: MyViewModel,
     waitime: MutableIntState,
     padding: PaddingValues,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
+
+    var lineGraphMap = remember { mutableStateMapOf<String,Double>() }
+    val uiState by viewModel.uiState.collectAsState()
+
+
+    viewModel.fetchData()
+
+    val context= LocalContext.current
+
+    val snackbarHostState = remember { SnackbarHostState() }
     val mealValueList = remember {
         MutableList(3) { index ->
             mutableIntStateOf(remainingOnCard[index])
@@ -72,6 +95,13 @@ fun DashboardDesign(
 
     Scaffold(
         modifier = Modifier.padding(padding),
+        snackbarHost = {
+            SnackbarHost(
+                snackbarHostState,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 showBalanceDialog = true
@@ -101,7 +131,11 @@ fun DashboardDesign(
                             AnimatedVisibility(
                                 selectedCard.intValue != index.intValue,
                             ) {
-                                MealCard(meal, mealValueList[index.intValue],mealIcons[index.intValue]) {
+                                MealCard(
+                                    meal,
+                                    mealValueList[index.intValue],
+                                    mealIcons[index.intValue]
+                                ) {
 
                                     if (selectedCard.intValue == index.intValue) {
                                         selectedCard.intValue = 99
@@ -127,16 +161,47 @@ fun DashboardDesign(
                             slideInVertically { -it } togetherWith slideOutVertically { it }
                         }) {
                         if (it in 0..meals.size)
-                            DetailedMealCard(meals[it], mealValueList[it], balance) {
-                                selectedCard.intValue = 99
-                            }
+                            DetailedMealCard(meals[it], mealValueList[it], balance,
+                                onClicked = { selectedCard.intValue = 99 },
+                                noFunds = {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            context.getString(R.string.not_enough_funds),
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                })
                     }
                 }
                 item {
                     BalanceCard(balance)
                 }
                 item {
-                    LineSizeCard(waitime)
+                    when (uiState) {
+                        is UiState.Loading -> {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center)){
+                                CircularProgressIndicator()
+                            }
+                        }
+                        is UiState.Success -> {
+                            val data = (uiState as UiState.Success).data
+                            LineSizeGraphCard(data)
+                        }
+                        is UiState.Error -> {
+                            val errorMessage = (uiState as UiState.Error).message
+                            Text("Error: $errorMessage", color = Color.Red)
+                        }
+                        is UiState.Empty -> {
+
+                        }
+                    }
+                }
+                item {
+                    WaitTimeCard(waitime){
+                        viewModel.fetchData()
+                    }
                 }
             }
 
@@ -181,7 +246,7 @@ fun PreviewScaffold() {
                     CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
                 }
             ) { innerPadding ->
-                DashboardDesign(meals, remainingOnCard, wt, innerPadding)
+                DashboardScreen(meals, remainingOnCard, MyViewModel(), wt, innerPadding)
             }
         }
     }

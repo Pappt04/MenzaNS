@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.animations.AnimatedNumber
-import com.pappt04.menzans.data.DummyData.MealSample
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
 import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
@@ -90,6 +90,6 @@ fun PreviewMealCard() {
     MenzaNSTheme {
         val counter = remember { mutableIntStateOf(500) }
         val remaining = remember { mutableIntStateOf(5) }
-        MealCard(MealSample[0], remaining, Icons.Default.Coffee ) {}
+        MealCard(MealSampleBudget[0], remaining, Icons.Default.Coffee ) {}
     }
 }

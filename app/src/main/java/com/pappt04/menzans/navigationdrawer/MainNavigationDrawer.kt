@@ -1,21 +1,10 @@
 package com.pappt04.menzans.navigationdrawer
 
 import android.content.res.Configuration
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,10 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -47,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,19 +49,27 @@ import com.pappt04.menzans.InfoScreen
 import com.pappt04.menzans.R
 import com.pappt04.menzans.Screen
 import com.pappt04.menzans.SettingsScreen
-import com.pappt04.menzans.data.DummyData.MealSample
-import com.pappt04.menzans.dashboard.DashboardDesign
+import com.pappt04.menzans.dashboard.DashboardScreen
+import com.pappt04.menzans.dashboard.MyViewModel
 import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.data.getWaitTime
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.DummyData.MealSampleSelfFinancing
 import com.pappt04.menzans.statistics.StatisticsScreen
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import com.pappt04.menzans.welcome.WelcomeScreen
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean>, savedMeals: SnapshotStateList<Int>, firstWelcome: MutableState<Boolean>) {
+fun MainNavigationDrawer(
+    cardData: List<String>,
+    darkTheme: MutableState<Boolean>,
+    materialtheme: MutableState<Boolean>,
+    onBudgetPricing: MutableState<Boolean>,
+    firstWelcome: MutableState<Boolean>,
+    savedMeals: SnapshotStateList<Int>,
+    linegraphmap: Map<String,Double>
+) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -87,6 +80,8 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
     val navController = rememberNavController()
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
+
+    var mvm= MyViewModel()
 
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
@@ -187,12 +182,15 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                         WelcomeScreen(onCompleted = {firstWelcome.value=false},innerpadding)
                     } else
                     {
-                        DashboardDesign(MealSample,savedMeals,waittime, innerpadding)
+                        DashboardScreen(when(onBudgetPricing.value) {
+                            true -> MealSampleBudget
+                            else -> MealSampleSelfFinancing
+                        },savedMeals, MyViewModel(),waittime, innerpadding)
                     }
                 }
                 composable(route = Screen.StatisticsScreen.route) {
 
-                    StatisticsScreen(innerpadding)
+                    StatisticsScreen(innerpadding,onBudgetPricing)
                 }
                 composable(route = Screen.EditScreen.route) {
 
@@ -203,7 +201,7 @@ fun MainNavigationDrawer(cardData: List<String>, darkTheme: MutableState<Boolean
                     InfoScreen(innerpadding)
                 }
                 composable(route = Screen.SettingsScreen.route) {
-                    SettingsScreen(innerpadding, darkTheme)
+                    SettingsScreen(innerpadding, darkTheme,materialtheme,onBudgetPricing)
                 }
             }
         }
@@ -223,7 +221,9 @@ fun PreviewSideNavigationDrawer() {
 
     val welcome= remember { mutableStateOf(false) }
 
+    val map = emptyMap<String,Double>()
+
     MenzaNSTheme {
-        MainNavigationDrawer(cardData,darkTheme,savedMeals,welcome)
+        MainNavigationDrawer(cardData,darkTheme,darkTheme,darkTheme,welcome,savedMeals,map)
     }
 }

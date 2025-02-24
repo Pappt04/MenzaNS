@@ -42,14 +42,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.data.DummyData.MealSample
 import com.pappt04.menzans.data.DummyData.engmeals
 import com.pappt04.menzans.data.DummyData.engtosresc
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.R
+import com.pappt04.menzans.UserID
 import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.convertMillisToDate
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.DummyData.datetypedate
+import com.pappt04.menzans.data.MealEventString
+import com.pappt04.menzans.data.sendAddMeal
+import com.pappt04.menzans.geolocation.findEngMeal
 import java.time.LocalDate
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -185,9 +191,16 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     }
                     Button(onClick = {
                         try {
-                            val eat= EatingStatisticsData(day.value,timeofEnter.value,timeofExit.value,selectedMeal)
+                            val statisticsMeal= EatingStatisticsData(day.value,timeofEnter.value,timeofExit.value,selectedMeal)
                             var sdao= StatisticsFileDAO(context, DummyData.engmonths[day.value.monthValue-1])
-                            sdao.appendToStatisticsFile(eat)
+                            sdao.appendToStatisticsFile(statisticsMeal)
+
+                            var es= MealEventString(
+                                UserID.userid, datetypedate.format(Date()),statisticsMeal.timeentered,statisticsMeal.timeexited,
+                                findEngMeal(statisticsMeal.tokentype)
+                            )
+
+                            sendAddMeal(es,context)
                         } catch (_: Exception) {
                         }
                         onDismissRequest()
@@ -204,16 +217,12 @@ fun getUniversalLanguageMeal(context: Context, meal: String): Uitext {
     var i = 0
     for (m in engmeals) {
         if (meal == m)
-            return MealSample[i].name
+            return MealSampleBudget[i].name
         i++
     }
-    return MealSample[0].name
+    return MealSampleBudget[0].name
 }
 
-fun getEngLanguageMeal(context: Context,meal: String): String
-{
-    return ""
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

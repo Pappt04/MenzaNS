@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pappt04.menzans.data.DummyData.MealSample
 import com.pappt04.menzans.data.DummyData.engmeals
 import java.time.LocalDate
 import java.time.Month
@@ -32,6 +31,7 @@ import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.MealEventString
 import com.pappt04.menzans.R
 import com.pappt04.menzans.UserID
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
 import com.pappt04.menzans.geolocation.findEngMeal
 import com.pappt04.menzans.data.sendRemoveMeal
 import kotlinx.coroutines.launch
@@ -55,7 +55,10 @@ fun CalendarMonthView(
     }
     val startOfMonth = yearMonth.atDay(1)
     val totalDays = yearMonth.lengthOfMonth()
-    val startDayOfWeekIndex = (startOfMonth.dayOfWeek.value % 7) // Adjust for Monday start
+    val startDayOfWeekIndex = when(startOfMonth.dayOfWeek.value) {
+        1 -> 7
+        else -> startOfMonth.dayOfWeek.value%7 -1
+    }
     val today = LocalDate.now()
 
     // Get localized names for days of the week
@@ -87,7 +90,7 @@ fun CalendarMonthView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Day Headers using localized day names
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Absolute.SpaceEvenly) {
                 daysOfWeek.forEach { day ->
                     Text(text = day, modifier = Modifier.weight(1f), maxLines = 1)
                 }
@@ -252,7 +255,7 @@ fun MealView(context: Context, sdao: StatisticsFileDAO, data: MutableList<Eating
     }
 
     val str = "${mealEvent.timeentered}-${mealEvent.timeexited} \t ${
-        MealSample[i].name.asString(
+        MealSampleBudget[i].name.asString(
             LocalContext.current
         )
     }"

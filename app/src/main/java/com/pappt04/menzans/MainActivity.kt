@@ -29,10 +29,11 @@ class MainActivity : AppCompatActivity() {
     private val NOTIFICATION_PERMISSION_CODE = 1004
     private val ALL_LOCATION_PERMISSIONS = 1010
 
-
     private var savedMeals: SnapshotStateList<Int> = SnapshotStateList<Int>()
 
-    private lateinit var globalContext:Context
+    private var lineGraphMap: Map<String,Double> = emptyMap()
+
+    private lateinit var globalContext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             //TODO REQUEST PERMISSIONS ON APP LAUNCH
             val context = LocalContext.current
-            globalContext=context
+            globalContext = context
         }
     }
 
@@ -51,44 +52,61 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         setContent {
-            val context= LocalContext.current
+            val context = LocalContext.current
 
             val theme = remember { mutableStateOf(false) }
 
+            val materialtheme = remember { mutableStateOf(false) }
+
+            val onBudgetPricing = remember { mutableStateOf(false) }
+
+            //**************************************************************//
             val dao = FileDAO(this, DummyData.FileDarkThemeEnabled)
             val saveddark = dao.readFromFile()
-
             theme.value = saveddark != "" && saveddark.toInt() == 1
 
-            UserID= getUserID(context)
 
-            MenzaNSTheme(darkTheme = theme.value) {
+            //**************************************************************//
+            val mdao = FileDAO(this, DummyData.FileMaterialYouEnabled)
+            val savedmaterial = mdao.readFromFile()
+            materialtheme.value = savedmaterial != "" && savedmaterial.toInt() == 1
+
+
+            //**************************************************************//
+            val bdao = FileDAO(this, DummyData.FileMealPricing)
+            val savedpricing = bdao.readFromFile()
+            onBudgetPricing.value = savedpricing != "" && savedpricing.toInt() == 1
+
+
+            //**************************************************************//
+            UserID = getUserID(context)
+
+            MenzaNSTheme(darkTheme = theme.value, dynamicColor = materialtheme.value) {
 
                 requestAllPermissions()
                 createChannel(context)
 
-                val d= calculateRemainingMeals(context)
+                val d = calculateRemainingMeals(context)
                 savedMeals.clear()
-                for(m in d )
+                for (m in d)
                     savedMeals.add(m)
 
                 val firstwelcome = remember { mutableStateOf(true) }
 
                 val files: Array<String> = context.fileList()
                 if (CardHolderFileName in files) {
-                    firstwelcome.value=false
+                    firstwelcome.value = false
                 }
-                MainNavigationDrawer(loadCardHolder(context), theme,savedMeals,firstwelcome)
+                MainNavigationDrawer(loadCardHolder(context), theme, materialtheme, onBudgetPricing,firstwelcome, savedMeals,lineGraphMap)
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        val context=this
-        for((i, m) in savedMeals.withIndex())
-        {
-            val fdao= FileDAO(context, DummyData.FileNames[i])
+        val context = this
+        for ((i, m) in savedMeals.withIndex()) {
+            val fdao = FileDAO(context, DummyData.FileNames[i])
             fdao.saveToFile(m)
         }
 
@@ -96,8 +114,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun saveUserID(context: Context, idstring: String)
-    {
+    private fun saveUserID(context: Context, idstring: String) {
         if (idstring == "")
             return
 
@@ -107,23 +124,20 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun getUserID(context: Context): UserIDString
-    {
-        val fileDAO= FileDAO(context, FileUserID)
+    private fun getUserID(context: Context): UserIDString {
+        val fileDAO = FileDAO(context, FileUserID)
 
-        val ids= UserIDString(fileDAO.getDAOData())
-        if (ids.userid == "")
-        {
+        val ids = UserIDString(fileDAO.getDAOData())
+        if (ids.userid == "") {
             registerNewUser(context) { newId ->
-                ids.userid=newId
-                saveUserID(context,newId)
+                ids.userid = newId
+                saveUserID(context, newId)
             }
         }
         return ids
     }
 
-    private fun calculateRemainingMeals(context: Context): Array<Int>
-    {
+    private fun calculateRemainingMeals(context: Context): Array<Int> {
         val files: Array<String> = context.fileList()
         var remainingOnCard: Array<Int> = emptyArray()
         var s1 = ""
@@ -146,8 +160,7 @@ class MainActivity : AppCompatActivity() {
         return remainingOnCard
     }
 
-    private fun loadCardHolder(context: Context): List<String>
-    {
+    private fun loadCardHolder(context: Context): List<String> {
         val files: Array<String> = context.fileList()
         var stemp = ""
         if (CardHolderFileName in files) {

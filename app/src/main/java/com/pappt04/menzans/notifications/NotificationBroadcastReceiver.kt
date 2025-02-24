@@ -4,10 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.data.DummyData.MealSample
 import com.pappt04.menzans.data.DummyData.engmeals
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.UserID
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
 import com.pappt04.menzans.data.sendExitEvent
 
 class NotificationBroadcastReceiver : BroadcastReceiver() {
@@ -25,7 +25,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
         if (message != null && entered != null && exited != null && enteredsplit != null && exitedsplit != null && context != null && meal != null) {
 
-            for (m in MealSample) {
+            for (m in MealSampleBudget) {
                 if (meal == m.name.asString(context))
                     break
                 mealIndex++

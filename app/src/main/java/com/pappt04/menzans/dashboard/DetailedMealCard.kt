@@ -63,12 +63,9 @@ import java.util.Date
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit) {
+fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
-    val name= remember { mutableStateOf(meal.name) }
-
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
@@ -160,10 +157,7 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                                         val fdao= StatisticsFileDAO(context, engmonths[LocalDate.now().monthValue-1])
                                         fdao.appendToStatisticsFile(statisticsMeal)
 
-                                        var es= MealEventString(UserID.userid, datetypedate.format(Date()),statisticsMeal.timeentered,statisticsMeal.timeexited,
-                                            findEngMeal(statisticsMeal.tokentype))
 
-                                        sendAddMeal(es,context)
                                     }
                                 }
                             },
@@ -175,7 +169,9 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                             if (balance.value > meal.price) {
                                 balance.value -= meal.price
                                 remaining.value++
-
+                            } else
+                            {
+                                noFunds()
                             }
                         }) {
                             Icon(

@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,12 +35,14 @@ import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.animations.AnimatedNumber
 import com.pappt04.menzans.data.MinuteTicker
+import com.pappt04.menzans.data.getLineGraph
 import com.pappt04.menzans.data.getWaitTime
 
 @Composable
-fun LineSizeCard(waittime: MutableIntState) {
+fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
     val context = LocalContext.current
     val trajectory = remember { mutableIntStateOf(0) }
+    val precision = remember { mutableStateOf(0.00) }
 
     val bscolor = when(trajectory.intValue)
     {
@@ -61,6 +64,8 @@ fun LineSizeCard(waittime: MutableIntState) {
                 val temp = waittime.intValue
                 waittime.intValue = wt.waittime.toInt()
 
+                precision.value=wt.precision.toDouble()
+
                 if (temp == 999) {
                     trajectory.intValue = wt.trajectory.toInt()
                 } else if (temp < waittime.intValue) {
@@ -81,7 +86,7 @@ fun LineSizeCard(waittime: MutableIntState) {
             .padding(8.dp)
             .clickable {
                 Log.d("WAIT_TIME", "Refresh request sent")
-                Toast.makeText(context,"Refreshing...",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
                 getWaitTime(context) { wt ->
                     if (wt != null) {
                         val temp = waittime.intValue
@@ -108,28 +113,45 @@ fun LineSizeCard(waittime: MutableIntState) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = stringResource(R.string.wait_time) + ":",
+                    text = stringResource(R.string.wait_time),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(6.dp)
                 )
                 Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Text(
-                        text = "~",
-                        fontStyle = FontStyle.Italic,
-                        textAlign = TextAlign.Center,
-                        fontSize = 42.sp,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
 
-                    AnimatedNumber(waittime, fontStyle = FontStyle.Italic,
-                        textAlign = TextAlign.Center,
-                        fontSize = 42.sp,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(2.dp))
+
+                    if(waittime.intValue != 999) {
+                        Text(
+                            text = "~",
+                            fontStyle = FontStyle.Italic,
+                            textAlign = TextAlign.Center,
+                            fontSize = 42.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        AnimatedNumber(
+                            waittime, fontStyle = FontStyle.Italic,
+                            textAlign = TextAlign.Center,
+                            fontSize = 42.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(2.dp)
+                        )
+                    }
+                    else
+                    {
+                        Text(
+                            text = "?",
+                            fontStyle = FontStyle.Italic,
+                            textAlign = TextAlign.Center,
+                            fontSize = 42.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                    }
+
                     Text(
                         text = " min",
                         fontSize = 40.sp,
@@ -143,6 +165,7 @@ fun LineSizeCard(waittime: MutableIntState) {
                         )
 
                 }
+                Text(stringResource(R.string.precision, precision.value.toString()), modifier = Modifier.align(Alignment.End))
             }
         }
 

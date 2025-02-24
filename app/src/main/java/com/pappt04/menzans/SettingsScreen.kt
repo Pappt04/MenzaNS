@@ -44,6 +44,7 @@ import androidx.core.content.ContextCompat
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.os.LocaleListCompat
 import com.pappt04.menzans.data.DummyData
@@ -52,7 +53,7 @@ import com.pappt04.menzans.data.FileDAO
 
 
 @Composable
-fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>) {
+fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>, materialyoutheme: MutableState<Boolean>, onBudget: MutableState<Boolean>) {
     val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
@@ -64,11 +65,21 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             DisclaimerCard(context)
         }
         item {
+            PriceSwitcher(context,onBudget)
+        }
+        item {
+            HorizontalDivider(modifier = Modifier.padding(10.dp))
+        }
+        item {
             LanguageChanger(context)
         }
+
         item {
             DarkThemeSwitcher(context, darkTheme)
             Log.i("DarkTheme status","$darkTheme")
+        }
+        item {
+            MaterialThemeSwitcher(context,materialyoutheme)
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         item {
@@ -182,6 +193,124 @@ fun DarkThemeSwitcher(context: Context, darkTheme: MutableState<Boolean>) {
 }
 
 
+@Composable
+fun MaterialThemeSwitcher(context: Context, materialyoutheme: MutableState<Boolean>) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            Text(
+                stringResource(R.string.use_materialyou_theme),
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
+                    )
+                ),
+                modifier = Modifier
+                    .weight(4f)
+            )
+            Switch(
+                checked = materialyoutheme.value,
+                onCheckedChange = {
+                    materialyoutheme.value = it
+                    var matyou=0
+                    matyou = if(materialyoutheme.value) {
+                        1
+                    } else {
+                        0
+                    }
+                    val fdao= FileDAO(context, DummyData.FileMaterialYouEnabled)
+                    fdao.saveToFile(matyou)
+                },
+                modifier = Modifier
+                    .weight(1f)
+            )
+        }
+    }
+}
+
+
+
+@Composable
+fun PriceSwitcher(context: Context, onBudget: MutableState<Boolean>) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            Text(
+                stringResource(R.string.self_financing),
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
+                    )
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            )
+            Switch(
+                checked = onBudget.value,
+                onCheckedChange = {
+                    onBudget.value = it
+                    var bgt=0
+                    bgt = if(onBudget.value) {
+                        1
+                    } else {
+                        0
+                    }
+                    val fdao= FileDAO(context, DummyData.FileMealPricing)
+                    fdao.saveToFile(bgt,false)
+                },
+                modifier = Modifier
+                    .weight(2f)
+                    .align(Alignment.CenterVertically)
+            )
+            Text(
+                stringResource(R.string.budget),
+                style = LocalTextStyle.current.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false
+                        ),
+                        lineHeightStyle = LineHeightStyle(
+                            alignment = LineHeightStyle.Alignment.Center,
+                            trim = LineHeightStyle.Trim.None
+                        )
+                    )
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageChanger(context: Context) {
@@ -280,6 +409,6 @@ fun DisclaimerCard(context: Context)
 fun PreviewSettingsScreen() {
     MenzaNSTheme {
         val dark = remember { mutableStateOf(false) }
-        SettingsScreen(PaddingValues(20.dp),dark)
+        SettingsScreen(PaddingValues(20.dp),dark,dark,dark)
     }
 }

@@ -1,7 +1,6 @@
 package com.pappt04.menzans.statistics
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.data.DummyData.MealSample
 import com.pappt04.menzans.data.DummyData.dataweek
 import com.pappt04.menzans.data.DummyData.datetypemonth
 import com.pappt04.menzans.data.DummyData.engmeals
@@ -69,12 +68,14 @@ import java.util.Date
 import androidx.compose.ui.tooling.preview.Preview
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.data.DummyData.MealSampleSelfFinancing
 import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.geolocation.findEngMeal
 import java.util.Locale
 
 @Composable
-fun StatisticsScreen(innerpadding: PaddingValues) {
+fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean>) {
     val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
@@ -172,7 +173,7 @@ fun StatisticsScreen(innerpadding: PaddingValues) {
                             .padding(2.dp)
                             .align(Alignment.CenterHorizontally)
                     )
-                    PredictedSpendingChart(selectedMonth, formattedStatisticsData)
+                    PredictedSpendingChart(selectedMonth, onBudget,formattedStatisticsData)
                 }
             }
         }
@@ -186,7 +187,7 @@ fun MealMonthChartColumn(data: List<EatingStatisticsData>) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
     val bottomaxisformatter = CartesianValueFormatter { _, x, _ ->
-        MealSample.get(x.toInt() % MealSample.size).name.asString(context)
+        MealSampleBudget[x.toInt() % MealSampleBudget.size].name.asString(context)
 
     }
 
@@ -265,7 +266,7 @@ fun MealWeekChartColumn(data: List<EatingStatisticsData>) {
                 columnProvider =
                 ColumnCartesianLayer.ColumnProvider.series(
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.secondary,
                         thickness = 4.dp,
                         shape =
                         CorneredShape.rounded(
@@ -274,7 +275,7 @@ fun MealWeekChartColumn(data: List<EatingStatisticsData>) {
                         ),
                     ),
                     rememberLineComponent(
-                        color = Color.Yellow,
+                        color = MaterialTheme.colorScheme.primary,
                         thickness = 4.dp
                     ),
                     rememberLineComponent(
@@ -312,8 +313,7 @@ fun MealWeekChartColumn(data: List<EatingStatisticsData>) {
 
 
 @Composable
-fun PredictedSpendingChart(selectedMonth: String,data: List<EatingStatisticsData>) {
-    val context = LocalContext.current
+fun PredictedSpendingChart(selectedMonth: String, onBudget: MutableState<Boolean>, data: List<EatingStatisticsData>) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
 
@@ -321,12 +321,17 @@ fun PredictedSpendingChart(selectedMonth: String,data: List<EatingStatisticsData
         modelProducer.runTransaction {
             lineSeries {
                 series(
-                    (1..Month.valueOf(selectedMonth.uppercase(Locale.ROOT)).maxLength()).toList(), getSpentMoney(context,selectedMonth,data)
+                    (1..Month.valueOf(selectedMonth.uppercase(Locale.ROOT)).maxLength()).toList(), getSpentMoney(
+                        onBudget,
+                        selectedMonth,
+                        data
+                    )
                 )
             }
         }
     }
 
+    val c =MaterialTheme.colorScheme.tertiary
     val marker = rememberMarker()
     CartesianChartHost(
         chart =
@@ -334,7 +339,7 @@ fun PredictedSpendingChart(selectedMonth: String,data: List<EatingStatisticsData
             rememberLineCartesianLayer(
                 LineCartesianLayer.LineProvider.series(
                     LineCartesianLayer.rememberLine(
-                        fill = remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) },
+                        fill = remember { LineCartesianLayer.LineFill.single(fill(c)) },
                         pointConnector = remember {
                             LineCartesianLayer.PointConnector.cubic(
                                 curvature = 0f
@@ -372,9 +377,8 @@ fun getMealNumber(data: List<EatingStatisticsData>, token: Uitext): Number {
 fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number> {
     val listmeals = mutableListOf<Int>()
     repeat(
-        7,
-        { listmeals += 0 }
-    )
+        7
+    ) { listmeals += 0 }
     for (d in data) {
         if (d.tokentype == token)
             listmeals[d.date.dayOfWeek.value - 1] = listmeals[d.date.dayOfWeek.value - 1] + 1
@@ -382,7 +386,11 @@ fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number>
     return listmeals
 }
 
-fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatisticsData>): List<Number> {
+fun getSpentMoney(
+    onBudget: MutableState<Boolean>,
+    selectedMonth: String,
+    data: List<EatingStatisticsData>
+): List<Number> {
 
     val daysInMonth: Int=Month.valueOf(selectedMonth.uppercase()).maxLength()
 
@@ -395,7 +403,10 @@ fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatis
                 var j = 0
                 for (e in engmeals) {
                     if (findEngMeal(d.tokentype) == e) {
-                        sum += MealSample[j].price
+                        sum += when(onBudget.value){
+                            true -> MealSampleBudget[j].price
+                            else -> MealSampleSelfFinancing[j].price
+                        }
                         break
                     }
                     j++
@@ -419,11 +430,13 @@ fun getSpentMoney(context: Context,selectedMonth: String,data: List<EatingStatis
 @Composable
 fun StatisticsScreenPreview() {
 
+    val b= remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
         }
     ) { innerPadding ->
-        StatisticsScreen(innerPadding)
+        StatisticsScreen(innerPadding,b)
     }
 }

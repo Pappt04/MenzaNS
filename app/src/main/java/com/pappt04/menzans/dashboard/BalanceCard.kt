@@ -48,6 +48,7 @@ fun BalanceCard(balance: MutableIntState)
     var showBalanceDialog by remember { mutableStateOf(false) }
 
     Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.3f)
@@ -62,10 +63,11 @@ fun BalanceCard(balance: MutableIntState)
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = stringResource(R.string.balance)+":",
+                text = stringResource(R.string.balance),
                 fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(6.dp)

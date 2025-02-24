@@ -91,14 +91,12 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
         return mealEventData
     }
 
-    fun findMeal(type: Uitext): String
+    private fun findMeal(type: Uitext): String
     {
-        var i = 0
-        for (m in DummyData.MealSample) {
+        for ((i, m) in DummyData.MealSampleBudget.withIndex()) {
             if (m.name == type) {
                  return DummyData.engmeals[i]
             }
-            i++
         }
         return ""
     }
