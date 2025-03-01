@@ -72,7 +72,7 @@ fun MealCard(meal: MealData, remaining: MutableIntState,icon: ImageVector, onCli
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.titleMedium,
                 )
-                AnimatedNumber(remaining)
+                AnimatedNumber(remaining, fontSize = MaterialTheme.typography.titleLarge.fontSize)
             }
         }
     }

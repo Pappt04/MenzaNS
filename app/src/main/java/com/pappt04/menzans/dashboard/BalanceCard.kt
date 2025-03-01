@@ -79,7 +79,7 @@ fun BalanceCard(balance: MutableIntState)
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
-                    text = " rsd",
+                    text = " "+stringResource(R.string.rsd),
                     fontSize = 40.sp,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(2.dp)

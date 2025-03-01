@@ -1,4 +1,4 @@
-package com.pappt04.menzans
+package com.pappt04.menzans.settings
 
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.os.LocaleListCompat
+import com.pappt04.menzans.R
 import com.pappt04.menzans.data.DummyData
 import com.pappt04.menzans.data.DummyData.permissionsNeeded
 import com.pappt04.menzans.data.FileDAO
@@ -240,147 +241,6 @@ fun MaterialThemeSwitcher(context: Context, materialyoutheme: MutableState<Boole
     }
 }
 
-
-
-@Composable
-fun PriceSwitcher(context: Context, onBudget: MutableState<Boolean>) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-        ) {
-            Text(
-                stringResource(R.string.self_financing),
-                style = LocalTextStyle.current.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            )
-            Switch(
-                checked = onBudget.value,
-                onCheckedChange = {
-                    onBudget.value = it
-                    var bgt=0
-                    bgt = if(onBudget.value) {
-                        1
-                    } else {
-                        0
-                    }
-                    val fdao= FileDAO(context, DummyData.FileMealPricing)
-                    fdao.saveToFile(bgt,false)
-                },
-                modifier = Modifier
-                    .weight(2f)
-                    .align(Alignment.CenterVertically)
-            )
-            Text(
-                stringResource(R.string.budget),
-                style = LocalTextStyle.current.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            )
-        }
-    }
-}
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LanguageChanger(context: Context) {
-    var isExpanded by remember { mutableStateOf(false) }
-
-    val localeOptions = mapOf(
-        R.string.en to "en",
-        R.string.hu to "hu",
-        R.string.sr to "sr",
-    ).mapKeys { stringResource(it.key) }
-
-    var selectedText by remember { mutableStateOf("english") }
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(
-                stringResource(R.string.change_your_language),
-                style = LocalTextStyle.current.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ),
-                modifier = Modifier
-                    .weight(3f)
-            )
-            ExposedDropdownMenuBox(
-                expanded = isExpanded,
-                onExpandedChange = { isExpanded = !isExpanded },
-                modifier = Modifier
-                    .weight(2f)
-            ) {
-                TextField(
-                    modifier = Modifier.menuAnchor(),
-                    readOnly = true,
-                    value = stringResource(R.string.language),
-                    onValueChange = {},
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
-                )
-                ExposedDropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false }) {
-                    localeOptions.keys.forEach { selectionLocale ->
-                        DropdownMenuItem(
-                            onClick = {
-                                isExpanded = false
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags(
-                                        localeOptions[selectionLocale]
-                                    )
-                                )
-                            },
-                            text = { Text(selectionLocale) }
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun DisclaimerCard(context: Context)

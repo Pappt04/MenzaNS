@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.google.android.gms.location.Geofence
 import com.pappt04.menzans.R
 import java.text.SimpleDateFormat
@@ -33,7 +34,7 @@ object DummyData {
     var MealSampleSelfFinancing = listOf(
         MealData(MealSampleBudget[0].name, 138, MealSampleBudget[0].start_hour, MealSampleBudget[0].start_minute, MealSampleBudget[0].end_hour, MealSampleBudget[0].end_minute),
         MealData(MealSampleBudget[1].name, 326, MealSampleBudget[1].start_hour, MealSampleBudget[1].start_minute, MealSampleBudget[1].end_hour, MealSampleBudget[1].end_minute),
-        MealData(MealSampleBudget[0].name, 262, MealSampleBudget[2].start_hour, MealSampleBudget[2].start_minute, MealSampleBudget[2].end_hour, MealSampleBudget[2].end_minute)
+        MealData(MealSampleBudget[2].name, 262, MealSampleBudget[2].start_hour, MealSampleBudget[2].start_minute, MealSampleBudget[2].end_hour, MealSampleBudget[2].end_minute)
     )
 
     val mealIcons = listOf(
@@ -273,5 +274,13 @@ object DummyData {
 
     const val BASE_SERVER_URL="https://apollo4.duckdns.org/"
     const val BASE_API_NAME="/menzaapi"
+
+    val FINANCING_KEY = "financingPreferenceKey"
+    val DARK_THEME_KEY = "darkthemePreferenceKey"
+    val MATERIALYOU_THEME_KEY = "materialyouPreferenceKey"
+
+    val BREAKFAST_KEY= "breakfastKey"
+    val LUNCH_KEY= "lunchKey"
+    val DINNER_KEY= "dinnerKey"
 
 }

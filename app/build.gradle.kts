@@ -11,8 +11,8 @@ android {
         applicationId = "com.pappt04.menzans"
         minSdk = 29
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.0.3-alpha"
+        versionCode = 4
+        versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -102,6 +102,13 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.ui.text.google.fonts)
+
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.core)
+
+    implementation(libs.androidx.datastore.preferences.rxjava3)
+    implementation(libs.androidx.datastore.rxjava3)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

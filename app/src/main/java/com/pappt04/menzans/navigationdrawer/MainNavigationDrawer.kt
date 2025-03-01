@@ -1,6 +1,7 @@
 package com.pappt04.menzans.navigationdrawer
 
 import android.content.res.Configuration
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +50,7 @@ import com.pappt04.menzans.EditScreen
 import com.pappt04.menzans.InfoScreen
 import com.pappt04.menzans.R
 import com.pappt04.menzans.Screen
-import com.pappt04.menzans.SettingsScreen
+import com.pappt04.menzans.settings.SettingsScreen
 import com.pappt04.menzans.dashboard.DashboardScreen
 import com.pappt04.menzans.dashboard.MyViewModel
 import com.pappt04.menzans.data.DummyData
@@ -87,7 +89,7 @@ fun MainNavigationDrawer(
         0 -> stringResource(R.string.app_name)
         1 -> stringResource(R.string.statistics)
         2 -> stringResource(R.string.info)
-        3 -> stringResource(R.string.edit)
+        3 -> stringResource(R.string.card)
         else -> stringResource(R.string.settings)
     }
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
@@ -143,13 +145,17 @@ fun MainNavigationDrawer(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ), title = {
-                    if(!firstWelcome.value)
-                    Text(
-                        screenTitle,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
+                    if(!firstWelcome.value) {
+                        Text(
+                            screenTitle,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.basicMarquee()
+                        )
+                    }
                 }, navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {
