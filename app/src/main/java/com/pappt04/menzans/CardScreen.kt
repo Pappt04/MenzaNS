@@ -6,16 +6,16 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomAppBar
@@ -56,7 +56,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -138,7 +137,7 @@ fun EditScreen(
                                 ISICcardnumber,
                                 context
                             )
-                            saveCardData(context, editbreakfast, editlunch, editdinner, editbalance)
+                            saveCardData(context, editbreakfast, editlunch, editdinner, editbalance,remainingOnCard)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -385,7 +384,7 @@ fun EditScreen(
                             },
                             suffix = {
                                 Text(
-                                    "rsd",
+                                    stringResource(R.string.rsd),
                                     fontSize = 22.sp
                                 )
                             },
@@ -608,16 +607,13 @@ fun saveCardData(
     breakfast: MutableState<Int>,
     lunch: MutableState<Int>,
     dinner: MutableState<Int>,
-    balance: MutableState<Int>
+    balance: MutableState<Int>,
+    remainingOnCard: SnapshotStateList<Int>,
 ) {
-    val meals= intArrayOf(breakfast.value,lunch.value,dinner.value,balance.value)
-
-    var i = 0
-    for (x in meals)
-    {
-        val dao= FileDAO(context, DummyData.FileNames[i++])
-        dao.saveToFile(x,false)
-    }
+    remainingOnCard[0]=breakfast.value
+    remainingOnCard[1]=lunch.value
+    remainingOnCard[2]=dinner.value
+    remainingOnCard[3]=balance.value
 }
 
 

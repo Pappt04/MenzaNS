@@ -102,4 +102,5 @@
     <string name="budget">Budget</string>
     <string name="use_materialyou_theme">Use MaterialYou theme</string>
     <string name="precision">Precision: %1$s</string>
+    <string name="rsd" translatable="false">rsd</string>
 </resources>

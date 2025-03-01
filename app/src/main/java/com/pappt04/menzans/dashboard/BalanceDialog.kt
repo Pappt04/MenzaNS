@@ -83,7 +83,7 @@ fun BalanceDialog(
                             )
                         },
                         suffix = {
-                            Text("rsd",
+                            Text(stringResource(R.string.rsd),
                                 fontSize = 22.sp
                             )
                         },
