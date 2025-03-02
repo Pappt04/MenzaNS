@@ -73,10 +73,7 @@ fun DashboardScreen(
     lazyListState: LazyListState = rememberLazyListState()
 ) {
 
-    var lineGraphMap = remember { mutableStateMapOf<String,Double>() }
     val uiState by viewModel.uiState.collectAsState()
-
-
     viewModel.fetchData()
 
     val context= LocalContext.current
@@ -101,14 +98,6 @@ fun DashboardScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         },
-        floatingActionButtonPosition = FabPosition.End,
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                showBalanceDialog = true
-            }) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add))
-            }
-        }
     ) { innerPadding ->
         Box(
             modifier = Modifier

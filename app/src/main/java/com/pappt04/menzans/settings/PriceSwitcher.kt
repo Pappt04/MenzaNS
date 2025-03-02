@@ -18,11 +18,8 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
-import com.pappt04.menzans.SettingsDataStorage
 import com.pappt04.menzans.data.DummyData
 import com.pappt04.menzans.data.FileDAO
-import com.pappt04.menzans.data.settingsdatastorage.SettingsPreferenceKeys
-import com.pappt04.menzans.data.settingsdatastorage.updateBoolean
 
 @Composable
 fun PriceSwitcher(context: Context, onBudget: MutableState<Boolean>) {
@@ -56,14 +53,14 @@ fun PriceSwitcher(context: Context, onBudget: MutableState<Boolean>) {
                 checked = onBudget.value,
                 onCheckedChange = {
                     onBudget.value = it
-                    var bgt=0
-                    bgt = if(onBudget.value) {
+                    var bgt = 0
+                    bgt = if (onBudget.value) {
                         1
                     } else {
                         0
                     }
-                    val fdao= FileDAO(context, DummyData.FileMealPricing)
-                    fdao.saveToFile(bgt,false)
+                    val fdao = FileDAO(context, DummyData.FileMealPricing)
+                    fdao.saveToFile(bgt, false)
 
                     //SettingsDataStorage.updateBoolean(onBudget.value,DummyData.FINANCING_KEY,SettingsPreferenceKeys.FINANCING_PREFERENCE)
                 },

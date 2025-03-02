@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class SettingsDataCoordinator {
     companion object {
-        val shared= SettingsDataCoordinator()
         const val identifier = "[DataCoordinator]"
     }
     var context: Context?=null

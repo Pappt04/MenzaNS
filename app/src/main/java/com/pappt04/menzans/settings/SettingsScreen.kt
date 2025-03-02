@@ -66,21 +66,19 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             DisclaimerCard(context)
         }
         item {
-            PriceSwitcher(context,onBudget)
-        }
-        item {
             HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
         item {
             LanguageChanger(context)
         }
-
         item {
-            DarkThemeSwitcher(context, darkTheme)
-            Log.i("DarkTheme status","$darkTheme")
+            SettingSwitch(darkTheme, stringResource(R.string.use_dark_theme),DummyData.FileDarkThemeEnabled)
         }
         item {
-            MaterialThemeSwitcher(context,materialyoutheme)
+            SettingSwitch(materialyoutheme, stringResource(R.string.use_materialyou_theme),DummyData.FileMaterialYouEnabled)
+        }
+        item {
+            PriceSwitcher(context,onBudget)
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         item {
@@ -89,6 +87,47 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             }
         }
 
+    }
+}
+
+@Composable
+fun SettingSwitch(pref: MutableState<Boolean>,name: String,filename:String)
+{
+    val context= LocalContext.current
+    Row(
+        modifier = Modifier
+            .padding(10.dp)
+    ) {
+        Text(
+            name,
+            style = LocalTextStyle.current.merge(
+                TextStyle(
+                    lineHeight = 2.5.em,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    ),
+                    lineHeightStyle = LineHeightStyle(
+                        alignment = LineHeightStyle.Alignment.Center,
+                        trim = LineHeightStyle.Trim.None
+                    )
+                )
+            ),
+            modifier = Modifier
+                .weight(4f)
+        )
+        Switch(
+            checked = pref.value,
+            onCheckedChange = {
+                pref.value = it
+
+                val dark= if(pref.value) 1 else 0
+
+                var fdao= FileDAO(context,filename)
+                fdao.saveToFile(dark,false)
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
     }
 }
 
@@ -137,102 +176,6 @@ fun PermissionSwitch(context: Context, permissionType: String) {
                     }
                 } else {
                     null
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-fun DarkThemeSwitcher(context: Context, darkTheme: MutableState<Boolean>) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-        ) {
-            Text(
-                stringResource(R.string.use_dark_theme),
-                style = LocalTextStyle.current.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ),
-                modifier = Modifier
-                    .weight(4f)
-            )
-            Switch(
-                checked = darkTheme.value,
-                onCheckedChange = {
-                    darkTheme.value = it
-                    var dark=0
-                    if(darkTheme.value) {
-                        dark = 1
-                    }
-                    else {
-                        dark = 0
-                    }
-                    var fdao= FileDAO(context, DummyData.FileDarkThemeEnabled)
-                    fdao.saveToFile(dark,false)
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-    }
-}
-
-
-@Composable
-fun MaterialThemeSwitcher(context: Context, materialyoutheme: MutableState<Boolean>) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-        ) {
-            Text(
-                stringResource(R.string.use_materialyou_theme),
-                style = LocalTextStyle.current.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ),
-                modifier = Modifier
-                    .weight(4f)
-            )
-            Switch(
-                checked = materialyoutheme.value,
-                onCheckedChange = {
-                    materialyoutheme.value = it
-                    var matyou=0
-                    matyou = if(materialyoutheme.value) {
-                        1
-                    } else {
-                        0
-                    }
-                    val fdao= FileDAO(context, DummyData.FileMaterialYouEnabled)
-                    fdao.saveToFile(matyou)
                 },
                 modifier = Modifier
                     .weight(1f)

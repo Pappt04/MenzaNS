@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -39,59 +38,54 @@ fun LanguageChanger(context: Context) {
         R.string.sr to "sr",
     ).mapKeys { stringResource(it.key) }
 
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
+    Row(
+        modifier = Modifier.padding(10.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(10.dp)
-        ) {
-            Text(
-                stringResource(R.string.change_your_language),
-                style = LocalTextStyle.current.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
+        Text(
+            stringResource(R.string.change_your_language),
+            style = LocalTextStyle.current.merge(
+                TextStyle(
+                    lineHeight = 2.5.em,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    ),
+                    lineHeightStyle = LineHeightStyle(
+                        alignment = LineHeightStyle.Alignment.Center,
+                        trim = LineHeightStyle.Trim.None
                     )
-                ),
-                modifier = Modifier
-                    .weight(3f)
-            )
-            ExposedDropdownMenuBox(
-                expanded = isExpanded,
-                onExpandedChange = { isExpanded = !isExpanded },
-                modifier = Modifier
-                    .weight(2f)
-            ) {
-                TextField(
-                    modifier = Modifier.menuAnchor(),
-                    readOnly = true,
-                    value = stringResource(R.string.language),
-                    onValueChange = {},
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
                 )
-                ExposedDropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false }) {
-                    localeOptions.keys.forEach { selectionLocale ->
-                        DropdownMenuItem(
-                            onClick = {
-                                isExpanded = false
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags(
-                                        localeOptions[selectionLocale]
-                                    )
+            ),
+            modifier = Modifier
+                .weight(3f)
+        )
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = !isExpanded },
+            modifier = Modifier
+                .weight(2f)
+        ) {
+            TextField(
+                modifier = Modifier.menuAnchor(),
+                readOnly = true,
+                value = stringResource(R.string.language),
+                onValueChange = {},
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false }) {
+                localeOptions.keys.forEach { selectionLocale ->
+                    DropdownMenuItem(
+                        onClick = {
+                            isExpanded = false
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags(
+                                    localeOptions[selectionLocale]
                                 )
-                            },
-                            text = { Text(selectionLocale) }
-                        )
-                    }
+                            )
+                        },
+                        text = { Text(selectionLocale) }
+                    )
                 }
             }
         }

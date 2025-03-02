@@ -28,7 +28,6 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 lateinit var UserID: UserIDString
 
-lateinit var SettingsDataStorage: SettingsDataCoordinator
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,8 +58,6 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val context = LocalContext.current
-
-            SettingsDataStorage.initialize(context) {}
 
             val theme = remember { mutableStateOf(false) }
 

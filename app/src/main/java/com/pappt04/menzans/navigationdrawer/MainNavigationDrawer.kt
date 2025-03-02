@@ -2,11 +2,15 @@ package com.pappt04.menzans.navigationdrawer
 
 import android.content.res.Configuration
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -83,8 +87,6 @@ fun MainNavigationDrawer(
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
 
-    var mvm= MyViewModel()
-
     val screenTitle = when (selectedItemIndex) {
         0 -> stringResource(R.string.app_name)
         1 -> stringResource(R.string.statistics)
@@ -141,34 +143,7 @@ fun MainNavigationDrawer(
     }) {
         Scaffold(
             topBar = {
-                TopAppBar(colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ), title = {
-                    if(!firstWelcome.value) {
-                        Text(
-                            screenTitle,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.basicMarquee()
-                        )
-                    }
-                }, navigationIcon = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.menu_description)
-                        )
-                    }
-                }
-                )
+                MenzaTopBar(firstWelcome,drawerState,screenTitle)
             },
         ) { innerpadding ->
             navController.addOnDestinationChangedListener { controller, destination, arguments ->

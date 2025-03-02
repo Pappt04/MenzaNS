@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -137,7 +138,14 @@ fun EditScreen(
                                 ISICcardnumber,
                                 context
                             )
-                            saveCardData(context, editbreakfast, editlunch, editdinner, editbalance,remainingOnCard)
+                            saveCardData(
+                                context,
+                                editbreakfast,
+                                editlunch,
+                                editdinner,
+                                editbalance,
+                                remainingOnCard
+                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -162,7 +170,7 @@ fun EditScreen(
                     ),
                     border = BorderStroke(1.dp, Color.Black),
                     modifier = Modifier
-                        .padding(4.dp,innerpadding.calculateTopPadding()+8.dp,4.dp,4.dp)
+                        .padding(4.dp, innerpadding.calculateTopPadding() + 8.dp, 4.dp, 4.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -325,7 +333,7 @@ fun EditScreen(
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.breakfast)+": ${remainingOnCard[0]}") },
+                                label = { Text(stringResource(R.string.breakfast) + ": ${remainingOnCard[0]}") },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -340,7 +348,7 @@ fun EditScreen(
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.lunch)+": ${remainingOnCard[1]}") },
+                                label = { Text(stringResource(R.string.lunch) + ": ${remainingOnCard[1]}") },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -355,7 +363,7 @@ fun EditScreen(
                                     }
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.dinner)+": ${remainingOnCard[2]}") },
+                                label = { Text(stringResource(R.string.dinner) + ": ${remainingOnCard[2]}") },
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxWidth()
@@ -371,7 +379,7 @@ fun EditScreen(
                                 }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.balance)+": ${remainingOnCard[3]}") },
+                            label = { Text(stringResource(R.string.balance) + ": ${remainingOnCard[3]}") },
                             textStyle = LocalTextStyle.current.copy(
                                 textAlign = TextAlign.Right,
                                 fontSize = 22.sp
@@ -610,10 +618,10 @@ fun saveCardData(
     balance: MutableState<Int>,
     remainingOnCard: SnapshotStateList<Int>,
 ) {
-    remainingOnCard[0]=breakfast.value
-    remainingOnCard[1]=lunch.value
-    remainingOnCard[2]=dinner.value
-    remainingOnCard[3]=balance.value
+    remainingOnCard[0] = breakfast.value
+    remainingOnCard[1] = lunch.value
+    remainingOnCard[2] = dinner.value
+    remainingOnCard[3] = balance.value
 }
 
 
@@ -633,7 +641,7 @@ fun PreviewEditScreen() {
         val savedholderdata = remember {
             List(9) { "Data ${indexToLetter(it)}" } // Create a list with 9 elements
         }
-        val remainingOnCard = remember { mutableStateListOf(10, 20, 30, 40, 50, 60, 70, 80,90) }
+        val remainingOnCard = remember { mutableStateListOf(10, 20, 30, 40, 50, 60, 70, 80, 90) }
         MaterialTheme {
             EditScreen(savedholderdata, remainingOnCard, PaddingValues(0.dp))
         }

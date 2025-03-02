@@ -122,7 +122,7 @@ object DummyData {
         ),
 
         NavigationItem(
-            title = Uitext.StringResource(R.string.edit),
+            title = Uitext.StringResource(R.string.card),
             selectedIcon = Icons.Filled.Edit,
             unselectedIcon = Icons.Outlined.Edit,
             route = "EditScreen"
