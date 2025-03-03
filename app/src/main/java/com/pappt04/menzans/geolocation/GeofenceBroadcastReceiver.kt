@@ -16,11 +16,13 @@ import com.pappt04.menzans.data.DummyData.datetypemonth
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.data.MealData
-import com.pappt04.menzans.statistics.StatisticsFileDAO
 import com.pappt04.menzans.data.Uitext
-import com.pappt04.menzans.UserID
-import com.pappt04.menzans.data.DummyData.MealSampleBudget
-import com.pappt04.menzans.data.DummyData.MealSampleSelfFinancing
+import com.pappt04.menzans.appui.UserID
+import com.pappt04.menzans.data.FileContainer
+import com.pappt04.menzans.data.MealSample
+import com.pappt04.menzans.data.MealSample.MealSampleBudget
+import com.pappt04.menzans.data.MealSample.MealSampleSelfFinancing
+import com.pappt04.menzans.data.StatisticsFileDAO
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
 import com.pappt04.menzans.data.sendEnterEvent
@@ -63,7 +65,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
                 Log.i(TAG,"GEOFENCE ENTERED")
                 val currentTime = datetypeclock.format(Date())
-                context.openFileOutput(DummyData.FileGeoFenceEntered, Context.MODE_PRIVATE).use {
+                context.openFileOutput(FileContainer.FileGeoFenceEntered, Context.MODE_PRIVATE).use {
                     it.write(currentTime.toByteArray())
                 }
 
@@ -77,8 +79,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 var timeEntered = ""
                 val files: Array<String> = context.fileList()
 
-                if (DummyData.FileGeoFenceEntered in files) {
-                    context.openFileInput(DummyData.FileGeoFenceEntered).bufferedReader()
+                if (FileContainer.FileGeoFenceEntered in files) {
+                    context.openFileInput(FileContainer.FileGeoFenceEntered).bufferedReader()
                         .useLines { lines ->
                             lines.fold("") { some, text ->
                                 timeEntered = "$some$text"
@@ -132,7 +134,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         if(mealdata!= null){
             var mealIndex= findMealIndex(mealdata)
 
-            var dao= FileDAO(context, DummyData.FileNames[mealIndex])
+            var dao= FileDAO(context, FileContainer.FileNames[mealIndex])
 
             val currentTokens = dao.readFromFile()
             dao.saveToFile(currentTokens.toInt()-1,true)
@@ -155,7 +157,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 fun findEngMeal(type: Uitext): String
 {
     var i = 0
-    for (m in DummyData.MealSampleBudget) {
+    for (m in MealSample.MealSampleBudget) {
         if (m.name == type) {
             return DummyData.engmeals[i]
         }

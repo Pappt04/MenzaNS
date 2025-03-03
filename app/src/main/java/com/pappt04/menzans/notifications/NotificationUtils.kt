@@ -7,9 +7,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.MainActivity
+import com.pappt04.menzans.appui.MainActivity
 import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.FileContainer
+import com.pappt04.menzans.data.MealSample
 
 fun createChannel(context: Context) {
     for (channel in DummyData.CHANNEL_IDs) {
@@ -103,14 +105,14 @@ fun NotificationManager.sendAutomaticDeductNotification(context: Context, minute
 
 fun NotificationManager.sendTopUpReminder(context: Context, file: String, remaining: Int) {
     var i = 0
-    for (name in DummyData.FileNames) {
+    for (name in FileContainer.FileNames) {
         if (file == name)
             break
         i++
     }
     var s1 = ""
     try {
-        s1 = DummyData.MealSampleBudget[i].name.asString(context)
+        s1 = MealSample.MealSampleBudget[i].name.asString(context)
     } catch (_: Exception) {}
 
     val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[1])

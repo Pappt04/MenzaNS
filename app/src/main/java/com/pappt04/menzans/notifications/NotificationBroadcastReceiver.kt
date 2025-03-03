@@ -6,8 +6,9 @@ import android.content.Intent
 import com.pappt04.menzans.data.DummyData
 import com.pappt04.menzans.data.DummyData.engmeals
 import com.pappt04.menzans.data.FileDAO
-import com.pappt04.menzans.UserID
-import com.pappt04.menzans.data.DummyData.MealSampleBudget
+import com.pappt04.menzans.appui.UserID
+import com.pappt04.menzans.data.FileContainer
+import com.pappt04.menzans.data.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.sendExitEvent
 
 class NotificationBroadcastReceiver : BroadcastReceiver() {
@@ -39,12 +40,12 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
             //Maybe it should just check entered time
             val currentTokens = context.let {
-                var fdao= FileDAO(it, DummyData.FileNames[mealIndex])
+                var fdao= FileDAO(it, FileContainer.FileNames[mealIndex])
                 fdao.getDAOData()
             }
             context.let {
                 if (currentTokens.toInt() >= usedMeals) {
-                    var fdao= FileDAO(it, DummyData.FileNames[mealIndex])
+                    var fdao= FileDAO(it, FileContainer.FileNames[mealIndex])
                     fdao.saveToFile(currentTokens.toInt()-usedMeals,true)
 
                     if(UserID.userid != "")
