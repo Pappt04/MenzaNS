@@ -1,13 +1,11 @@
 package com.pappt04.menzans.appui.settings
 
 import android.content.Context
-import androidx.compose.foundation.layout.PaddingValues
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,44 +16,43 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
-import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextAlign
-import androidx.core.os.LocaleListCompat
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.DummyData
 import com.pappt04.menzans.data.DummyData.permissionsNeeded
 import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.FileDAO
+import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 
 @Composable
-fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>, materialyoutheme: MutableState<Boolean>, onBudget: MutableState<Boolean>) {
+fun SettingsScreen(
+    innerpadding: PaddingValues,
+    darkTheme: MutableState<Boolean>,
+    materialyoutheme: MutableState<Boolean>,
+    onBudget: MutableState<Boolean>
+) {
     val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
@@ -63,7 +60,7 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        item{
+        item {
             DisclaimerCard(context)
         }
         item {
@@ -73,13 +70,24 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
             LanguageChanger(context)
         }
         item {
-            SettingSwitch(darkTheme, stringResource(R.string.use_dark_theme),FileContainer.FileDarkThemeEnabled)
+            SettingSwitch(
+                darkTheme,
+                stringResource(R.string.use_dark_theme),
+                FileContainer.FileDarkThemeEnabled
+            )
         }
         item {
-            SettingSwitch(materialyoutheme, stringResource(R.string.use_materialyou_theme),FileContainer.FileMaterialYouEnabled)
+            SettingSwitch(
+                materialyoutheme,
+                stringResource(R.string.use_materialyou_theme),
+                FileContainer.FileMaterialYouEnabled
+            )
         }
         item {
-            PriceSwitcher(context,onBudget)
+            PriceSwitcher(onBudget)
+        }
+        item {
+            TokenLimitSlider()
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         item {
@@ -92,16 +100,15 @@ fun SettingsScreen(innerpadding: PaddingValues, darkTheme: MutableState<Boolean>
 }
 
 @Composable
-fun SettingSwitch(pref: MutableState<Boolean>,name: String,filename:String)
-{
-    val context= LocalContext.current
+fun SettingSwitch(pref: MutableState<Boolean>, name: String, filename: String) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(10.dp)
     ) {
         Text(
             name,
-            style = LocalTextStyle.current.merge(
+            style = MaterialTheme.typography.titleLarge.merge(
                 TextStyle(
                     lineHeight = 2.5.em,
                     platformStyle = PlatformTextStyle(
@@ -121,10 +128,10 @@ fun SettingSwitch(pref: MutableState<Boolean>,name: String,filename:String)
             onCheckedChange = {
                 pref.value = it
 
-                val dark= if(pref.value) 1 else 0
+                val dark = if (pref.value) 1 else 0
 
-                val fdao= FileDAO(context,filename)
-                fdao.saveToFile(dark,false)
+                val fdao = FileDAO(context, filename)
+                fdao.saveToFile(dark, false)
             },
             modifier = Modifier
                 .weight(1f)
@@ -187,10 +194,11 @@ fun PermissionSwitch(context: Context, permissionType: String) {
 
 
 @Composable
-fun DisclaimerCard(context: Context)
-{
-    Card(modifier = Modifier
-        .padding(8.dp)) {
+fun DisclaimerCard(context: Context) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+    ) {
         Text(
             text = stringResource(R.string.disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad),
             textAlign = TextAlign.Center,
@@ -213,6 +221,6 @@ fun DisclaimerCard(context: Context)
 fun PreviewSettingsScreen() {
     MenzaNSTheme {
         val dark = remember { mutableStateOf(false) }
-        SettingsScreen(PaddingValues(20.dp),dark,dark,dark)
+        SettingsScreen(PaddingValues(20.dp), dark, dark, dark)
     }
 }

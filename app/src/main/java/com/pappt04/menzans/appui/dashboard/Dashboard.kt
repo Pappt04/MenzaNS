@@ -1,7 +1,6 @@
 package com.pappt04.menzans.appui.dashboard
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -19,6 +18,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,7 +59,7 @@ import kotlinx.coroutines.launch
 fun DashboardScreen(
     meals: List<MealData>,
     remainingOnCard: SnapshotStateList<Int>,
-    viewModel: MyViewModel,
+    viewModel: GraphCardViewModel,
     waitime: MutableIntState,
     padding: PaddingValues,
     snackbar: SnackbarHostState,
@@ -65,7 +67,6 @@ fun DashboardScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-    viewModel.fetchData()
 
     val context = LocalContext.current
 
@@ -150,6 +151,7 @@ fun DashboardScreen(
             item {
                 when (uiState) {
                     is UiState.Loading -> {
+                        //viewModel.fetchData()
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                                 .fillMaxWidth()
@@ -161,7 +163,15 @@ fun DashboardScreen(
 
                     is UiState.Success -> {
                         val data = (uiState as UiState.Success).data
-                        LineSizeGraphCard(data)
+                        Card(
+                            colors = CardColors(MaterialTheme.colorScheme.tertiaryContainer,
+                                CardDefaults.cardColors().contentColor,
+                                CardDefaults.cardColors().disabledContainerColor,
+                                CardDefaults.cardColors().disabledContentColor),
+                            modifier = Modifier.padding(8.dp)
+                        ){
+                            LineSizeGraph(data)
+                        }
                     }
 
                     is UiState.Error -> {
@@ -170,7 +180,14 @@ fun DashboardScreen(
                     }
 
                     is UiState.Empty -> {
-
+                        viewModel.fetchData()
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center)
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
             }
@@ -220,7 +237,7 @@ fun PreviewScaffold() {
                     CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
                 }
             ) { innerPadding ->
-                DashboardScreen(meals, remainingOnCard, MyViewModel(), wt, innerPadding,snack)
+                DashboardScreen(meals, remainingOnCard, GraphCardViewModel(), wt, innerPadding,snack)
             }
         }
     }

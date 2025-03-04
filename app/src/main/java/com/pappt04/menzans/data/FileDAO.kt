@@ -36,7 +36,15 @@ open class FileDAO(var context: Context, private var fileName:String) {
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
             it.write(s1.toByteArray())
         }
-        if (fileName in FileContainer.FileNames && remaining <= DummyData.MINIMUM_TOKEN_TRESHOLD && notify) {
+        var tokenlimit=DummyData.MINIMUM_TOKEN_TRESHOLD
+        try {
+            val dao = FileDAO(context, FileContainer.FileTokenLimit)
+            val tokenlimitstring = dao.readFromFile()
+            tokenlimit=tokenlimitstring.toInt()
+        } catch (_:Exception) {}
+
+
+        if (fileName in FileContainer.FileNames && remaining <= tokenlimit && notify) {
             val notificationManager = context.let {
                 ContextCompat.getSystemService(
                     it,

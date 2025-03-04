@@ -1,6 +1,5 @@
 package com.pappt04.menzans.appui.dashboard
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import com.patrykandpatrick.vico.compose.cartesian.cartesianLayerPadding
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.cartesian.rememberFadingEdges
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
@@ -37,14 +35,11 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
-import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
 import kotlin.math.absoluteValue
@@ -58,7 +53,7 @@ sealed class UiState {
     data class Error(val message: String) : UiState()
 }
 
-class MyViewModel : androidx.lifecycle.ViewModel() {
+class GraphCardViewModel : androidx.lifecycle.ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -79,7 +74,7 @@ class MyViewModel : androidx.lifecycle.ViewModel() {
 }
 
 @Composable
-fun LineSizeGraphCard(linemap: Map<String, Double>) {
+fun LineSizeGraph(linemap: Map<String, Double>) {
     val modelProducer = remember { CartesianChartModelProducer() }
     val context= LocalContext.current
 
@@ -93,7 +88,7 @@ fun LineSizeGraphCard(linemap: Map<String, Double>) {
         }
     }
 
-    val c = MaterialTheme.colorScheme.tertiary
+    val c = MaterialTheme.colorScheme.secondary
 
     val marker = rememberMarker()
     CartesianChartHost(
@@ -116,7 +111,7 @@ fun LineSizeGraphCard(linemap: Map<String, Double>) {
                     color = c,
                     margins = dimensions(top = 4.dp),
                     padding = dimensions(8.dp, 2.dp),
-                    background = shapeComponent(MaterialTheme.colorScheme.tertiaryContainer, CorneredShape.Pill),
+
                 ),
                 title = stringResource(R.string.wait_time_min)
             ),

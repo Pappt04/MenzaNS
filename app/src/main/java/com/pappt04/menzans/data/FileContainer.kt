@@ -9,5 +9,5 @@ object FileContainer {
     val FileDataSharingEnabled= "datasharingenabled"
     val FileMealPricing="mealpricing"
     val FileUserID ="userid"
-
+    val FileTokenLimit="tokenlimit"
 }

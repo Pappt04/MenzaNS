@@ -22,7 +22,7 @@ import com.pappt04.menzans.appui.CardScreen
 import com.pappt04.menzans.appui.InfoScreen
 import com.pappt04.menzans.appui.bottomnavigation.MenzaBottomNavigation
 import com.pappt04.menzans.appui.dashboard.DashboardScreen
-import com.pappt04.menzans.appui.dashboard.MyViewModel
+import com.pappt04.menzans.appui.dashboard.GraphCardViewModel
 import com.pappt04.menzans.appui.settings.SettingsScreen
 import com.pappt04.menzans.appui.statistics.StatisticsScreen
 import com.pappt04.menzans.appui.welcome.WelcomeScreen
@@ -54,7 +54,7 @@ fun MenzaScaffold(
 
     Scaffold(
         topBar = {
-            MenzaTopBar(firstWelcome, drawerState, screenTitle)
+            MenzaTopBar(firstWelcome,waittime, drawerState, screenTitle)
         },
         snackbarHost = {
             SnackbarHost(
@@ -69,12 +69,16 @@ fun MenzaScaffold(
         val graph =
             navController.createGraph(startDestination = Screen.DashboardScreen.route) {
                 composable(route = Screen.DashboardScreen.route) {
-                    DashboardScreen(
-                        when (onBudgetPricing.value) {
-                            true -> MealSampleBudget
-                            else -> MealSampleSelfFinancing
-                        }, savedMeals, MyViewModel(), waittime, innerpadding, snackbarHostState
-                    )
+                    if (firstWelcome.value) {
+                        WelcomeScreen(onCompleted = { firstWelcome.value = false }, innerpadding)
+                    } else {
+                        DashboardScreen(
+                            when (onBudgetPricing.value) {
+                                true -> MealSampleBudget
+                                else -> MealSampleSelfFinancing
+                            }, savedMeals, GraphCardViewModel(), waittime, innerpadding, snackbarHostState
+                        )
+                    }
                 }
                 composable(route = Screen.StatisticsScreen.route) {
                     StatisticsScreen(innerpadding, onBudgetPricing)
@@ -140,6 +144,9 @@ fun MenzaScaffold(
  */
     }
 }
+
+
+
 
 fun loadCardHolder(context: Context): List<String> {
     val files: Array<String> = context.fileList()

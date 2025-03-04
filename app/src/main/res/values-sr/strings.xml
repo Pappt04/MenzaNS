@@ -37,7 +37,7 @@
     <string name="consume">Potroši</string>
     <string name="add">Dodaj</string>
     <string name="record_your_consumed_meals_notification">Zabiležete svoje konzumirane obroke</string>
-    <string name="we_think_you_were_at_menza_from_to_notification">Mislimo da ste bili u menzi od %1$s do %2$s</string>
+    <string name="we_think_you_were_at_menza_from_to_notification">Bio si na menzu od %1$s do %2$s</string>
     <string name="no">Ne</string>
     <string name="yes">Da</string>
     <string name="twice">Da, dva puta</string>
@@ -52,7 +52,7 @@
     <string name="info">Info</string>
     <string name="settings">Postavke</string>
     <string name="change_your_language">Jezik aplikacije</string>
-    <string name="use_dark_theme">Koristi Tamnu temu</string>
+    <string name="use_dark_theme">Tamna tema</string>
     <string name="zavod_za_zdravstvenu_zastitu_studenata_novi_sad">Zavod za Zdravstvenu Zastitu Studenata Novi Sad</string>
     <string name="student_center_novi_sad">Studentski Centar Novi Sad</string>
     <string name="student_menza">Studentska Menza</string>
@@ -72,7 +72,7 @@
     <string name="faculty_of_sciences">Prirodno Matematički Fakultet</string>
     <string name="academy_of_arts">Akademija Umetnosti</string>
     <string name="faculty_of_economics_in_subotica">Ekonomski Fakultet, Subotica</string>
-    <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Odricanje od odgovornosti, ovo je projekat studenta bey afiliacije Univerziteta u Novom Sadu i sa studentskom menzom!</string>
+    <string name="disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad">Odricanje od odgovornosti, ovo je projekat studenta bez afiliacije Univerziteta u Novom Sadu i sa studentskom menzom!</string>
     <string name="you_should_top_up_your_card">Trebalo bi da dopunite svoju karticu</string>
     <string name="reminder_that_you_only_have_tokens_on_your_card">Podsetnik da na kartici imate samo %1$2 %2$s tokene</string>
     <string name="welcome_message">Vaše rešenje za upravljanje tokenima sve u jednom. Pratite stanje tokena bez napora i primajte obaveštenja kada vam ponestane. Uživajte u miru znajući da se vaši tokeni uvek uzimaju u obzir. Neka MenzaNS pojednostavi vaš studentski život. Proverite podešavanja</string>
@@ -95,8 +95,14 @@
     <string name="time_of_day_hours">Doba dana[sat]</string>
     <string name="self_financing">Samofinansiranje</string>
     <string name="budget">Budžet</string>
-    <string name="use_materialyou_theme">Koristi MaterialYou temu</string>
+    <string name="use_materialyou_theme">MaterialYou tema</string>
     <string name="not_enough_funds">Nema dvoljno sredstva</string>
     <string name="wait_time_min">Vreme čekanja[min]</string>
     <string name="precision">Preciznost: %1$s</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="data_disclosure">Data Disclosure</string>
+    <string name="open_source_code">Open Source Code</string>
+    <string name="developer_contact">Developer Contact</string>
+    <string name="google_play">Google Play</string>
+    <string name="token_warning">Obrok upozorenje</string>
 </resources>

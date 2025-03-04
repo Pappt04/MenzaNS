@@ -86,4 +86,23 @@ object UsefulLinks {
             "https://fspe.edu.rs"
         ),
     )
+
+    val topbarLinks= listOf(
+        linkContainer(
+            Uitext.StringResource(R.string.privacy_policy),
+            "https://apollo4.duckdns.org/menzaapi/privacyPolicy"
+        ),
+        linkContainer(
+            Uitext.StringResource(R.string.data_disclosure),
+            "https://apollo4.duckdns.org/menzaapi/dataDeletionDisclosure"
+        ),
+        linkContainer(
+            Uitext.StringResource(R.string.open_source_code),
+            "https://github.com/Pappt04/MenzaNS"
+        ),
+        linkContainer(
+            Uitext.StringResource(R.string.google_play),
+            DummyData.APPLINK
+        ),
+    )
 }

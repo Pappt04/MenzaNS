@@ -197,6 +197,8 @@ object DummyData {
     const val BASE_SERVER_URL="https://apollo4.duckdns.org/"
     const val BASE_API_NAME="/menzaapi"
 
+    const val APPLINK ="https://play.google.com/store/apps/details?id=com.pappt04.menzans"
+
     val FINANCING_KEY = "financingPreferenceKey"
     val DARK_THEME_KEY = "darkthemePreferenceKey"
     val MATERIALYOU_THEME_KEY = "materialyouPreferenceKey"
