@@ -151,7 +151,7 @@ fun DashboardScreen(
             item {
                 when (uiState) {
                     is UiState.Loading -> {
-                        //viewModel.fetchData()
+                        viewModel.fetchData()
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                                 .fillMaxWidth()

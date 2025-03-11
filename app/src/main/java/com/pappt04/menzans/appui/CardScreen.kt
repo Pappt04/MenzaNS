@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -32,7 +31,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -96,314 +94,307 @@ fun CardScreen(
     val editbalance = remember { mutableIntStateOf(remainingOnCard[3]) }
 
     val context = LocalContext.current
-    Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.primary
+    LazyColumn(
+        modifier = Modifier
+            .padding(maindrawerpadding)
+    ) {
+        item {
+            OutlinedCard(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+                border = BorderStroke(1.dp, Color.Black),
+                modifier = Modifier
+                    .padding(4.dp)
             ) {
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                        .padding(20.dp)
                 ) {
-                    Button(
-                        onClick = {
-                            context.startActivity(
-                                Intent(
-                                    context,
-                                    MainActivity::class.java
-                                )
-                            )
-                        },
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.5f)
-                            .padding(10.dp)
-                    ) {
-                        Text(stringResource(R.string.discard))
-                    }
-                    Button(
-                        onClick = {
-                            saveCardHolderInfotoFiles(
-                                surname,
-                                name,
-                                universityandfaculty,
-                                dateofBirth.value,
-                                cardIssued.value,
-                                cardValid.value,
-                                index,
-                                cardnumber,
-                                ISICcardnumber,
-                                context
-                            )
-                            saveCardData(
-                                context,
-                                editbreakfast,
-                                editlunch,
-                                editdinner,
-                                editbalance,
-                                remainingOnCard
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.5f)
-                            .padding(10.dp)
-                    ) {
-                        Text(stringResource(R.string.save))
-                    }
-                }
-            }
-        })
-    { innerpadding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(innerpadding)
-        ) {
-            item {
-                OutlinedCard(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    ),
-                    border = BorderStroke(1.dp, Color.Black),
-                    modifier = Modifier
-                        .padding(4.dp, innerpadding.calculateTopPadding() + 8.dp, 4.dp, 4.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(20.dp)
-                    ) {
-                        Row(
+                            .border(1.dp, Color.Black)
+                    )
+                    {
+                        Image(
+                            painter = painterResource(id = R.drawable.isic_logo),
+                            contentDescription = stringResource(R.string.international_student_identity_card_logo_description),
                             modifier = Modifier
-                                .border(1.dp, Color.Black)
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .padding(4.dp)
+                                .weight(1f)
                         )
-                        {
-                            Image(
-                                painter = painterResource(id = R.drawable.isic_logo),
-                                contentDescription = stringResource(R.string.international_student_identity_card_logo_description),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(80.dp)
-                                    .padding(4.dp)
-                                    .weight(1f)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.eyca_logo),
-                                contentDescription = stringResource(R.string.logo_off_european_youth_card_description),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(80.dp)
-                                    .padding(4.dp)
-                                    .weight(1f)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.coat_of_arms_of_serbia_small),
-                                contentDescription = stringResource(R.string.coat_of_arms_of_serbia_description),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(80.dp)
-                                    .padding(4.dp)
-                                    .weight(1f)
-                            )
-                        }
-                        Row {
-                            OutlinedTextField(
-                                value = surname,
-                                onValueChange = { surname = it },
-                                label = { Text(stringResource(R.string.surname)) },
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                            OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = { Text(stringResource(R.string.name)) },
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.eyca_logo),
+                            contentDescription = stringResource(R.string.logo_off_european_youth_card_description),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .padding(4.dp)
+                                .weight(1f)
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.coat_of_arms_of_serbia_small),
+                            contentDescription = stringResource(R.string.coat_of_arms_of_serbia_description),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .padding(4.dp)
+                                .weight(1f)
+                        )
+                    }
+                    Row {
                         OutlinedTextField(
-                            value = universityandfaculty,
-                            onValueChange = { universityandfaculty = it },
-                            label = { Text(text = stringResource(R.string.studies_at)) },
+                            value = surname,
+                            onValueChange = { surname = it },
+                            label = { Text(stringResource(R.string.surname)) },
                             modifier = Modifier
                                 .padding(4.dp)
                                 .fillMaxWidth()
-                        )
-                        Row {
-                            OutlinedTextField(
-                                value = dateofBirth.value,
-                                onValueChange = { print("Clicked") },
-                                label = { Text(text = stringResource(R.string.date_of_birth)) },
-                                enabled = false,
-                                readOnly = true,
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .clickable { showBirthDialog.value = !showBirthDialog.value }
-                                    .weight(1f),
-                            )
-                            if (showBirthDialog.value)
-                                DateofBirthPicker(dateofBirth, showBirthDialog, birthDialogState)
-
-                            OutlinedTextField(
-                                value = cardIssued.value,
-                                onValueChange = { print("Clicked") },
-                                label = { Text(text = stringResource(R.string.issued_date)) },
-                                enabled = false,
-                                readOnly = true,
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .clickable { showIssuedDialog.value = !showIssuedDialog.value }
-                                    .weight(1f),
-                            )
-                            if (showIssuedDialog.value)
-                                IssuedPicker(cardIssued, showIssuedDialog, IssuedState)
-
-                            OutlinedTextField(
-                                value = cardValid.value,
-                                onValueChange = { print("Clicked") },
-                                label = { Text(text = stringResource(R.string.valid_until)) },
-                                enabled = false,
-                                readOnly = true,
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .clickable { showValidDialog.value = !showValidDialog.value }
-                                    .weight(1f),
-                            )
-                            if (showValidDialog.value)
-                                ValidPicker(cardValid, showValidDialog, ValidState)
-                        }
-                        OutlinedTextField(
-                            value = index,
-                            onValueChange = { index = it },
-                            label = { Text(text = stringResource(R.string.index)) },
-                            modifier = Modifier
-                                .padding(4.dp)
+                                .weight(1f)
                         )
                         OutlinedTextField(
-                            value = cardnumber,
-                            onValueChange = { cardnumber = it },
-                            label = { Text(text = stringResource(R.string.card_number)) },
+                            value = name,
+                            onValueChange = { name = it },
+                            label = { Text(stringResource(R.string.name)) },
                             modifier = Modifier
                                 .padding(4.dp)
-                        )
-                        OutlinedTextField(
-                            value = ISICcardnumber,
-                            onValueChange = { ISICcardnumber = it },
-                            label = { Text(text = stringResource(R.string.isic_card_number)) },
-                            modifier = Modifier
-                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
                         )
                     }
+                    OutlinedTextField(
+                        value = universityandfaculty,
+                        onValueChange = { universityandfaculty = it },
+                        label = { Text(text = stringResource(R.string.studies_at)) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth()
+                    )
+                    Row {
+                        OutlinedTextField(
+                            value = dateofBirth.value,
+                            onValueChange = { print("Clicked") },
+                            label = { Text(text = stringResource(R.string.date_of_birth)) },
+                            enabled = false,
+                            readOnly = true,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clickable { showBirthDialog.value = !showBirthDialog.value }
+                                .weight(1f),
+                        )
+                        if (showBirthDialog.value)
+                            DateofBirthPicker(dateofBirth, showBirthDialog, birthDialogState)
+
+                        OutlinedTextField(
+                            value = cardIssued.value,
+                            onValueChange = { print("Clicked") },
+                            label = { Text(text = stringResource(R.string.issued_date)) },
+                            enabled = false,
+                            readOnly = true,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clickable { showIssuedDialog.value = !showIssuedDialog.value }
+                                .weight(1f),
+                        )
+                        if (showIssuedDialog.value)
+                            IssuedPicker(cardIssued, showIssuedDialog, IssuedState)
+
+                        OutlinedTextField(
+                            value = cardValid.value,
+                            onValueChange = { print("Clicked") },
+                            label = { Text(text = stringResource(R.string.valid_until)) },
+                            enabled = false,
+                            readOnly = true,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clickable { showValidDialog.value = !showValidDialog.value }
+                                .weight(1f),
+                        )
+                        if (showValidDialog.value)
+                            ValidPicker(cardValid, showValidDialog, ValidState)
+                    }
+                    OutlinedTextField(
+                        value = index,
+                        onValueChange = { index = it },
+                        label = { Text(text = stringResource(R.string.index)) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                    )
+                    OutlinedTextField(
+                        value = cardnumber,
+                        onValueChange = { cardnumber = it },
+                        label = { Text(text = stringResource(R.string.card_number)) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                    )
+                    OutlinedTextField(
+                        value = ISICcardnumber,
+                        onValueChange = { ISICcardnumber = it },
+                        label = { Text(text = stringResource(R.string.isic_card_number)) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                    )
                 }
             }
-            item {
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                )
-            }
-            item {
-                OutlinedCard(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    ),
-                    border = BorderStroke(1.dp, Color.Black),
-                    modifier = Modifier
-                        .padding(8.dp)
-                ) {
-                    Column {
-                        Row {
-                            OutlinedTextField(
-                                value = editbreakfast.intValue.toString(),
-                                onValueChange = {
-                                    try {
-                                        editbreakfast.intValue = it.toInt()
-                                    } catch (e: Exception) {
-                                        editbreakfast.intValue = 0
-                                    }
-                                },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.breakfast) + ": ${remainingOnCard[0]}") },
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                            OutlinedTextField(
-                                value = editlunch.intValue.toString(),
-                                onValueChange = {
-                                    try {
-                                        editlunch.intValue = it.toInt()
-                                    } catch (e: Exception) {
-                                    }
-                                },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.lunch) + ": ${remainingOnCard[1]}") },
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                            OutlinedTextField(
-                                value = editdinner.intValue.toString(),
-                                onValueChange = {
-                                    try {
-                                        editdinner.intValue = it.toInt()
-                                    } catch (e: Exception) {
-                                    }
-                                },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                label = { Text(stringResource(R.string.dinner) + ": ${remainingOnCard[2]}") },
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                        }
+        }
+        item {
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            )
+        }
+        item {
+            OutlinedCard(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                ),
+                border = BorderStroke(1.dp, Color.Black),
+                modifier = Modifier
+                    .padding(8.dp)
+            ) {
+                Column {
+                    Row {
                         OutlinedTextField(
-                            value = editbalance.intValue.toString(),
+                            value = editbreakfast.intValue.toString(),
                             onValueChange = {
                                 try {
-                                    editbalance.intValue = it.toInt()
+                                    editbreakfast.intValue = it.toInt()
+                                } catch (e: Exception) {
+                                    editbreakfast.intValue = 0
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            label = { Text(stringResource(R.string.breakfast) + ": ${remainingOnCard[0]}") },
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
+                        )
+                        OutlinedTextField(
+                            value = editlunch.intValue.toString(),
+                            onValueChange = {
+                                try {
+                                    editlunch.intValue = it.toInt()
                                 } catch (e: Exception) {
                                 }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.balance) + ": ${remainingOnCard[3]}") },
-                            textStyle = LocalTextStyle.current.copy(
-                                textAlign = TextAlign.Right,
-                                fontSize = 22.sp
-                            ),
-                            prefix = {
-                                Text(
-                                    text = "+",
-                                    fontSize = 22.sp
-                                )
-                            },
-                            suffix = {
-                                Text(
-                                    stringResource(R.string.rsd),
-                                    fontSize = 22.sp
-                                )
-                            },
+                            label = { Text(stringResource(R.string.lunch) + ": ${remainingOnCard[1]}") },
                             modifier = Modifier
+                                .padding(4.dp)
                                 .fillMaxWidth()
+                                .weight(1f)
+                        )
+                        OutlinedTextField(
+                            value = editdinner.intValue.toString(),
+                            onValueChange = {
+                                try {
+                                    editdinner.intValue = it.toInt()
+                                } catch (e: Exception) {
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            label = { Text(stringResource(R.string.dinner) + ": ${remainingOnCard[2]}") },
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
                         )
                     }
+                    OutlinedTextField(
+                        value = editbalance.intValue.toString(),
+                        onValueChange = {
+                            try {
+                                editbalance.intValue = it.toInt()
+                            } catch (e: Exception) {
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.balance) + ": ${remainingOnCard[3]}") },
+                        textStyle = LocalTextStyle.current.copy(
+                            textAlign = TextAlign.Right,
+                            fontSize = 22.sp
+                        ),
+                        prefix = {
+                            Text(
+                                text = "+",
+                                fontSize = 22.sp
+                            )
+                        },
+                        suffix = {
+                            Text(
+                                stringResource(R.string.rsd),
+                                fontSize = 22.sp
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
+            }
+        }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(
+                    onClick = {
+                        context.startActivity(
+                            Intent(
+                                context,
+                                MainActivity::class.java
+                            )
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.5f)
+                        .padding(10.dp)
+                ) {
+                    Text(stringResource(R.string.discard))
+                }
+                Button(
+                    onClick = {
+                        saveCardHolderInfotoFiles(
+                            surname,
+                            name,
+                            universityandfaculty,
+                            dateofBirth.value,
+                            cardIssued.value,
+                            cardValid.value,
+                            index,
+                            cardnumber,
+                            ISICcardnumber,
+                            context
+                        )
+                        saveCardData(
+                            context,
+                            editbreakfast,
+                            editlunch,
+                            editdinner,
+                            editbalance,
+                            remainingOnCard
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.5f)
+                        .padding(10.dp)
+                ) {
+                    Text(stringResource(R.string.save))
                 }
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -486,7 +477,7 @@ fun ValidPicker(
                         validState.selectedDateMillis?.convertMillisToDate() ?: ""
                 }
             ) {
-                Text(stringResource(R.string.discard))
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {

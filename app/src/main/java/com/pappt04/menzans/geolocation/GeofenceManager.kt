@@ -83,7 +83,7 @@ class GeofenceManager(context: Context) {
             .setRequestId(key)
             .setCircularRegion(location.latitude, location.longitude, radiusInMeters)
             .setExpirationDuration(expirationTimeInMillis)
-            .setLoiteringDelay(300000/10)
+            .setLoiteringDelay(300000)
             .setTransitionTypes(GEOFENCE_TRANSITION_ENTER or GEOFENCE_TRANSITION_EXIT)
             .build()
     }
