@@ -9,21 +9,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
+import com.pappt04.menzans.appui.animations.AnimatedAppearance
+import com.pappt04.menzans.appui.navigationdrawer.MainNavigationDrawer
 import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.FileContainer.CardHolderFileName
 import com.pappt04.menzans.data.FileContainer.FileUserID
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.data.UserIDString
 import com.pappt04.menzans.data.registerNewUser
-import com.pappt04.menzans.appui.navigationdrawer.MainNavigationDrawer
 import com.pappt04.menzans.notifications.createChannel
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 lateinit var UserID: UserIDString
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         setContent {
+            val scope = rememberCoroutineScope()
+
             val context = LocalContext.current
 
             val theme = remember { mutableStateOf(false) }
@@ -60,7 +63,9 @@ class MainActivity : AppCompatActivity() {
             val onBudgetPricing = remember { mutableStateOf(false) }
 
             //**************************************************************//
+
             val dao = FileDAO(this, FileContainer.FileDarkThemeEnabled)
+
             val saveddark = dao.readFromFile()
             theme.value = saveddark != "" && saveddark.toInt() == 1
 
@@ -96,7 +101,14 @@ class MainActivity : AppCompatActivity() {
                 if (CardHolderFileName in files) {
                     firstwelcome.value = false
                 }
-                MainNavigationDrawer(theme, materialtheme, onBudgetPricing,firstwelcome, savedMeals)
+
+                    MainNavigationDrawer(
+                        theme,
+                        materialtheme,
+                        onBudgetPricing,
+                        firstwelcome,
+                        savedMeals
+                    )
             }
         }
     }
@@ -158,7 +170,6 @@ class MainActivity : AppCompatActivity() {
         }
         return remainingOnCard
     }
-
 
 
     private fun requestAllPermissions() {

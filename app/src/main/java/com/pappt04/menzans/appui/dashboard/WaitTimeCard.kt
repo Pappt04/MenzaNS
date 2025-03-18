@@ -87,6 +87,7 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
             CardDefaults.cardColors().contentColor,
             CardDefaults.cardColors().disabledContainerColor,
             CardDefaults.cardColors().disabledContentColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.3f)
@@ -111,7 +112,6 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
                     }
                 }
             },
-        border = BorderStroke(1.dp,bscolor)
     ) {
 
         Column {

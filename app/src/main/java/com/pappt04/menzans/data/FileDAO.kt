@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 
 open class FileDAO(var context: Context, private var fileName:String) {
 
-    protected var data:String= readFromFile()
+    protected lateinit var data:String
 
     fun changeJob(con: Context,f:String)
     {
@@ -30,6 +30,7 @@ open class FileDAO(var context: Context, private var fileName:String) {
 
     fun getDAOData(): String
     {
+        data=readFromFile()
         return data
     }
 

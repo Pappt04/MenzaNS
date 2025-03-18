@@ -11,7 +11,7 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
     //private val realmonth = DummyData.engmonths[month.toInt() - 1]
     private val formatter = DateTimeFormatter.ofPattern(DummyData.datetypedate.toPattern())
 
-    private var mealEventData: MutableList<EatingStatisticsData> = converttoStatisticsMeals(readFromFile().split(";"))
+    private lateinit var mealEventData: MutableList<EatingStatisticsData>
 
     fun appendToStatisticsFile(meal: EatingStatisticsData) {
         var s=""
@@ -28,6 +28,7 @@ class StatisticsFileDAO(context: Context, month: String) : FileDAO(context, mont
 
     fun getStatisticsData(): MutableList<EatingStatisticsData>
     {
+        mealEventData = converttoStatisticsMeals(readFromFile().split(";"))
         return mealEventData
     }
 

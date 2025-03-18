@@ -36,6 +36,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,6 +45,7 @@ import java.time.LocalTime
 import java.util.Locale
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 
 sealed class UiState {
@@ -61,7 +63,7 @@ class GraphCardViewModel : androidx.lifecycle.ViewModel() {
     fun fetchData() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading // Set loading state
-
+            delay(2000.milliseconds)
             try {
                 getLineGraph { d ->
                     if (d != null) _uiState.value = UiState.Success(d)

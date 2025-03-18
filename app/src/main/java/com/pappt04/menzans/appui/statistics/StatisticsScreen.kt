@@ -46,7 +46,11 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean>,data: List<EatingStatisticsData>, statDAO: StatisticsFileDAO) {
+fun StatisticsScreen(
+    innerpadding: PaddingValues,
+    onBudget: MutableState<Boolean>,
+    statDAO: StatisticsFileDAO
+) {
     val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
@@ -62,7 +66,7 @@ fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean
         )
     }
 
-    var formattedStatisticsData = data.toMutableList()
+    var formattedStatisticsData = remember { statDAO.getStatisticsData() }
 
     var dir: Boolean
 
@@ -232,13 +236,13 @@ fun StatisticsScreenPreview() {
 
     val b = remember { mutableStateOf(false) }
 
-    val context= LocalContext.current
-    val statdao= StatisticsFileDAO(context,"haha")
+    val context = LocalContext.current
+    val statdao = StatisticsFileDAO(context, "haha")
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
         }
     ) { innerPadding ->
-        StatisticsScreen(innerPadding, b, emptyList(),statdao)
+        StatisticsScreen(innerPadding, b, statdao)
     }
 }

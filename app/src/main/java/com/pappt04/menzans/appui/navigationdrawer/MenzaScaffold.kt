@@ -56,7 +56,7 @@ fun MenzaScaffold(
     darkTheme: MutableState<Boolean>,
     materialtheme: MutableState<Boolean>,
 ) {
-    val gcvm = GraphCardViewModel()
+    val gcvm = remember {  GraphCardViewModel() }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -66,14 +66,14 @@ fun MenzaScaffold(
 
     val scope = rememberCoroutineScope()
 
+    val cardData = remember { loadCardHolder(context) }
+
     val statDAO= StatisticsFileDAO(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
-    var currmonthmeals:  MutableList<EatingStatisticsData> = emptyList<EatingStatisticsData>().toMutableList()
 
     Scaffold(
         topBar = {
 //            AnimatedAppearance(enter = slideInVertically { -it } + fadeIn()) {
                 MenzaTopBar(firstWelcome, waittime, drawerState, screenTitle)
-
                  //           }
         },
         snackbarHost = {
@@ -91,17 +91,12 @@ fun MenzaScaffold(
         }
     ) { innerpadding ->
 
-        LaunchedEffect(currmonthmeals) {
-            currmonthmeals = statDAO.getStatisticsData()
-        }
-
         val graph =
             navController.createGraph(startDestination = Screen.DashboardScreen.route) {
                 composable(route = Screen.DashboardScreen.route) {
                     if (firstWelcome.value) {
                         WelcomeScreen(onCompleted = { firstWelcome.value = false }, innerpadding)
                     } else {
-
                         AnimatedAppearance(delay = 5.milliseconds, enter = slideInVertically { it }) {
                             DashboardScreen(
                                 when (onBudgetPricing.value) {
@@ -119,7 +114,7 @@ fun MenzaScaffold(
                 }
                 composable(route = Screen.StatisticsScreen.route) {
                     AnimatedAppearance(enter = slideInVertically { it }) {
-                        StatisticsScreen(innerpadding, onBudgetPricing, currmonthmeals, statDAO)
+                        StatisticsScreen(innerpadding, onBudgetPricing, statDAO)
                     }
                 }
                 composable(route = Screen.InfoScreen.route) {
@@ -128,7 +123,6 @@ fun MenzaScaffold(
                     }
                 }
                 composable(route = Screen.CardScreen.route) {
-                    val cardData = loadCardHolder(context)
                     AnimatedAppearance(enter = slideInVertically { it }) {
                         CardScreen(cardData, savedMeals, innerpadding)
                     }

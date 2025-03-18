@@ -14,9 +14,8 @@ import com.pappt04.menzans.data.DummyData
 @Composable
 fun MenzaBottomNavigation(
     navController: NavHostController
-)
-{
-    val context= LocalContext.current
+) {
+    val context = LocalContext.current
 
     var selectedNavigationIndex = remember { mutableIntStateOf(0) }
 
@@ -30,14 +29,20 @@ fun MenzaBottomNavigation(
                     navController.navigate(item.route)
                 },
                 icon = {
-                    when(selectedNavigationIndex.intValue == index)
-                    {
-                        //true ->  Icon(imageVector = item.selectedIcon, contentDescription = item.route)
-                        else ->   Icon(imageVector = item.unselectedIcon, contentDescription = item.route)
+                    when (selectedNavigationIndex.intValue == index) {
+                        true -> Icon(
+                            imageVector = item.selectedIcon,
+                            contentDescription = item.route
+                        )
+
+                        else -> Icon(
+                            imageVector = item.unselectedIcon,
+                            contentDescription = item.route
+                        )
                     }
                 },
                 label = {
-                    AutoResizedText( item.title.asString(context))
+                    AutoResizedText(item.title.asString(context))
                 },
                 alwaysShowLabel = false,
             )

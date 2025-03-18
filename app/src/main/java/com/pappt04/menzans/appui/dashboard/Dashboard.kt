@@ -18,9 +18,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,7 +50,9 @@ import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.data.MealSample.mealIcons
 import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +66,7 @@ fun DashboardScreen(
     lazyListState: LazyListState = rememberLazyListState()
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    val graphcardState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
 
@@ -148,11 +147,11 @@ fun DashboardScreen(
             }
             item {
                 WaitTimeCard(waitime) {
-                    viewModel.fetchData()
+                    //viewModel.fetchData()
                 }
             }
             item {
-                when (uiState) {
+                when (graphcardState) {
                     is UiState.Loading -> {
                         viewModel.fetchData()
                         Column(
@@ -165,7 +164,7 @@ fun DashboardScreen(
                     }
 
                     is UiState.Success -> {
-                        val data = (uiState as UiState.Success).data
+                        val data = (graphcardState as UiState.Success).data
                         OutlinedCard(
                             modifier = Modifier.padding(8.dp)
                         ){
@@ -174,7 +173,7 @@ fun DashboardScreen(
                     }
 
                     is UiState.Error -> {
-                        val errorMessage = (uiState as UiState.Error).message
+                        val errorMessage = (graphcardState as UiState.Error).message
                         Text("Error: $errorMessage", color = Color.Red)
                     }
 
