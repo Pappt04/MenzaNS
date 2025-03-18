@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
 sealed class UiState {
     object Empty : UiState()
     object Loading : UiState()
-    data class Success(val data: Map<String, Double>) : UiState() // Or your data type
+    data class Success(val data: Map<String, Double>) : UiState()
     data class Error(val message: String) : UiState()
 }
 
@@ -65,7 +65,7 @@ class GraphCardViewModel : androidx.lifecycle.ViewModel() {
             try {
                 getLineGraph { d ->
                     if (d != null) _uiState.value = UiState.Success(d)
-                }// Your Retrofit call or other data source
+                }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "An error occurred") // Set error state
             }

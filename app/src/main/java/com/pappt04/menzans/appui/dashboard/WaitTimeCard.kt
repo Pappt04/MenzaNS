@@ -13,6 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -79,7 +82,11 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
         }
     }
 
-    OutlinedCard(
+    Card(
+        colors = CardColors(MaterialTheme.colorScheme.tertiaryContainer,
+            CardDefaults.cardColors().contentColor,
+            CardDefaults.cardColors().disabledContainerColor,
+            CardDefaults.cardColors().disabledContentColor),
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.3f)

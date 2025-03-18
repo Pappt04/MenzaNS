@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -44,60 +45,80 @@ fun WelcomeScreen(onCompleted:() -> Unit,innerpadding: PaddingValues)
         }
     )
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .padding(innerpadding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            stringResource(R.string.welcome_title),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = 24.sp,
-            modifier = Modifier
-                .padding(20.dp)
-        )
-        Text(
-            stringResource(R.string.welcome_message),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(15.dp)
-        )
-        HorizontalDivider()
-        Text(
-            DummyData.permissionsExplanations[selectedPermissionIndex].asString(context = LocalContext.current),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(15.dp)
-        )
-        Text(
-            "$selectedPermissionIndex/${DummyData.permissionsNeeded.size}"
-        )
-        Button(onClick = {
-            permissionLauncher.launch(DummyData.permissionsNeeded[selectedPermissionIndex++])
+        item{
+            Text(
+                stringResource(R.string.welcome_title),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = 24.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+            )
+        }
+        item{
+            Text(
+                stringResource(R.string.welcome_message),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(15.dp)
+            )
+        }
+        item{
+            HorizontalDivider()
+        }
+        item{
+            Text(
+                DummyData.permissionExplanations[selectedPermissionIndex].explanation.asString(
+                    context = LocalContext.current
+                ),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.padding(15.dp)
+            )
+        }
+        item{
+            Text(
+                "$selectedPermissionIndex/${DummyData.permissionsNeeded.size}"
+            )
+        }
+        item{
+            Button(
+                onClick = {
+                    permissionLauncher.launch(DummyData.permissionsNeeded[selectedPermissionIndex++])
 
-            if(selectedPermissionIndex == DummyData.permissionsNeeded.size)
-            {
-                onCompleted()
+                    if (selectedPermissionIndex == DummyData.permissionsNeeded.size) {
+                        onCompleted()
 
-                val geofenceManager = GeofenceManager(context)
+                        val geofenceManager = GeofenceManager(context)
 
-                for (geofence in DummyData.LANDMARK_DATA) {
-                    geofenceManager.addGeofence(
-                        geofence.key,
-                        geofence.location,
-                        geofence.radiusInMeters,
-                        geofence.expirationTimeInMillis
-                    )
-                }
-                geofenceManager.registerGeofence()
+                        for (geofence in DummyData.LANDMARK_DATA) {
+                            geofenceManager.addGeofence(
+                                geofence.key,
+                                geofence.location,
+                                geofence.radiusInMeters,
+                                geofence.expirationTimeInMillis
+                            )
+                        }
+                        geofenceManager.registerGeofence()
+                    }
+                },
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(0.9f)
+            ) {
+                Text(
+                    stringResource(R.string.request) + "\n" + DummyData.permissionExplanations[selectedPermissionIndex].name.asString(
+                        LocalContext.current
+                    ) + " " + stringResource(R.string.permission),
+                    textAlign = TextAlign.Center
+                )
             }
-        },
-            modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth(0.9f)
-        ) {
-            Text("Request permissions")
         }
     }
 

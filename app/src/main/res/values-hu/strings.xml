@@ -36,14 +36,14 @@
     <string name="subtract">Levon</string>
     <string name="consume">Elfogyaszt</string>
     <string name="add">Hozzáad</string>
-    <string name="record_your_consumed_meals_notification">Jegyzed az elfogyasztott zsetonod</string>
+    <string name="record_your_consumed_meals_notification">Jegyezd az elfogyasztott zsetonod</string>
     <string name="we_think_you_were_at_menza_from_to_notification">Menzán voltál %1$s és %2$s között</string>
     <string name="no">Nem</string>
     <string name="yes">Igen</string>
     <string name="twice">Igen, kétszer is</string>
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">Automatikusan levontunk egy zsetont a számládról</string>
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Úgy gondoljuk a Menzán voltál %1$s percet és ettél %2$s</string>
-    <string name="request_permission">Kérelmezd %1$s engedélyt</string>
+    <string name="request_permission">Hozzáférés a %1$s engedélyhez</string>
     <string name="menu_description">Menü</string>
     <string name="language">Magyar</string>
     <string name="card">Kártya</string>
@@ -88,9 +88,9 @@
     <string name="add_meal_to_statistics">Adj étkezést a statistikához</string>
     <string name="time_of_enter">Belépés ideje</string>
     <string name="time_of_exit">Kilépés ideje</string>
-    <string name="explanation_BACKGROUND_LOCATION">Nem figyeljük a háttérben a helyet, rögzítjük a rendszereseményeket, amikor a kantinban tartózkodik, így nem kell manuálisan naplózni az étkezéseket</string>
+    <string name="explanation_BACKGROUND_LOCATION">Néha figyeljük a háttérben a helyét! Rögzítjük a rendszereseményeket, amikor az étkezdében tartózkodik, így nem kell manuálisan naplóznia étkezéseit. Rögzítjük a menzán való be- és kilépési időt, és értesítést küldünk a többi felhasználónak és a szervernek</string>
     <string name="explanation_NOTIFICATION_ACCESS">Értesítési hozzáférésre van szükségünk, hogy hasznos emlékeztetőket küldhessünk</string>
-    <string name="explanation_COARSE_LOCATION">Ezt arra használjuk, hogy megmondjuk, valószínűleg elmész-e a kantinba enni</string>
+    <string name="explanation_COARSE_LOCATION">Hozzávetőleges helymeghatározást arra használjuk, hogy megmondjuk, valószínűleg elmész-e a kantinba enni</string>
     <string name="explanation_FINE_LOCATION">Pontos helymeghatározást használunk annak megállapítására, hogy a kantinban tartózkodik-e vagy sem</string>
     <string name="time_of_day_hours">Napszak[óra]</string>
     <string name="self_financing">Önköltséges</string>
@@ -105,4 +105,10 @@
     <string name="developer_contact">Developer Contact</string>
     <string name="google_play">Google Play</string>
     <string name="token_warning">Zseton emlékeztető</string>
+    <string name="request">Engedély</string>
+    <string name="approximate_location">Hozzávetőleges helymeghatározás</string>
+    <string name="precise_location">Pontos helymeghatározás</string>
+    <string name="background_location">Háttéri helymeghatározás</string>
+    <string name="notification">Értesítés</string>
+    <string name="permission">engedélyt</string>
 </resources>

@@ -2,8 +2,10 @@ package com.pappt04.menzans.data
 
 import android.app.NotificationManager
 import android.content.Context
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.notifications.sendTopUpReminder
+import kotlinx.coroutines.CoroutineScope
 
 open class FileDAO(var context: Context, private var fileName:String) {
 

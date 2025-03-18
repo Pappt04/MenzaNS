@@ -32,13 +32,14 @@ fun MenzaBottomNavigation(
                 icon = {
                     when(selectedNavigationIndex.intValue == index)
                     {
-                        true ->  Icon(imageVector = item.selectedIcon, contentDescription = item.route)
+                        //true ->  Icon(imageVector = item.selectedIcon, contentDescription = item.route)
                         else ->   Icon(imageVector = item.unselectedIcon, contentDescription = item.route)
                     }
                 },
                 label = {
                     AutoResizedText( item.title.asString(context))
                 },
+                alwaysShowLabel = false,
             )
         }
     }

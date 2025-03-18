@@ -61,13 +61,13 @@ object DummyData {
         )
     }
 
-    val permissionsExplanations = listOf (
-        Uitext.StringResource(R.string.explanation_COARSE_LOCATION),
-        Uitext.StringResource(R.string.explanation_FINE_LOCATION),
-        Uitext.StringResource(R.string.explanation_BACKGROUND_LOCATION),
-        Uitext.StringResource(R.string.explanation_NOTIFICATION_ACCESS),
+    var permissionExplanations= listOf(
+        AppPermission(Uitext.StringResource(R.string.approximate_location), Uitext.StringResource(R.string.explanation_COARSE_LOCATION)),
+        AppPermission(Uitext.StringResource(R.string.precise_location), Uitext.StringResource(R.string.explanation_FINE_LOCATION)),
+        AppPermission(Uitext.StringResource(R.string.background_location), Uitext.StringResource(R.string.explanation_BACKGROUND_LOCATION)),
+        AppPermission(Uitext.StringResource(R.string.notification), Uitext.StringResource(R.string.explanation_NOTIFICATION_ACCESS)),
     )
-
+    
     /*--------------------------------------------------------------------------------------------*/
     val navDrawerItemData = listOf(
         NavigationItem(

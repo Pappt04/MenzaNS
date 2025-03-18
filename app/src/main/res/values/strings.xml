@@ -42,7 +42,7 @@
     <string name="yes">YES</string>
     <string name="twice">YES, TWICE</string>
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">Automatically deducted one meal token for you</string>
-    <string name="request_permission">Request %1$s permission</string>
+    <string name="request_permission">Access to %1$s permission</string>
     <string name="menu_description">Menu</string>
     <string name="language">English</string>
     <string name="en" translatable="false">English</string>
@@ -90,9 +90,9 @@
     <string name="time_of_exit">Time of exit</string>
     <string name="wait_time">Estimated Wait Time</string>
     <string name="no_data">No data</string>
-    <string name="explanation_COARSE_LOCATION">We use this to tell if you are likely to go to the canteen to eat</string>
+    <string name="explanation_COARSE_LOCATION">We use approximate location to tell if you are likely to go to the canteen to eat</string>
     <string name="explanation_FINE_LOCATION">We use precise location to tell if you are at the canteen or not</string>
-    <string name="explanation_BACKGROUND_LOCATION">We do not monitor the background location, we capture system events when you are at the canteen so you do not have to manually log your meals</string>
+    <string name="explanation_BACKGROUND_LOCATION">We sometimes monitor the background location! We capture system events when you are at the canteen so you do not have to manually log your meals. We capture the time when you enter and exit the canteen and send a notification to other users and the server</string>
     <string name="explanation_NOTIFICATION_ACCESS">We need notification access so we can send useful reminders</string>
     <string name="not_enough_funds">Not enough funds</string>
     <string name="wait_time_min">Wait time[min]</string>
@@ -109,4 +109,10 @@
     <string name="google_play">Google Play</string>
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s minutes there is a big chance you ate %2$s</string>
     <string name="token_warning">Token Warning</string>
+    <string name="request">Request</string>
+    <string name="approximate_location">Approximate location</string>
+    <string name="precise_location">Precise location</string>
+    <string name="background_location">Background location</string>
+    <string name="notification">Notification</string>
+    <string name="permission">permission</string>
 </resources>

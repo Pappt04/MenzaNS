@@ -15,10 +15,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AnimatedAppearance(
-    delay: Duration,
+    delay: Duration= 0.milliseconds,
     modifier: Modifier = Modifier,
     enter: EnterTransition = fadeIn() + expandIn(),
     label: String = "AnimatedAppearance",

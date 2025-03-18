@@ -3,7 +3,6 @@ package com.pappt04.menzans.appui.statistics
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,36 +27,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pappt04.menzans.R
 import com.pappt04.menzans.data.DummyData.datetypemonth
 import com.pappt04.menzans.data.DummyData.engmeals
 import com.pappt04.menzans.data.DummyData.engmonths
-import java.time.Month
-import java.time.format.TextStyle
-import java.util.Date
-import androidx.compose.ui.tooling.preview.Preview
 import com.pappt04.menzans.data.EatingStatisticsData
-import com.pappt04.menzans.R
 import com.pappt04.menzans.data.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.data.StatisticsFileDAO
 import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.geolocation.findEngMeal
+import kotlinx.coroutines.launch
+import java.time.Month
+import java.time.format.TextStyle
+import java.util.Date
 import java.util.Locale
 
 @Composable
-fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean>) {
+fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean>,data: List<EatingStatisticsData>, statDAO: StatisticsFileDAO) {
     val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
 
-    var selectedMonth by remember { mutableStateOf(engmonths[datetypemonth.format(Date()).toInt()-1]) }
+    var selectedMonth by remember {
+        mutableStateOf(
+            engmonths[datetypemonth.format(Date()).toInt() - 1]
+        )
+    }
+    var prevMonth by remember {
+        mutableStateOf(
+            engmonths[datetypemonth.format(Date()).toInt() - 1]
+        )
+    }
 
-    val monthDAO= StatisticsFileDAO(context, selectedMonth)
-    var formattedStatisticsData = monthDAO.getStatisticsData()
+    var formattedStatisticsData = data.toMutableList()
 
+    var dir: Boolean
 
-    key(formattedStatisticsData){
+    key(formattedStatisticsData) {
         LazyColumn(
             modifier = Modifier
                 .padding(innerpadding)
@@ -78,15 +87,18 @@ fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean
 
                         FilterChip(
                             onClick = {
+                                prevMonth = selectedMonth
+
                                 selectedMonth = if (selectedMonth == month) {
                                     engmonths[datetypemonth.format(Date()).toInt() - 1]
                                 } else {
                                     month
                                 }
-                                scope.launch{
-                                    monthDAO.changeJob(context,selectedMonth)
-                                    formattedStatisticsData= monthDAO.getStatisticsData()
+                                scope.launch {
+                                    statDAO.changeJob(context, selectedMonth)
+                                    formattedStatisticsData = statDAO.getStatisticsData()
                                 }
+
                             },
                             label = { Text(localizedMonth) },
                             selected = selectedMonth == month
@@ -96,7 +108,8 @@ fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean
             }
 
             item {
-                CalendarMonthView(selectedMonth,formattedStatisticsData)
+                CalendarMonthView(selectedMonth, formattedStatisticsData)
+
             }
 
             item {
@@ -144,7 +157,7 @@ fun StatisticsScreen(innerpadding: PaddingValues, onBudget: MutableState<Boolean
                             .padding(2.dp)
                             .align(Alignment.CenterHorizontally)
                     )
-                    PredictedSpendingChart(selectedMonth, onBudget,formattedStatisticsData)
+                    PredictedSpendingChart(selectedMonth, onBudget, formattedStatisticsData)
                 }
             }
         }
@@ -179,7 +192,7 @@ fun getSpentMoney(
     data: List<EatingStatisticsData>
 ): List<Number> {
 
-    val daysInMonth: Int=Month.valueOf(selectedMonth.uppercase()).maxLength()
+    val daysInMonth: Int = Month.valueOf(selectedMonth.uppercase()).maxLength()
 
     val moneyList = MutableList(daysInMonth) { 0 }
     var sum = 0
@@ -190,7 +203,7 @@ fun getSpentMoney(
                 var j = 0
                 for (e in engmeals) {
                     if (findEngMeal(d.tokentype) == e) {
-                        sum += when(onBudget.value){
+                        sum += when (onBudget.value) {
                             true -> MealSampleBudget[j].price
                             else -> MealSampleSelfFinancing[j].price
                         }
@@ -200,7 +213,7 @@ fun getSpentMoney(
                 }
             }
         }
-        moneyList[i-1] = sum
+        moneyList[i - 1] = sum
     }
 
     return moneyList
@@ -217,13 +230,15 @@ fun getSpentMoney(
 @Composable
 fun StatisticsScreenPreview() {
 
-    val b= remember { mutableStateOf(false) }
+    val b = remember { mutableStateOf(false) }
 
+    val context= LocalContext.current
+    val statdao= StatisticsFileDAO(context,"haha")
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
         }
     ) { innerPadding ->
-        StatisticsScreen(innerPadding,b)
+        StatisticsScreen(innerPadding, b, emptyList(),statdao)
     }
 }

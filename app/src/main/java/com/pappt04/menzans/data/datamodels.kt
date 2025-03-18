@@ -76,7 +76,7 @@ data class ExitEventString(
 )
 
 data class UserIDString(
-    var userid: String
+    var userid: String = ""
 )
 
 data class  WaitTime(
@@ -85,4 +85,9 @@ data class  WaitTime(
     var validtime: String,
     var trajectory: String,
     var precision: String,
+)
+
+data class AppPermission(
+    var name: Uitext,
+    var explanation: Uitext
 )

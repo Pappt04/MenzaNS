@@ -80,7 +80,7 @@ fun CalendarMonthView(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(8.dp),
         border = BorderStroke(1.dp, Color.Gray),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

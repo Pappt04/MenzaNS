@@ -17,12 +17,13 @@ import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.data.Uitext
-import com.pappt04.menzans.appui.UserID
 import com.pappt04.menzans.data.FileContainer
+import com.pappt04.menzans.data.FileContainer.FileUserID
 import com.pappt04.menzans.data.MealSample
 import com.pappt04.menzans.data.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.data.StatisticsFileDAO
+import com.pappt04.menzans.data.UserIDString
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
 import com.pappt04.menzans.data.sendEnterEvent
@@ -60,6 +61,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             alertString
         )
 
+        val fileDAO = FileDAO(context, FileUserID)
+
+        val ids = UserIDString(fileDAO.getDAOData())
+
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
 
@@ -69,7 +74,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     it.write(currentTime.toByteArray())
                 }
 
-                sendEnterEvent(UserID.userid, datetypedate.format(Date()),currentTime,context)
+                sendEnterEvent(ids.userid, datetypedate.format(Date()),currentTime,context)
 
             }
 
@@ -101,9 +106,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
                     notificationManager.sendAutomaticDeductNotification(context, alldiff,correctmeal)
 
-                    if(UserID.userid != "")
+                    if(ids.userid != "")
                         sendExitEvent(
-                            UserID.userid,timeExited,
+                            ids.userid,timeExited,
                             findEngMeal(correctmeal.name),context )
 
                 } else if (correctmeal!=null /*&& alldiff >= DummyData.DWELL_TRESHOLD*/) {
@@ -120,7 +125,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
                 val currentTime = datetypeclock.format(Date())
 
-                sendEnterEvent(UserID.userid, datetypedate.format(Date()),currentTime,context)
+                sendEnterEvent(ids.userid, datetypedate.format(Date()),currentTime,context)
             }
         }
     }

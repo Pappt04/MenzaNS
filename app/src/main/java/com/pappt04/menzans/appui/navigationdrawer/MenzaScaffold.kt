@@ -1,15 +1,20 @@
 package com.pappt04.menzans.appui.navigationdrawer
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,15 +25,22 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
 import com.pappt04.menzans.appui.CardScreen
 import com.pappt04.menzans.appui.InfoScreen
+import com.pappt04.menzans.appui.animations.AnimatedAppearance
 import com.pappt04.menzans.appui.bottomnavigation.MenzaBottomNavigation
 import com.pappt04.menzans.appui.dashboard.DashboardScreen
 import com.pappt04.menzans.appui.dashboard.GraphCardViewModel
 import com.pappt04.menzans.appui.settings.SettingsScreen
 import com.pappt04.menzans.appui.statistics.StatisticsScreen
 import com.pappt04.menzans.appui.welcome.WelcomeScreen
+import com.pappt04.menzans.data.DummyData.datetypemonth
+import com.pappt04.menzans.data.DummyData.engmonths
+import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.FileContainer.CardHolderFileName
 import com.pappt04.menzans.data.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.MealSample.MealSampleSelfFinancing
+import com.pappt04.menzans.data.StatisticsFileDAO
+import kotlinx.coroutines.launch
+import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -40,21 +52,29 @@ fun MenzaScaffold(
     navController: NavHostController,
     onBudgetPricing: MutableState<Boolean>,
     savedMeals: SnapshotStateList<Int>,
-    waittime:MutableIntState,
+    waittime: MutableIntState,
     darkTheme: MutableState<Boolean>,
     materialtheme: MutableState<Boolean>,
 ) {
+    val gcvm = GraphCardViewModel()
+
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     val bottomController = rememberNavController()
 
-    val appearanceDelay = 0.milliseconds
+    val scope = rememberCoroutineScope()
+
+    val statDAO= StatisticsFileDAO(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
+    var currmonthmeals:  MutableList<EatingStatisticsData> = emptyList<EatingStatisticsData>().toMutableList()
 
     Scaffold(
         topBar = {
-            MenzaTopBar(firstWelcome,waittime, drawerState, screenTitle)
+//            AnimatedAppearance(enter = slideInVertically { -it } + fadeIn()) {
+                MenzaTopBar(firstWelcome, waittime, drawerState, screenTitle)
+
+                 //           }
         },
         snackbarHost = {
             SnackbarHost(
@@ -62,9 +82,18 @@ fun MenzaScaffold(
                 modifier = Modifier.fillMaxWidth()
             )
         },
-        bottomBar = { MenzaBottomNavigation(bottomController) }
+        bottomBar = {
+//            AnimatedAppearance(
+//                enter = slideInVertically { it } + fadeIn(),
+//            ) {
+                MenzaBottomNavigation(bottomController)
+//            }
+        }
     ) { innerpadding ->
 
+        LaunchedEffect(currmonthmeals) {
+            currmonthmeals = statDAO.getStatisticsData()
+        }
 
         val graph =
             navController.createGraph(startDestination = Screen.DashboardScreen.route) {
@@ -72,80 +101,94 @@ fun MenzaScaffold(
                     if (firstWelcome.value) {
                         WelcomeScreen(onCompleted = { firstWelcome.value = false }, innerpadding)
                     } else {
-                        DashboardScreen(
-                            when (onBudgetPricing.value) {
-                                true -> MealSampleBudget
-                                else -> MealSampleSelfFinancing
-                            }, savedMeals, GraphCardViewModel(), waittime, innerpadding, snackbarHostState
-                        )
+
+                        AnimatedAppearance(delay = 5.milliseconds, enter = slideInVertically { it }) {
+                            DashboardScreen(
+                                when (onBudgetPricing.value) {
+                                    true -> MealSampleBudget
+                                    else -> MealSampleSelfFinancing
+                                },
+                                savedMeals,
+                                gcvm,
+                                waittime,
+                                innerpadding,
+                                snackbarHostState
+                            )
+                        }
                     }
                 }
                 composable(route = Screen.StatisticsScreen.route) {
-                    StatisticsScreen(innerpadding, onBudgetPricing)
+                    AnimatedAppearance(enter = slideInVertically { it }) {
+                        StatisticsScreen(innerpadding, onBudgetPricing, currmonthmeals, statDAO)
+                    }
                 }
                 composable(route = Screen.InfoScreen.route) {
-                    InfoScreen(innerpadding)
+                    AnimatedAppearance(enter = slideInVertically { it }) {
+                        InfoScreen(innerpadding)
+                    }
                 }
                 composable(route = Screen.CardScreen.route) {
-                    val cardData= loadCardHolder(context)
-                    CardScreen(cardData, savedMeals, innerpadding)
+                    val cardData = loadCardHolder(context)
+                    AnimatedAppearance(enter = slideInVertically { it }) {
+                        CardScreen(cardData, savedMeals, innerpadding)
+                    }
                 }
                 composable(route = Screen.SettingsScreen.route) {
-                    SettingsScreen(innerpadding, darkTheme, materialtheme, onBudgetPricing)
+                    AnimatedAppearance(enter = slideInVertically { it }) {
+                        SettingsScreen(innerpadding, darkTheme, materialtheme, onBudgetPricing)
+                    }
                 }
             }
         NavHost(
             navController = bottomController,
             graph = graph,
         )
-/*
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            selectedItemIndex.value = when (destination.route) {
-                "ScaffoldDesign" -> 0
-                "StatisticsScreen" -> 1
-                "InfoScreen" -> 2
-                "EditScreen" -> 3
-                "SettingsScreen" -> 4
-                else -> 0
-            }
+        /*
+                navController.addOnDestinationChangedListener { controller, destination, arguments ->
+                    selectedItemIndex.value = when (destination.route) {
+                        "ScaffoldDesign" -> 0
+                        "StatisticsScreen" -> 1
+                        "InfoScreen" -> 2
+                        "EditScreen" -> 3
+                        "SettingsScreen" -> 4
+                        else -> 0
+                    }
 
-        }
-        NavHost(navController = navController, startDestination = Screen.DashboardScreen.route) {
-            composable(route = Screen.DashboardScreen.route) {
-                if (firstWelcome.value) {
-                    WelcomeScreen(onCompleted = { firstWelcome.value = false }, innerpadding)
-                } else {
-                    DashboardScreen(
-                        when (onBudgetPricing.value) {
-                            true -> MealSampleBudget
-                            else -> MealSampleSelfFinancing
-                        }, savedMeals, MyViewModel(), waittime, innerpadding, snackbarHostState
-                    )
                 }
-            }
-            composable(route = Screen.StatisticsScreen.route) {
+                NavHost(navController = navController, startDestination = Screen.DashboardScreen.route) {
+                    composable(route = Screen.DashboardScreen.route) {
+                        if (firstWelcome.value) {
+                            WelcomeScreen(onCompleted = { firstWelcome.value = false }, innerpadding)
+                        } else {
+                            DashboardScreen(
+                                when (onBudgetPricing.value) {
+                                    true -> MealSampleBudget
+                                    else -> MealSampleSelfFinancing
+                                }, savedMeals, MyViewModel(), waittime, innerpadding, snackbarHostState
+                            )
+                        }
+                    }
+                    composable(route = Screen.StatisticsScreen.route) {
 
-                StatisticsScreen(innerpadding, onBudgetPricing)
-            }
-            composable(route = Screen.CardScreen.route) {
+                        StatisticsScreen(innerpadding, onBudgetPricing)
+                    }
+                    composable(route = Screen.CardScreen.route) {
 
-                val cardData= loadCardHolder(context)
-                CardScreen(cardData, savedMeals, innerpadding)
+                        val cardData= loadCardHolder(context)
+                        CardScreen(cardData, savedMeals, innerpadding)
 
-            }
-            composable(route = Screen.InfoScreen.route) {
-                InfoScreen(innerpadding)
-            }
-            composable(route = Screen.SettingsScreen.route) {
-                SettingsScreen(innerpadding, darkTheme, materialtheme, onBudgetPricing)
-            }
-        }
+                    }
+                    composable(route = Screen.InfoScreen.route) {
+                        InfoScreen(innerpadding)
+                    }
+                    composable(route = Screen.SettingsScreen.route) {
+                        SettingsScreen(innerpadding, darkTheme, materialtheme, onBudgetPricing)
+                    }
+                }
 
- */
+         */
     }
 }
-
-
 
 
 fun loadCardHolder(context: Context): List<String> {

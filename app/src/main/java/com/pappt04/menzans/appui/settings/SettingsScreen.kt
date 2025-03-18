@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,9 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.DummyData
 import com.pappt04.menzans.data.DummyData.permissionsNeeded
 import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.FileDAO
+import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 
@@ -90,10 +94,21 @@ fun SettingsScreen(
             TokenLimitSlider()
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
-        item {
-            this@LazyColumn.items(permissionsNeeded) { permission: String ->
-                PermissionSwitch(context, permission)
+//        item {
+//            this@LazyColumn.items(permissionsNeeded) { permission: String ->
+//                PermissionSwitch(context, permission)
+//            }
+//        }
+        items(permissionsNeeded) { permission ->
+            var i:Int=0
+            for (p in permissionsNeeded) {
+                if( p == permission){
+                    break
+                } else {
+                    i++
+                }
             }
+            PermissionSwitch(context,DummyData.permissionExplanations[i].explanation,permission)
         }
 
     }
@@ -140,7 +155,7 @@ fun SettingSwitch(pref: MutableState<Boolean>, name: String, filename: String) {
 }
 
 @Composable
-fun PermissionSwitch(context: Context, permissionType: String) {
+fun PermissionSwitch(context: Context,permissionName: Uitext, permissionType: String) {
     var hasPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -160,34 +175,39 @@ fun PermissionSwitch(context: Context, permissionType: String) {
         modifier = Modifier
             .padding(8.dp)
     ) {
-        Row(modifier = Modifier.padding(20.dp)) {
-            Text(
-                stringResource(R.string.request_permission, permissionType.split(".").last()),
-                modifier = Modifier.weight(4f)
-            )
-            Switch(
-                checked = hasPermission,
-                onCheckedChange = {
-                    hasPermission = it
-                    if (hasPermission) {
-                        permissionLauncher.launch(permissionType)
+        Column(modifier = Modifier.padding(20.dp)){
+            Row() {
+                Text(
+                    stringResource(R.string.request_permission, permissionType.split(".").last()),
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(4f)
+                )
+                Switch(
+                    checked = hasPermission,
+                    onCheckedChange = {
+                        hasPermission = it
+                        if (hasPermission) {
+                            permissionLauncher.launch(permissionType)
 
-                    }
-                },
-                thumbContent = if (hasPermission) {
-                    {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                        )
-                    }
-                } else {
-                    null
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
+                        }
+                    },
+                    thumbContent = if (hasPermission) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
+            HorizontalDivider()
+            Text(permissionName.asString(context))
         }
     }
 }

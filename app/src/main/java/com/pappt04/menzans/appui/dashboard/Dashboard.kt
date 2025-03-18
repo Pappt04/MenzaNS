@@ -25,6 +25,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -125,9 +126,6 @@ fun DashboardScreen(
                 }
             }
             item {
-                AnimatedVisibility(selectedCard.intValue != 99) {
-
-                }
                 AnimatedContent(targetState = selectedCard.intValue,
                     transitionSpec = {
                         slideInVertically { -it } togetherWith slideOutVertically { it }
@@ -149,6 +147,11 @@ fun DashboardScreen(
                 BalanceCard(balance)
             }
             item {
+                WaitTimeCard(waitime) {
+                    viewModel.fetchData()
+                }
+            }
+            item {
                 when (uiState) {
                     is UiState.Loading -> {
                         viewModel.fetchData()
@@ -163,11 +166,7 @@ fun DashboardScreen(
 
                     is UiState.Success -> {
                         val data = (uiState as UiState.Success).data
-                        Card(
-                            colors = CardColors(MaterialTheme.colorScheme.tertiaryContainer,
-                                CardDefaults.cardColors().contentColor,
-                                CardDefaults.cardColors().disabledContainerColor,
-                                CardDefaults.cardColors().disabledContentColor),
+                        OutlinedCard(
                             modifier = Modifier.padding(8.dp)
                         ){
                             LineSizeGraph(data)
@@ -189,11 +188,6 @@ fun DashboardScreen(
                             CircularProgressIndicator()
                         }
                     }
-                }
-            }
-            item {
-                WaitTimeCard(waitime) {
-                    viewModel.fetchData()
                 }
             }
         }

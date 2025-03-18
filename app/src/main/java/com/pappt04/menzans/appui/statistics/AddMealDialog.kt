@@ -47,6 +47,7 @@ import com.pappt04.menzans.data.DummyData.engtosresc
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.R
 import com.pappt04.menzans.appui.UserID
+import com.pappt04.menzans.appui.animations.AutoResizedText
 import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.appui.convertMillisToDate
 import com.pappt04.menzans.data.DummyData.datetypedate
@@ -109,7 +110,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     OutlinedTextField(
                         value = timeofEnter.value,
                         onValueChange = { print("Clicked") },
-                        label = { Text(text = stringResource(R.string.time_of_enter)) },
+                        label = { AutoResizedText(text = stringResource(R.string.time_of_enter)) },
                         enabled = false,
                         readOnly = true,
                         modifier = Modifier
@@ -131,7 +132,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     OutlinedTextField(
                         value = timeofExit.value,
                         onValueChange = { print("Clicked") },
-                        label = { Text(text = stringResource(R.string.time_of_exit)) },
+                        label = { AutoResizedText(text = stringResource(R.string.time_of_exit)) },
                         enabled = false,
                         readOnly = true,
                         modifier = Modifier
@@ -156,7 +157,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     onExpandedChange = { isExpanded = !isExpanded },
                     modifier = Modifier
                 ) {
-                    TextField(
+                    OutlinedTextField(
                         modifier = Modifier.menuAnchor(),
                         readOnly = true,
                         value = selectedMeal.asString(context),
