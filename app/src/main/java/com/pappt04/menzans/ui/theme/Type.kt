@@ -27,6 +27,13 @@ val displayFontFamily = FontFamily(
     )
 )
 
+val megatitleFont = FontFamily(
+    Font(
+        googleFont = GoogleFont("Chakra Petch"),
+        fontProvider = provider,
+    )
+)
+
 // Default Material 3 typography values
 val baseline = Typography()
 

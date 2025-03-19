@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.appui.animations.AnimatedNumber
-import com.pappt04.menzans.data.DummyData.datetypeclock
-import com.pappt04.menzans.data.DummyData.engmonths
+import com.pappt04.menzans.data.consts.DummyData.datetypeclock
+import com.pappt04.menzans.data.consts.DummyData.engmonths
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.data.StatisticsFileDAO
@@ -41,7 +41,7 @@ import java.util.Date
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit ) {
+fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit, onChanged:() -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     Card(
@@ -113,6 +113,7 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                                     balance.value += meal.price
                                     remaining.value--
                                 }
+                                onChanged()
                             },
                         ) {
                             Icon(
@@ -138,6 +139,7 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
 
                                     }
                                 }
+                                onChanged()
                             },
                         ) {
                             Text(stringResource(R.string.consume))
@@ -147,6 +149,7 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                             if (balance.value > meal.price) {
                                 balance.value -= meal.price
                                 remaining.value++
+                                onChanged()
                             } else
                             {
                                 noFunds()

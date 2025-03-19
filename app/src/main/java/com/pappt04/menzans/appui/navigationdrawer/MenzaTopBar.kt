@@ -2,7 +2,6 @@ package com.pappt04.menzans.appui.navigationdrawer
 
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
@@ -28,14 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
 import com.pappt04.menzans.appui.UserID
 import com.pappt04.menzans.appui.animations.AutoResizedText
-import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.data.UsefulLinks
+import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.UsefulLinks
+import com.pappt04.menzans.ui.theme.megatitleFont
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,8 @@ fun MenzaTopBar(firstWelcome: MutableState<Boolean>,waitTime: MutableIntState,dr
             Text(
                 screenTitle,
                 softWrap = false,
-                fontSize = 32.sp,
+                fontSize = 42.sp,
+                fontFamily = megatitleFont,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.basicMarquee()
@@ -109,7 +111,7 @@ private fun TopBarPopup(
     val urlHandler= LocalUriHandler.current
 
     DropdownMenu(expanded,onDismissRequest) {
-        UsefulLinks.topbarLinks.forEach {  item ->
+        UsefulLinks.topbarLinks.forEach { item ->
             DropdownMenuItem(text = {
                 AutoResizedText(item.name.asString(context))
             }, onClick = {

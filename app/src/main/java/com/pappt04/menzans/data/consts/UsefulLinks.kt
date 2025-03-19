@@ -1,6 +1,7 @@
-package com.pappt04.menzans.data
+package com.pappt04.menzans.data.consts
 
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.Uitext
 
 object UsefulLinks {
 

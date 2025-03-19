@@ -1,17 +1,20 @@
-package com.pappt04.menzans.data
+package com.pappt04.menzans.data.api
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import com.pappt04.menzans.data.DummyData.BASE_API_NAME
-import com.pappt04.menzans.data.DummyData.BASE_SERVER_URL
+import com.pappt04.menzans.data.consts.DummyData.BASE_API_NAME
+import com.pappt04.menzans.data.consts.DummyData.BASE_SERVER_URL
+import com.pappt04.menzans.data.EnterEventString
+import com.pappt04.menzans.data.ExitEventString
+import com.pappt04.menzans.data.MealEventString
+import com.pappt04.menzans.data.UserIDString
+import com.pappt04.menzans.data.WaitTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

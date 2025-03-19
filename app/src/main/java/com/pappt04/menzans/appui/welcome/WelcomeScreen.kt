@@ -2,7 +2,6 @@ package com.pappt04.menzans.appui.welcome
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.geolocation.GeofenceManager
 
 @Composable

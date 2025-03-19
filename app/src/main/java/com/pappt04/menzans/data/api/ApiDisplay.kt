@@ -1,4 +1,4 @@
-package com.pappt04.menzans.data
+package com.pappt04.menzans.data.api
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

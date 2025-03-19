@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.getLineGraph
+import com.pappt04.menzans.data.api.getLineGraph
 import com.pappt04.menzans.appui.statistics.rememberMarker
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom

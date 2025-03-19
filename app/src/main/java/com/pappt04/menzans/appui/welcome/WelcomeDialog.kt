@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.consts.DummyData
 
 @Composable
 fun WelcomeDialog(onDismissRequest: () -> Unit, context: Context) {

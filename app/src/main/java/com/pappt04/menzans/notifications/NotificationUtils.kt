@@ -6,12 +6,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.appui.MainActivity
 import com.pappt04.menzans.data.MealData
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.FileContainer
-import com.pappt04.menzans.data.MealSample
+import com.pappt04.menzans.data.consts.MealSample
 
 fun createChannel(context: Context) {
     for (channel in DummyData.CHANNEL_IDs) {

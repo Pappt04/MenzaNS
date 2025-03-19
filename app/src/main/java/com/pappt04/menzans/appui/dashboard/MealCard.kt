@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.appui.animations.AnimatedNumber
 import com.pappt04.menzans.data.MealData
-import com.pappt04.menzans.data.MealSample.MealSampleBudget
+import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
 @SuppressLint("DefaultLocale")

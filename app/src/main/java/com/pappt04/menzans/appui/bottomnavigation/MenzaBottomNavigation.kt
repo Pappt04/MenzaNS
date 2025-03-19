@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.pappt04.menzans.appui.animations.AutoResizedText
-import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.consts.DummyData
 
 @Composable
 fun MenzaBottomNavigation(

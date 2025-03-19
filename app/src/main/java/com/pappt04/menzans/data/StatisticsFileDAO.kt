@@ -1,7 +1,9 @@
 package com.pappt04.menzans.data
 
 import android.content.Context
-import com.pappt04.menzans.data.DummyData.engtosresc
+import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.DummyData.engtosresc
+import com.pappt04.menzans.data.consts.MealSample
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

@@ -2,10 +2,9 @@ package com.pappt04.menzans.data
 
 import android.app.NotificationManager
 import android.content.Context
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.content.ContextCompat
+import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.notifications.sendTopUpReminder
-import kotlinx.coroutines.CoroutineScope
 
 open class FileDAO(var context: Context, private var fileName:String) {
 
@@ -39,7 +38,7 @@ open class FileDAO(var context: Context, private var fileName:String) {
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
             it.write(s1.toByteArray())
         }
-        var tokenlimit=DummyData.MINIMUM_TOKEN_TRESHOLD
+        var tokenlimit= DummyData.MINIMUM_TOKEN_TRESHOLD
         try {
             val dao = FileDAO(context, FileContainer.FileTokenLimit)
             val tokenlimitstring = dao.readFromFile()

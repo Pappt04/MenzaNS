@@ -2,7 +2,6 @@ package com.pappt04.menzans.appui.dashboard
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -37,9 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.appui.animations.AnimatedNumber
-import com.pappt04.menzans.data.MinuteTicker
-import com.pappt04.menzans.data.getLineGraph
-import com.pappt04.menzans.data.getWaitTime
+import com.pappt04.menzans.data.api.MinuteTicker
+import com.pappt04.menzans.data.api.getWaitTime
 
 @Composable
 fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
@@ -123,7 +120,6 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
                     text = stringResource(R.string.wait_time),
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .fillMaxWidth()

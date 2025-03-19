@@ -44,17 +44,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.glance.appwidget.updateAll
 import com.pappt04.menzans.R
+import com.pappt04.menzans.appui.widgets.MenzaCardWidget
 import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.MealData
-import com.pappt04.menzans.data.MealSample.mealIcons
 import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.data.consts.MealSample.mealIcons
+import com.pappt04.menzans.data.mealdatastorage.MealDataStoreManager
+import com.pappt04.menzans.data.mealdatastorage.MealPreferences
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     meals: List<MealData>,
@@ -66,9 +67,12 @@ fun DashboardScreen(
     lazyListState: LazyListState = rememberLazyListState()
 ) {
 
+
     val graphcardState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
+
+    val mealmanager = remember { MealDataStoreManager(context) }
 
     val mealValueList = remember {
         MutableList(3) { index ->
@@ -131,7 +135,9 @@ fun DashboardScreen(
                     }) {
                     if (it in 0..meals.size)
                         DetailedMealCard(meals[it], mealValueList[it], balance,
-                            onClicked = { selectedCard.intValue = 99 },
+                            onClicked = {
+                                selectedCard.intValue = 99
+                            },
                             noFunds = {
                                 scope.launch {
                                     snackbar.showSnackbar(
@@ -139,7 +145,21 @@ fun DashboardScreen(
                                         duration = SnackbarDuration.Short
                                     )
                                 }
-                            })
+                            },
+                            onChanged ={
+                                scope.launch {
+                                    if (mealValueList.size == 3) {
+                                        val mealprefs = MealPreferences(
+                                            breakfast = mealValueList[0].intValue,
+                                            lunch = mealValueList[1].intValue,
+                                            dinner = mealValueList[2].intValue,
+                                            balance = balance.intValue,
+                                        )
+                                        mealmanager.saveToDataStore(mealprefs)
+                                    }
+                                }
+                            }
+                            )
                 }
             }
             item {
@@ -167,7 +187,7 @@ fun DashboardScreen(
                         val data = (graphcardState as UiState.Success).data
                         OutlinedCard(
                             modifier = Modifier.padding(8.dp)
-                        ){
+                        ) {
                             LineSizeGraph(data)
                         }
                     }
@@ -197,6 +217,17 @@ fun DashboardScreen(
             BalanceDialog(
                 onDismissRequest = {
                     showBalanceDialog = false
+                    scope.launch {
+                        if(mealValueList.size==4) {
+                            val mealprefs = MealPreferences(
+                                breakfast = mealValueList[0].intValue,
+                                lunch = mealValueList[1].intValue,
+                                dinner = mealValueList[2].intValue,
+                                balance = balance.intValue,
+                            )
+                            mealmanager.saveToDataStore(mealprefs)
+                        }
+                    }
                 },
                 balance, LocalContext.current, FileContainer.FileNames[3]
             )
@@ -230,7 +261,14 @@ fun PreviewScaffold() {
                     CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
                 }
             ) { innerPadding ->
-                DashboardScreen(meals, remainingOnCard, GraphCardViewModel(), wt, innerPadding,snack)
+                DashboardScreen(
+                    meals,
+                    remainingOnCard,
+                    GraphCardViewModel(),
+                    wt,
+                    innerPadding,
+                    snack
+                )
             }
         }
     }

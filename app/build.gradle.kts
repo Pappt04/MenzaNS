@@ -109,6 +109,11 @@ dependencies {
     implementation(libs.androidx.datastore.preferences.rxjava3)
     implementation(libs.androidx.datastore.rxjava3)
 
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material)
+    implementation(libs.glance.material3)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

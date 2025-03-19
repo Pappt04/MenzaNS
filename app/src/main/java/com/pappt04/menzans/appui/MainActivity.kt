@@ -7,24 +7,45 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
-import com.pappt04.menzans.appui.animations.AnimatedAppearance
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.pappt04.menzans.appui.navigationdrawer.MainNavigationDrawer
 import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.FileContainer.CardHolderFileName
 import com.pappt04.menzans.data.FileContainer.FileUserID
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.data.UserIDString
-import com.pappt04.menzans.data.registerNewUser
+import com.pappt04.menzans.data.api.registerNewUser
+import com.pappt04.menzans.data.mealdatastorage.MealDataStoreManager
+import com.pappt04.menzans.data.mealdatastorage.MealPreferences
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.BUDGET
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.DARK_THEME
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.LANGUAGE
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.MATERIALYOU_THEME
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.TOKEN_WARNING
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.USERID
+import com.pappt04.menzans.data.settingsdatastorage.SettingsPreferences
 import com.pappt04.menzans.notifications.createChannel
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-lateinit var UserID: UserIDString
+var UserID: UserIDString = UserIDString("")
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,14 +68,33 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //TODO LOAD ALL FILES IN ON CREATE SO THERE IS KNOW MICROLAGS WHEN USER INTERACT WITH THE APP
     override fun onStart() {
         super.onStart()
 
         setContent {
+            val context = LocalContext.current
+
             val scope = rememberCoroutineScope()
 
-            val context = LocalContext.current
+
+//            LaunchedEffect(key1 = Unit) {
+//                settingsdatamanager.saveToDataStore(
+//                    SettingsPreferences(
+//                        darktheme = true,
+//                        materialyoutheme = true,
+//                        budget = false,
+//                        userID = "",
+//                    )
+//                )
+//            }
+
+            val isLoaded = remember { mutableStateOf(false) }
+
+            var settingprefs: SettingsPreferences = SettingsPreferences("", "", false, false, false, 2)
+
+            var mealprefs= MealPreferences()
+
+            val settingsdatamanager = remember { SettingsDataStoreManager(context) }
 
             val theme = remember { mutableStateOf(false) }
 
@@ -62,38 +102,51 @@ class MainActivity : AppCompatActivity() {
 
             val onBudgetPricing = remember { mutableStateOf(false) }
 
-            //**************************************************************//
+            val tokenwarning = remember { mutableIntStateOf(0) }
 
-            val dao = FileDAO(this, FileContainer.FileDarkThemeEnabled)
+            LaunchedEffect(key1 = Unit) {
+                val mealmanager= MealDataStoreManager(context)
+                mealprefs=mealmanager.getFromDataStore().first()
+                savedMeals.clear()
 
-            val saveddark = dao.readFromFile()
-            theme.value = saveddark != "" && saveddark.toInt() == 1
-
-
-            //**************************************************************//
-            val mdao = FileDAO(this, FileContainer.FileMaterialYouEnabled)
-            val savedmaterial = mdao.readFromFile()
-            materialtheme.value = savedmaterial != "" && savedmaterial.toInt() == 1
-
-
-            //**************************************************************//
-            val bdao = FileDAO(this, FileContainer.FileMealPricing)
-            val savedpricing = bdao.readFromFile()
-            onBudgetPricing.value = savedpricing != "" && savedpricing.toInt() == 1
+                savedMeals.add(mealprefs.breakfast)
+                savedMeals.add(mealprefs.lunch)
+                savedMeals.add(mealprefs.dinner)
+                savedMeals.add(mealprefs.balance)
 
 
-            //**************************************************************//
-            UserID = getUserID(context)
+                settingprefs = settingsdatamanager.getFromDataStore().first()
+
+                theme.value = settingprefs.darktheme
+                materialtheme.value = settingprefs.materialyoutheme
+                onBudgetPricing.value = settingprefs.budget
+                tokenwarning.intValue = settingprefs.tokenwarning
+
+                if (settingprefs.userID == "") {
+                    val fileDAO = FileDAO(context, FileUserID)
+
+                    settingprefs.userID = fileDAO.getDAOData()
+                    if (settingprefs.userID != "") {
+                        settingsdatamanager.saveToDataStore(settingprefs)
+                    } else {
+
+                        settingprefs.userID = getUserID(context).userid
+                        if (settingprefs.userID != "")
+                            settingsdatamanager.saveToDataStore(settingprefs)
+                    }
+                }
+
+                UserID.userid=settingprefs.userID
+
+                isLoaded.value=true
+            }
+
+
 
             MenzaNSTheme(darkTheme = theme.value, dynamicColor = materialtheme.value) {
 
                 requestAllPermissions()
                 createChannel(context)
-
-                val d = calculateRemainingMeals(context)
-                savedMeals.clear()
-                for (m in d)
-                    savedMeals.add(m)
 
                 val firstwelcome = remember { mutableStateOf(true) }
 
@@ -102,13 +155,25 @@ class MainActivity : AppCompatActivity() {
                     firstwelcome.value = false
                 }
 
+                if (isLoaded.value) {
                     MainNavigationDrawer(
                         theme,
                         materialtheme,
                         onBudgetPricing,
                         firstwelcome,
+                        settingsdatamanager,
                         savedMeals
                     )
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        CircularProgressIndicator()
+                    }
+
+                }
+
             }
         }
     }
@@ -116,13 +181,45 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         val context = this
-        for ((i, m) in savedMeals.withIndex()) {
-            val fdao = FileDAO(context, FileContainer.FileNames[i])
-            fdao.saveToFile(m)
-        }
+//
+//        val scope= rememberCoroutineScope()
+//
+//        for ((i, m) in savedMeals.withIndex()) {
+//            val fdao = FileDAO(context, FileContainer.FileNames[i])
+//            fdao.saveToFile(m)
+//        }
 
-        saveUserID(context, UserID.userid)
+//        setContent {
+//            LaunchedEffect(key1 = Unit) {
+//                val mealmanager = MealDataStoreManager(context)
+//
+//                val mealprefs = MealPreferences(
+//                    breakfast = savedMeals[0],
+//                    lunch = savedMeals[1],
+//                    dinner = savedMeals[2],
+//                    balance = savedMeals[3],
+//                )
+//                mealmanager.saveToDataStore(mealprefs)
+//            }
+//        }
+    }
 
+    private suspend fun loadPreferences(
+        preferenceDataStore: DataStore<Preferences>,
+        onLoaded: () -> Unit
+    ): SettingsPreferences {
+        val preferences = preferenceDataStore.data.first()
+
+        val s = SettingsPreferences(
+            language = preferences[LANGUAGE] ?: "",
+            darktheme = preferences[DARK_THEME] ?: false,
+            materialyoutheme = preferences[MATERIALYOU_THEME] ?: false,
+            budget = preferences[BUDGET] ?: false,
+            tokenwarning = preferences[TOKEN_WARNING] ?: 2,
+            userID = preferences[USERID] ?: "",
+        )
+        onLoaded()
+        return s
     }
 
     private fun saveUserID(context: Context, idstring: String) {
@@ -146,29 +243,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return ids
-    }
-
-    private fun calculateRemainingMeals(context: Context): Array<Int> {
-        val files: Array<String> = context.fileList()
-        var remainingOnCard: Array<Int> = emptyArray()
-        var s1 = ""
-        for (s in FileContainer.FileNames) {
-            if (s in files) {
-                context.openFileInput(s).bufferedReader().useLines { lines ->
-                    lines.fold("") { some, text ->
-                        s1 = "$some$text"
-                        s1
-                    }
-                }
-            } else {
-                s1 = "0"
-                context.openFileOutput(s, Context.MODE_PRIVATE).use {
-                    it.write(s1.toByteArray())
-                }
-            }
-            remainingOnCard += s1.toInt()
-        }
-        return remainingOnCard
     }
 
 

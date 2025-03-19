@@ -1,8 +1,6 @@
 package com.pappt04.menzans.appui.navigationdrawer
 
 import android.content.Context
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DrawerState
@@ -10,7 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
@@ -32,19 +29,19 @@ import com.pappt04.menzans.appui.dashboard.GraphCardViewModel
 import com.pappt04.menzans.appui.settings.SettingsScreen
 import com.pappt04.menzans.appui.statistics.StatisticsScreen
 import com.pappt04.menzans.appui.welcome.WelcomeScreen
-import com.pappt04.menzans.data.DummyData.datetypemonth
-import com.pappt04.menzans.data.DummyData.engmonths
-import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.FileContainer.CardHolderFileName
-import com.pappt04.menzans.data.MealSample.MealSampleBudget
-import com.pappt04.menzans.data.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.data.StatisticsFileDAO
-import kotlinx.coroutines.launch
+import com.pappt04.menzans.data.consts.DummyData.datetypemonth
+import com.pappt04.menzans.data.consts.DummyData.engmonths
+import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
+import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager
 import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun MenzaScaffold(
+    settingsdatamanager: SettingsDataStoreManager,
     firstWelcome: MutableState<Boolean>,
     drawerState: DrawerState,
     screenTitle: String,
@@ -56,7 +53,7 @@ fun MenzaScaffold(
     darkTheme: MutableState<Boolean>,
     materialtheme: MutableState<Boolean>,
 ) {
-    val gcvm = remember {  GraphCardViewModel() }
+    val gcvm = remember { GraphCardViewModel() }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -68,13 +65,13 @@ fun MenzaScaffold(
 
     val cardData = remember { loadCardHolder(context) }
 
-    val statDAO= StatisticsFileDAO(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
+    val statDAO = StatisticsFileDAO(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
 
     Scaffold(
         topBar = {
-//            AnimatedAppearance(enter = slideInVertically { -it } + fadeIn()) {
+            AnimatedAppearance(enter = slideInVertically { -it }) {
                 MenzaTopBar(firstWelcome, waittime, drawerState, screenTitle)
-                 //           }
+            }
         },
         snackbarHost = {
             SnackbarHost(
@@ -83,11 +80,11 @@ fun MenzaScaffold(
             )
         },
         bottomBar = {
-//            AnimatedAppearance(
-//                enter = slideInVertically { it } + fadeIn(),
-//            ) {
+            AnimatedAppearance(
+                enter = slideInVertically { it },
+            ) {
                 MenzaBottomNavigation(bottomController)
-//            }
+            }
         }
     ) { innerpadding ->
 
@@ -97,7 +94,9 @@ fun MenzaScaffold(
                     if (firstWelcome.value) {
                         WelcomeScreen(onCompleted = { firstWelcome.value = false }, innerpadding)
                     } else {
-                        AnimatedAppearance(delay = 5.milliseconds, enter = slideInVertically { it }) {
+                        AnimatedAppearance(
+                            delay = 5.milliseconds,
+                            enter = slideInVertically { it }) {
                             DashboardScreen(
                                 when (onBudgetPricing.value) {
                                     true -> MealSampleBudget
@@ -129,7 +128,13 @@ fun MenzaScaffold(
                 }
                 composable(route = Screen.SettingsScreen.route) {
                     AnimatedAppearance(enter = slideInVertically { it }) {
-                        SettingsScreen(innerpadding, darkTheme, materialtheme, onBudgetPricing)
+                        SettingsScreen(
+                            innerpadding,
+                            settingsdatamanager,
+                            darkTheme,
+                            materialtheme,
+                            onBudgetPricing
+                        )
                     }
                 }
             }

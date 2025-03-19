@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pappt04.menzans.data.DummyData.engmeals
+import com.pappt04.menzans.data.consts.DummyData.engmeals
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -26,15 +26,15 @@ import java.util.*
 
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
-import com.pappt04.menzans.data.DummyData.datetypedate
+import com.pappt04.menzans.data.consts.DummyData.datetypedate
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.MealEventString
 import com.pappt04.menzans.R
 import com.pappt04.menzans.appui.UserID
-import com.pappt04.menzans.data.MealSample.MealSampleBudget
+import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.StatisticsFileDAO
 import com.pappt04.menzans.geolocation.findEngMeal
-import com.pappt04.menzans.data.sendRemoveMeal
+import com.pappt04.menzans.data.api.sendRemoveMeal
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.ZoneId

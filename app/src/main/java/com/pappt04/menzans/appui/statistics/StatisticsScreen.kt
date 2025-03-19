@@ -30,12 +30,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.DummyData.datetypemonth
-import com.pappt04.menzans.data.DummyData.engmeals
-import com.pappt04.menzans.data.DummyData.engmonths
+import com.pappt04.menzans.data.consts.DummyData.datetypemonth
+import com.pappt04.menzans.data.consts.DummyData.engmeals
+import com.pappt04.menzans.data.consts.DummyData.engmonths
 import com.pappt04.menzans.data.EatingStatisticsData
-import com.pappt04.menzans.data.MealSample.MealSampleBudget
-import com.pappt04.menzans.data.MealSample.MealSampleSelfFinancing
+import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
+import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.data.StatisticsFileDAO
 import com.pappt04.menzans.data.Uitext
 import com.pappt04.menzans.geolocation.findEngMeal

@@ -9,28 +9,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.pappt04.menzans.R
-import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.FileDAO
 
 @Composable
-fun PriceSwitcher(onBudget: MutableState<Boolean>, onChanged: () -> Unit) {
-    val context= LocalContext.current
+fun SettingSwitch(pref: MutableState<Boolean>, name: String, filename: String, onChanged: () -> Unit) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(10.dp)
     ) {
         Text(
-            text=when(onBudget.value){
-                true -> stringResource(R.string.budget)
-                else -> stringResource(R.string.self_financing)
-            },
+            name,
             style = MaterialTheme.typography.titleLarge.merge(
                 TextStyle(
                     lineHeight = 2.5.em,
@@ -47,11 +41,15 @@ fun PriceSwitcher(onBudget: MutableState<Boolean>, onChanged: () -> Unit) {
                 .weight(4f)
         )
         Switch(
-            checked = onBudget.value,
+            checked = pref.value,
             onCheckedChange = {
-                onBudget.value = it
+                pref.value = it
 
                 onChanged()
+//                val dark = if (pref.value) 1 else 0
+//
+//                val fdao = FileDAO(context, filename)
+//                fdao.saveToFile(dark, false)
             },
             modifier = Modifier
                 .weight(1f)

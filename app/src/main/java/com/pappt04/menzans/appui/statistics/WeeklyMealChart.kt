@@ -9,9 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.data.DummyData.dataweek
-import com.pappt04.menzans.data.DummyData.engmeals
-import com.pappt04.menzans.data.DummyData.engtosresc
+import com.pappt04.menzans.data.consts.DummyData.dataweek
+import com.pappt04.menzans.data.consts.DummyData.engmeals
+import com.pappt04.menzans.data.consts.DummyData.engtosresc
 import com.pappt04.menzans.data.EatingStatisticsData
 import com.pappt04.menzans.data.Uitext
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost

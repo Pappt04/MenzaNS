@@ -1,4 +1,4 @@
-package com.pappt04.menzans.data
+package com.pappt04.menzans.data.consts
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -17,6 +17,10 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import com.google.android.gms.location.Geofence
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.AppPermission
+import com.pappt04.menzans.data.LandmarkDataObject
+import com.pappt04.menzans.data.NavigationItem
+import com.pappt04.menzans.data.Uitext
 import java.text.SimpleDateFormat
 
 object DummyData {

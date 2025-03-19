@@ -1,39 +1,19 @@
 package com.pappt04.menzans.appui.navigationdrawer
 
-import android.content.res.Configuration
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import kotlinx.coroutines.launch
+import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager
 
 @Composable
 fun MainNavigationDrawer(
@@ -41,8 +21,10 @@ fun MainNavigationDrawer(
     materialtheme: MutableState<Boolean>,
     onBudgetPricing: MutableState<Boolean>,
     firstWelcome: MutableState<Boolean>,
+    settingsdatamanager: SettingsDataStoreManager,
     savedMeals: SnapshotStateList<Int>,
 ) {
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -62,6 +44,9 @@ fun MainNavigationDrawer(
         3 -> stringResource(R.string.card)
         else -> stringResource(R.string.settings)
     }
+
+
+
     /*
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet(
@@ -112,22 +97,34 @@ fun MainNavigationDrawer(
     }) {
          MenzaScaffold(firstWelcome,drawerState,screenTitle,selectedItemIndex,navController,onBudgetPricing,savedMeals,waittime,darkTheme,materialtheme)
     }*/
-    MenzaScaffold(firstWelcome,drawerState,screenTitle,selectedItemIndex,navController,onBudgetPricing,savedMeals,waittime,darkTheme,materialtheme)
+    MenzaScaffold(
+        settingsdatamanager,
+        firstWelcome,
+        drawerState,
+        screenTitle,
+        selectedItemIndex,
+        navController,
+        onBudgetPricing,
+        savedMeals,
+        waittime,
+        darkTheme,
+        materialtheme
+    )
 }
 
 
-@Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark Mode"
-)
-@Composable
-fun PreviewSideNavigationDrawer() {
-    val darkTheme = remember { mutableStateOf(false) }
-    val savedMeals = remember { mutableStateListOf(1, 2, 3) }
-
-    val welcome= remember { mutableStateOf(false) }
-
-    MenzaNSTheme {
-        MainNavigationDrawer(darkTheme,darkTheme,darkTheme,welcome,savedMeals)
-    }
-}
+//@Preview(name = "Light Mode")
+//@Preview(
+//    uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark Mode"
+//)
+//@Composable
+//fun PreviewSideNavigationDrawer() {
+//    val darkTheme = remember { mutableStateOf(false) }
+//    val savedMeals = remember { mutableStateListOf(1, 2, 3) }
+//
+//    val welcome= remember { mutableStateOf(false) }
+//
+//    MenzaNSTheme {
+//        MainNavigationDrawer(darkTheme,darkTheme,darkTheme,welcome,savedMeals)
+//    }
+//}

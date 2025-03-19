@@ -3,13 +3,13 @@ package com.pappt04.menzans.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.pappt04.menzans.data.DummyData
-import com.pappt04.menzans.data.DummyData.engmeals
+import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.DummyData.engmeals
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.appui.UserID
 import com.pappt04.menzans.data.FileContainer
-import com.pappt04.menzans.data.MealSample.MealSampleBudget
-import com.pappt04.menzans.data.sendExitEvent
+import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
+import com.pappt04.menzans.data.api.sendExitEvent
 
 class NotificationBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {

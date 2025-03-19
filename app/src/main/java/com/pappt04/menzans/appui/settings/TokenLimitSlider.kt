@@ -3,15 +3,14 @@ package com.pappt04.menzans.appui.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -24,24 +23,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.DummyData
+import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.data.FileContainer
 import com.pappt04.menzans.data.FileDAO
 import kotlin.math.roundToInt
 
 
-@Preview
 @Composable
-fun TokenLimitSlider() {
+fun TokenLimitSlider(sliderpos: MutableFloatState, onChanged: () -> Unit) {
     val context = LocalContext.current
-
-    var sliderPosition = remember { mutableStateOf(DummyData.MINIMUM_TOKEN_TRESHOLD.toFloat()) }
-
-    try {
-        val dao = FileDAO(context, FileContainer.FileTokenLimit)
-        val tokenlimitstring = dao.readFromFile()
-        sliderPosition.value=tokenlimitstring.toFloat()
-    } catch (_:Exception) {}
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row()
@@ -63,7 +53,7 @@ fun TokenLimitSlider() {
                 modifier = Modifier.weight(4f)
             )
             Text(
-                "${sliderPosition.value.roundToInt()}",
+                "${sliderpos.value.roundToInt()}",
                 style = MaterialTheme.typography.titleLarge.merge(
                     TextStyle(
                         lineHeight = 2.5.em,
@@ -80,15 +70,11 @@ fun TokenLimitSlider() {
         }
         Slider(
             modifier = Modifier.semantics { contentDescription = "Localized Description" },
-            value = sliderPosition.value,
-            onValueChange = { sliderPosition.value = it },
+            value = sliderpos.value,
+            onValueChange = { sliderpos.value = it },
             valueRange = 0f..10f,
             onValueChangeFinished = {
-                // launch some business logic update with the state you hold
-                // viewModel.updateSelectedSliderValue(sliderPosition)
-                val fdao = FileDAO(context, FileContainer.FileTokenLimit)
-                fdao.saveToFile(sliderPosition.value.roundToInt(), false)
-
+                onChanged()
             },
             steps = 9
         )
