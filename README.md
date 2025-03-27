@@ -1,52 +1,56 @@
-## MenzaNS - Novi Sad Token Tracking Android Application for Students (README.md)
-<img src="https://github.com/user-attachments/assets/cafd796c-a697-4296-b053-bb4672d69298" width="400" class="center">
 
-**MenzaNS** is a mobile application for students at the University of Novi Sad (UNS) that simplifies token tracking from student canteens ("Menza"). The app utilizes Google's Geofencing API to automate token management based on your location.
-
-### Features
-
-* **Automatic Token Management:** Leverage Geofencing to automatically manage your tokens when you're near a menza. (**Requires Google Maps Platform access**)
-* **Optional ISIC Card Storage:** Securely store your ISIC card information for validity checks.
-* **User-friendly Interface:** Easily access menus, and track your token balance.
-
-### Installation
-
-**Please note:** Currently, the automatic token management feature requires access to Google Maps Platform. 
-
-1. Download the MenzaNS app from the relevant app store (Play Store or App Store).
-2. (Optional) If using the Google Maps Platform for automatic token management, follow to settings to aquire the needed Android platform permissions for the automatic tracking.
-
-### Usage
-
-1. Launch the MenzaNS app.
-2. (Optional) Enter your ISIC card information for validity checks.
-3. When you're near a menza, the app will automatically detect your location through Geofencing and manage your tokens (if enabled).
-
-### Technology Stack
-
-* Mobile development framework: Kotlin with Jepack compose
-* Google Maps Platform (optional), with Geofencing API
-* Secure storage for ISIC card information (optional)
-<img src="https://github.com/user-attachments/assets/10b03310-0c5f-4313-a82a-0c718a5bba7c" width="300">
+![Logo](https://github.com/user-attachments/assets/cafd796c-a697-4296-b053-bb4672d69298)
 
 
+# MenzaNS
 
-<img src="https://github.com/user-attachments/assets/d1a6d6e7-cb95-4314-9b78-6cb3ddd10fae" width="300">
+MenzaNS is a mobile application for students at the University of Novi Sad (UNS) that simplifies token tracking and optimizes waiting times in queues at the canteen. The app utilizes Google's Geofencing API to automate token management based on your location.
+## License
+
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+## Badges
+
+![Stars](https://img.shields.io/github/stars/Pappt04%2FMenzaNS)
+![Repo Size](https://img.shields.io/github/repo-size/Pappt04/MenzaNS)
+![Activity](https://img.shields.io/github/commit-activity/m/Pappt04/MenzaNS)
+## Features
+
+- Token tracking
+- Live wait times
+- Line size prediction
+- Token usage statistics
+- Useful links for students
+- Light/Dark mode
+- Menza menu
+
+## Installation
+
+[Google Play](https://play.google.com/store/apps/details?id=com.pappt04.menzans)
+## Tech Stack
+
+**Client:** Kotlin, Jetpack Compose
+
+**Server:** Golang, Python, Gin Web Framework
 
 
+## Authors
 
-### Contributing
+- [@Pappt04](https://www.github.com/Pappt04)
 
-We welcome contributions to the MenzaNS project! If you'd like to contribute, please refer to the CONTRIBUTING.md file (coming soon) for guidelines.
 
-### License
+## Feedback
 
-For the moment there is not any License active for this project
+If you have any feedback, please reach out to us at apollo4.labs@gmail.com
 
-### Disclaimer
 
-This application is not affiliated with the University of Novi Sad or any student canteen provider. It is entirely run by students for students
+## Links
 
-### Contact
+[Website](https://apollo4.duckdns.org/menzaapi/)
 
-For any questions or feedback, please feel free to contact us at papptamas2004@gmail.com.
+[Privacy Policy](https://apollo4.duckdns.org/menzaapi/privacyPolicy)
+
+[Data Disclosure](https://apollo4.duckdns.org/menzaapi/privacyPolicy)
+## Support
+
+For support, email apollo4.labs@gmail.com.
+
