@@ -1,10 +1,8 @@
 package com.pappt04.menzans.appui
 
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -18,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -27,22 +27,29 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -53,9 +60,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.FileContainer
+import com.pappt04.menzans.data.carddatastorage.CardDataStoreManager
+import com.pappt04.menzans.data.carddatastorage.CardPreferences
+import com.pappt04.menzans.data.mealdatastorage.MealDataStoreManager
+import com.pappt04.menzans.data.mealdatastorage.MealPreferences
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -63,29 +76,52 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardScreen(
-    savedholderdata: List<String>,
     remainingOnCard: SnapshotStateList<Int>,
+    snackbar: SnackbarHostState,
     maindrawerpadding: PaddingValues
 ) {
-    var surname by remember { mutableStateOf(savedholderdata[0]) }
-    var name by remember { mutableStateOf(savedholderdata[1]) }
-    var index by remember { mutableStateOf(savedholderdata[6]) }
-    var cardnumber by remember { mutableStateOf(savedholderdata[7]) }
 
-    var ISICcardnumber by remember { mutableStateOf(savedholderdata[8]) }
-    var universityandfaculty by remember { mutableStateOf(savedholderdata[2]) }
+    val context = LocalContext.current
 
-    val dateofBirth = remember { mutableStateOf(savedholderdata[3]) }
+    var cardprefs = remember { CardPreferences() }
+
+    val scope = rememberCoroutineScope()
+
+    var surname by remember { mutableStateOf(cardprefs.surname) }
+    var name by remember { mutableStateOf(cardprefs.name) }
+    var index by remember { mutableStateOf(cardprefs.index) }
+    var cardnumber by remember { mutableStateOf(cardprefs.cardnumber) }
+
+    var ISICcardnumber by remember { mutableStateOf(cardprefs.isicnumber) }
+    var universityandfaculty by remember { mutableStateOf(cardprefs.faculty) }
+
+    var dateofBirth = remember { mutableStateOf(cardprefs.dateofbirth) }
     val birthDialogState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showBirthDialog = remember { mutableStateOf(false) }
 
-    val cardIssued = remember { mutableStateOf(savedholderdata[4]) }
+    val cardIssued = remember { mutableStateOf(cardprefs.issued) }
     val IssuedState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showIssuedDialog = remember { mutableStateOf(false) }
 
-    val cardValid = remember { mutableStateOf(savedholderdata[5]) }
+    val cardValid = remember { mutableStateOf(cardprefs.validuntil) }
     val ValidState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showValidDialog = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val prfs = CardDataStoreManager(context)
+        cardprefs = prfs.getFromDataStore().first()
+
+        surname = cardprefs.surname
+        name = cardprefs.name
+        index = cardprefs.index
+        cardnumber = cardprefs.cardnumber
+        ISICcardnumber = cardprefs.isicnumber
+        universityandfaculty = cardprefs.faculty
+
+        dateofBirth.value = cardprefs.dateofbirth
+        cardIssued.value = cardprefs.issued
+        cardValid.value = cardprefs.validuntil
+    }
 
 
     val editbreakfast = remember { mutableIntStateOf(remainingOnCard[0]) }
@@ -93,7 +129,6 @@ fun CardScreen(
     val editdinner = remember { mutableIntStateOf(remainingOnCard[2]) }
     val editbalance = remember { mutableIntStateOf(remainingOnCard[3]) }
 
-    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .padding(maindrawerpadding)
@@ -237,6 +272,31 @@ fun CardScreen(
                         modifier = Modifier
                             .padding(4.dp)
                     )
+                    IconButton(onClick =
+                        {
+                            val str= "Prezime: $surname\n" +
+                                     "Ime: $name\n" +
+                                     "Univerzitet: Univerzitet u Novom Sadu" +
+                                     "Fakultet: $universityandfaculty\n" +
+                                     "Indeks: $index\n" +
+                                     "Datum rođenja: $dateofBirth\n" +
+                                     "Datum Izdavanja: $cardIssued\n" +
+                                     "Važi do: $cardValid\n" +
+                                     "Broj kartice: $cardnumber\n" +
+                                     "ISIC broj kartice: $ISICcardnumber\n"
+
+                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                putExtra(Intent.EXTRA_TEXT, str)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+
+                            startActivity(context, shareIntent, null)
+                        },
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+                    }
                 }
             }
         }
@@ -281,6 +341,7 @@ fun CardScreen(
                                 try {
                                     editlunch.intValue = it.toInt()
                                 } catch (e: Exception) {
+                                    editlunch.intValue = 0
                                 }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -296,6 +357,7 @@ fun CardScreen(
                                 try {
                                     editdinner.intValue = it.toInt()
                                 } catch (e: Exception) {
+                                    editdinner.intValue = 0
                                 }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -312,6 +374,7 @@ fun CardScreen(
                             try {
                                 editbalance.intValue = it.toInt()
                             } catch (e: Exception) {
+                                editbalance.intValue=0
                             }
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -363,26 +426,38 @@ fun CardScreen(
                 }
                 Button(
                     onClick = {
-                        saveCardHolderInfotoFiles(
-                            surname,
-                            name,
-                            universityandfaculty,
-                            dateofBirth.value,
-                            cardIssued.value,
-                            cardValid.value,
-                            index,
-                            cardnumber,
-                            ISICcardnumber,
-                            context
-                        )
-                        saveCardData(
-                            context,
-                            editbreakfast,
-                            editlunch,
-                            editdinner,
-                            editbalance,
-                            remainingOnCard
-                        )
+                        scope.launch {
+                            val cman = CardDataStoreManager(context)
+                            cman.saveToDataStore(
+                                CardPreferences(
+                                    surname = surname,
+                                    name = name,
+                                    faculty = universityandfaculty,
+                                    dateofbirth = dateofBirth.value,
+                                    issued = cardIssued.value,
+                                    validuntil = cardValid.value,
+                                    index = index,
+                                    cardnumber = cardnumber,
+                                    isicnumber = ISICcardnumber,
+                                )
+                            )
+
+                            val mman = MealDataStoreManager(context)
+                            mman.saveToDataStore(
+                                MealPreferences(
+                                    breakfast = editbreakfast.intValue,
+                                    lunch = editlunch.intValue,
+                                    dinner = editdinner.intValue,
+                                    balance = editbalance.intValue
+                                )
+                            )
+                            snackbar.showSnackbar(
+                                message = "Saved",
+                                duration = SnackbarDuration.Short
+                            )
+
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -574,48 +649,6 @@ fun Long.convertMillisToDate(): String {
     return sdf.format(calendar.time)
 }
 
-
-fun saveCardHolderInfotoFiles(
-    surname: String,
-    name: String,
-    faculty: String,
-    birth: String,
-    issued: String,
-    valid: String,
-    index: String,
-    cardnumber: String,
-    isicnumber: String,
-    context: Context
-) {
-    val strings =
-        listOf(surname, name, faculty, birth, issued, valid, index, cardnumber, isicnumber)
-    context.openFileOutput(FileContainer.CardHolderFileName, Context.MODE_PRIVATE).use {
-        for (attribute in strings) {
-            val temp = "$attribute,\n"
-            it.write(temp.toByteArray())
-        }
-    }
-    Toast.makeText(
-        context,
-        context.getString(R.string.file_successfully_saved), Toast.LENGTH_SHORT
-    ).show()
-}
-
-fun saveCardData(
-    context: Context,
-    breakfast: MutableState<Int>,
-    lunch: MutableState<Int>,
-    dinner: MutableState<Int>,
-    balance: MutableState<Int>,
-    remainingOnCard: SnapshotStateList<Int>,
-) {
-    remainingOnCard[0] = breakfast.value
-    remainingOnCard[1] = lunch.value
-    remainingOnCard[2] = dinner.value
-    remainingOnCard[3] = balance.value
-}
-
-
 fun indexToLetter(index: Int): String {
     return ('A' + index).toString()
 }
@@ -628,13 +661,12 @@ fun indexToLetter(index: Int): String {
 )
 @Composable
 fun PreviewEditScreen() {
+    val snack = remember { SnackbarHostState() }
+
     MenzaNSTheme {
-        val savedholderdata = remember {
-            List(9) { "Data ${indexToLetter(it)}" } // Create a list with 9 elements
-        }
         val remainingOnCard = remember { mutableStateListOf(10, 20, 30, 40, 50, 60, 70, 80, 90) }
         MaterialTheme {
-            CardScreen(savedholderdata, remainingOnCard, PaddingValues(0.dp))
+            CardScreen(remainingOnCard, snack, PaddingValues(0.dp))
         }
     }
 }

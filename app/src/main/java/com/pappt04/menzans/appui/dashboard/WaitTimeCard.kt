@@ -168,7 +168,7 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
                         )
 
                 }
-                Text(stringResource(R.string.precision, precision.value.toString()), modifier = Modifier.align(Alignment.End))
+                Text(stringResource(R.string.precision, precision.value+10), modifier = Modifier.align(Alignment.End))
             }
         }
 

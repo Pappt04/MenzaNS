@@ -98,7 +98,7 @@
     <string name="use_materialyou_theme">MaterialYou tema</string>
     <string name="not_enough_funds">Nema dvoljno sredstva</string>
     <string name="wait_time_min">Vreme čekanja[min]</string>
-    <string name="precision">Preciznost: %1$s</string>
+    <string name="precision">Preciznost: %1$.2f %%</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="data_disclosure">Data Disclosure</string>
     <string name="open_source_code">Open Source Code</string>

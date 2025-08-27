@@ -161,7 +161,7 @@ object DummyData {
                 latitude = 45.245989
                 longitude = 19.849117
             },
-            20f,
+            25f,
             Geofence.NEVER_EXPIRE
         ),
     )

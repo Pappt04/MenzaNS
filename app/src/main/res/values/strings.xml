@@ -100,7 +100,7 @@
     <string name="self_financing">Self Financing</string>
     <string name="budget">Budget</string>
     <string name="use_materialyou_theme">MaterialYou theme</string>
-    <string name="precision">Precision: %1$s</string>
+    <string name="precision">Precision: %1$.2f %%</string>
     <string name="rsd" translatable="false">rsd</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="data_disclosure">Data Disclosure</string>

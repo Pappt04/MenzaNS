@@ -98,7 +98,7 @@
     <string name="use_materialyou_theme">MaterialYou színskála</string>
     <string name="not_enough_funds">Nincs elég pénzed</string>
     <string name="wait_time_min">Várakozási idő[min]</string>
-    <string name="precision">Pontosság: %1$s</string>
+    <string name="precision">Pontosság: %1$.2f %%</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="data_disclosure">Data Disclosure</string>
     <string name="open_source_code">Open Source Code</string>

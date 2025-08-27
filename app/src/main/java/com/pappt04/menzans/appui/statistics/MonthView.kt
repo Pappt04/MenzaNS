@@ -141,7 +141,7 @@ fun CalendarMonthView(
                                 {
                                     MaterialTheme.colorScheme.primaryContainer
                                 } else if( isSelected) {
-                                    MaterialTheme.colorScheme.secondary
+                                    MaterialTheme.colorScheme.tertiaryContainer
                                 } else
                                 {
                                     MaterialTheme.colorScheme.surface

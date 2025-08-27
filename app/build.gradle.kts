@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace = "com.pappt04.menzans"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.pappt04.menzans"
-        minSdk = 29
-        targetSdk = 34
-        versionCode = 8
+        minSdk = 31
+        targetSdk = 36
+        versionCode = 9
         versionName = "1.0.$versionCode"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

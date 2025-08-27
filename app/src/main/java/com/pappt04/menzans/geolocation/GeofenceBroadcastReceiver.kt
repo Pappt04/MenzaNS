@@ -32,6 +32,7 @@ import java.time.LocalDate
 import java.util.Date
 import kotlin.math.abs
 
+
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val TAG = "GeofenceBroadcastReceiver"
 

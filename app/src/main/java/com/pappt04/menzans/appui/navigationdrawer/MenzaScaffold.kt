@@ -21,7 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
 import com.pappt04.menzans.appui.CardScreen
-import com.pappt04.menzans.appui.InfoScreen
+import com.pappt04.menzans.appui.info.InfoScreen
 import com.pappt04.menzans.appui.animations.AnimatedAppearance
 import com.pappt04.menzans.appui.bottomnavigation.MenzaBottomNavigation
 import com.pappt04.menzans.appui.dashboard.DashboardScreen
@@ -62,8 +62,6 @@ fun MenzaScaffold(
     val bottomController = rememberNavController()
 
     val scope = rememberCoroutineScope()
-
-    val cardData = remember { loadCardHolder(context) }
 
     val statDAO = StatisticsFileDAO(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
 
@@ -123,7 +121,7 @@ fun MenzaScaffold(
                 }
                 composable(route = Screen.CardScreen.route) {
                     AnimatedAppearance(enter = slideInVertically { it }) {
-                        CardScreen(cardData, savedMeals, innerpadding)
+                        CardScreen(savedMeals,snackbarHostState, innerpadding)
                     }
                 }
                 composable(route = Screen.SettingsScreen.route) {

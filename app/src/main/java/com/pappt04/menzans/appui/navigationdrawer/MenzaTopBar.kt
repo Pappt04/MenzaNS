@@ -62,7 +62,7 @@ fun MenzaTopBar(firstWelcome: MutableState<Boolean>,waitTime: MutableIntState,dr
         IconButton(onClick =
         {
             val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_TEXT, "Hej! Video sam da ${waitTime.intValue} minuta treba čekati na menzu u ovom aplikaciju \n\n ${DummyData.APPLINK}")
+                putExtra(Intent.EXTRA_TEXT, "Hej! Video sam da ${waitTime.intValue} minuta treba čekati na menzu.")
                 type = "text/plain"
             }
             val shareIntent = Intent.createChooser(sendIntent, null)

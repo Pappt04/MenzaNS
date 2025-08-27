@@ -30,6 +30,7 @@ import com.pappt04.menzans.data.FileContainer.FileUserID
 import com.pappt04.menzans.data.FileDAO
 import com.pappt04.menzans.data.UserIDString
 import com.pappt04.menzans.data.api.registerNewUser
+import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.data.mealdatastorage.MealDataStoreManager
 import com.pappt04.menzans.data.mealdatastorage.MealPreferences
 import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager
@@ -40,6 +41,7 @@ import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Com
 import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.TOKEN_WARNING
 import com.pappt04.menzans.data.settingsdatastorage.SettingsDataStoreManager.Companion.USERID
 import com.pappt04.menzans.data.settingsdatastorage.SettingsPreferences
+import com.pappt04.menzans.geolocation.GeofenceManager
 import com.pappt04.menzans.notifications.createChannel
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.flow.first
@@ -137,6 +139,18 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 UserID.userid=settingprefs.userID
+
+                val geofenceManager = GeofenceManager(context)
+
+                for (geofence in DummyData.LANDMARK_DATA) {
+                    geofenceManager.addGeofence(
+                        geofence.key,
+                        geofence.location,
+                        geofence.radiusInMeters,
+                        geofence.expirationTimeInMillis
+                    )
+                }
+                geofenceManager.registerGeofence()
 
                 isLoaded.value=true
             }
