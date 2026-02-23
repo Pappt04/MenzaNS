@@ -205,10 +205,10 @@ fun calculateCorrectMeal(
 }
 
 fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<String>): Int {
-    val hourdiff: Int = abs(enteredsplit[0].toInt() - exitedsplit[0].toInt())
-    val mindiff: Int = abs(enteredsplit[1].toInt() - exitedsplit[1].toInt())
+    val enteredMinutes = enteredsplit[0].toInt() * 60 + enteredsplit[1].toInt()
+    val exitedMinutes = exitedsplit[0].toInt() * 60 + exitedsplit[1].toInt()
 
-    return hourdiff * 60 + mindiff
+    return abs(exitedMinutes - enteredMinutes)
 }
 
 fun findMealIndex(mealdata: MealData): Int {
