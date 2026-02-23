@@ -44,9 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.glance.appwidget.updateAll
 import com.pappt04.menzans.R
-import com.pappt04.menzans.views.widgets.MenzaCardWidget
 import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.models.Uitext

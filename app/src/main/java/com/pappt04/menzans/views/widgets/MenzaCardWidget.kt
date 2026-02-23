@@ -1,132 +1,187 @@
 package com.pappt04.menzans.views.widgets
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import androidx.glance.Button
-import androidx.glance.ButtonColors
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalContext
-import androidx.glance.action.ActionParameters
+import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.components.Scaffold
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
-import androidx.glance.unit.ColorProvider
-import com.pappt04.menzans.R
-import com.pappt04.menzans.data.api.getWaitTime
+import androidx.glance.text.TextStyle
 import com.pappt04.menzans.data.local.datastore.MealDataStoreManager
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
+// ── Tokens Widget ───────────────────────────────────────────────────────────
 
-object MenzaCardWidget : GlanceAppWidget() {
-
+object TokensWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val data = MealDataStoreManager(context).getFromDataStore().first()
         provideContent {
-            Content()
-        }
-    }
-
-    @SuppressLint("RestrictedApi")
-    @Composable
-    fun Content() {
-        val context = LocalContext.current
-        val data = runBlocking { MealDataStoreManager(context).getFromDataStore().first() }
-        val waittime = remember { mutableIntStateOf(0) }
-
-        LaunchedEffect(Unit) {
-            getWaitTime(context) { wt ->
-                if (wt != null) {
-                    waittime.intValue = wt.waittime.toInt()
+            GlanceTheme {
+                Scaffold(
+                    titleBar = {
+                        Text(
+                            "Tokens",
+                            modifier = GlanceModifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        )
+                    },
+                    backgroundColor = GlanceTheme.colors.widgetBackground,
+                ) {
+                    Column(
+                        modifier = GlanceModifier.fillMaxSize().padding(horizontal = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TokenRow("Breakfast", data.breakfast)
+                        Spacer(GlanceModifier.height(6.dp))
+                        TokenRow("Lunch", data.lunch)
+                        Spacer(GlanceModifier.height(6.dp))
+                        TokenRow("Dinner", data.dinner)
+                        Spacer(GlanceModifier.height(10.dp))
+                        TokenRow("Balance", data.balance, bold = true)
+                    }
                 }
             }
         }
+    }
+}
 
-//        Box(modifier = GlanceModifier.fillMaxSize().background(MaterialTheme.colorScheme.background).clickable {
-//            actionRunCallback<UpdateActionCallback>()
-//        }) {
-//            Column{
-//                Text(
-//                    text = "${data.breakfast} ${data.lunch} ${data.dinner} ${data.balance}",
-//                    modifier = GlanceModifier.padding(16.dp)
-//                )
-//                Button(text="refresh", onClick = actionRunCallback(UpdateActionCallback::class.java))
-//            }
-//        }
-        Scaffold(
-            titleBar = {
-                Text(
-                    "Wait time: ${waittime.intValue} min",
-                    modifier = GlanceModifier.padding(10.dp)
-                )
-            },
-            backgroundColor = ColorProvider(R.color.white)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = GlanceModifier.fillMaxSize()
-            ) {
-                MealPart("Breakfast", data.breakfast)
-                MealPart("Lunch", data.lunch)
-                MealPart("Dinner", data.dinner)
-                MealPart("Balance", data.balance)
+@Composable
+private fun TokenRow(label: String, count: Int, bold: Boolean = false) {
+    Row(
+        modifier = GlanceModifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            label,
+            style = TextStyle(
+                color = GlanceTheme.colors.onSurface,
+                fontSize = 14.sp,
+                fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
+            ),
+        )
+        Spacer(GlanceModifier.defaultWeight())
+        Text(
+            "$count",
+            style = TextStyle(
+                color = GlanceTheme.colors.onSurface,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+    }
+}
 
-                Button(
-                    "Refresh",
-                    onClick = actionRunCallback(UpdateActionCallback::class.java),
-                    modifier = GlanceModifier.padding(4.dp).fillMaxWidth()
-                )
+class TokensWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget = TokensWidget
+}
+
+// ── Wait Time Widget ────────────────────────────────────────────────────────
+
+object WaitTimeWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        var minutes = -1
+        var lineLength = ""
+        try {
+            val api = com.pappt04.menzans.service.RetrofitClient.apiService
+            val response = api.getWaitTime()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    minutes = it.waittime.toIntOrNull() ?: -1
+                    lineLength = it.linelength
+                }
+            }
+        } catch (_: Exception) { }
+
+        provideContent {
+            GlanceTheme {
+                Scaffold(
+                    titleBar = {
+                        Text(
+                            "Canteen",
+                            modifier = GlanceModifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        )
+                    },
+                    backgroundColor = GlanceTheme.colors.widgetBackground,
+                ) {
+                    Column(
+                        modifier = GlanceModifier.fillMaxSize().padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (minutes >= 0) {
+                            Text(
+                                "$minutes",
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                            )
+                            Text(
+                                "min wait",
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 14.sp,
+                                ),
+                            )
+                            if (lineLength.isNotEmpty()) {
+                                Spacer(GlanceModifier.height(6.dp))
+                                Text(
+                                    "$lineLength people in line",
+                                    style = TextStyle(
+                                        color = GlanceTheme.colors.secondary,
+                                        fontSize = 12.sp,
+                                    ),
+                                )
+                            }
+                        } else {
+                            Text(
+                                "—",
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 32.sp,
+                                ),
+                            )
+                            Text(
+                                "No data",
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.secondary,
+                                    fontSize = 14.sp,
+                                ),
+                            )
+                        }
+                    }
+                }
             }
         }
     }
-
-    @Composable
-    fun MealPart(name: String, rem: Int) {
-        Text("$name: $rem", modifier = GlanceModifier.padding(6.dp))
-    }
 }
 
-class CardWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget
-        get() = MenzaCardWidget
+class WaitTimeWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget = WaitTimeWidget
 }
 
-class UpdateActionCallback : ActionCallback {
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
-    ) {
-
-        updateAppWidgetState(context, glanceId) { prefs ->
-            onRun(context, glanceId)
-        }
-
-        MenzaCardWidget.update(context, glanceId)
-    }
-
-    suspend fun onRun(context: Context, glanceId: GlanceId) {
-        // Get a reference to the DataStore.
-        val dataStore = MealDataStoreManager(context)
-
-        // Get the current value, or a default if it doesn't exist.
-        val currentValueFlow = dataStore.getFromDataStore()
-        val currentValue = currentValueFlow.first()
-    }
-}

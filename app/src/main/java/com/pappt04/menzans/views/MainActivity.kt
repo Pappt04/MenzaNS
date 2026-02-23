@@ -3,21 +3,17 @@ package com.pappt04.menzans.views
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.views.navigation.MainNavigationDrawer
@@ -41,10 +37,16 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         mainViewModel.initialize()
+        val splashStartTime = SystemClock.elapsedRealtime()
+        splashScreen.setKeepOnScreenCondition {
+            !mainViewModel.uiState.value.isLoaded ||
+                    SystemClock.elapsedRealtime() - splashStartTime < 500L
+        }
 
         setContent {
             val context = LocalContext.current
@@ -103,12 +105,7 @@ class MainActivity : AppCompatActivity() {
                         savedMeals
                     )
                 } else {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    // Splash screen API keeps the system splash visible until isLoaded is true
                 }
             }
         }
