@@ -17,10 +17,10 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import com.google.android.gms.location.Geofence
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.AppPermission
-import com.pappt04.menzans.data.LandmarkDataObject
-import com.pappt04.menzans.data.NavigationItem
-import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.models.AppPermission
+import com.pappt04.menzans.models.LandmarkDataObject
+import com.pappt04.menzans.models.NavigationItem
+import com.pappt04.menzans.models.Uitext
 import java.text.SimpleDateFormat
 
 object DummyData {

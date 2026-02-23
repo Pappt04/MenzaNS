@@ -1,0 +1,158 @@
+package com.pappt04.menzans.views.info
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.LocalContext
+import androidx.glance.appwidget.lazy.LazyColumn
+import com.pappt04.menzans.R
+import com.pappt04.menzans.data.consts.UsefulLinks
+
+
+@Composable
+fun LinkTab(context: Context) {
+    Column {
+            FacultyCard(context)
+
+            Card(
+                modifier = Modifier
+                    .padding(10.dp)
+            ) {
+                Column {
+//                    items(DummyData.usefullLinks) { smartlink: DummyData.linkContainer ->
+//                        LinkButton(context, weblink = smartlink)
+//                    }
+                    for (smartlink in UsefulLinks.usefulLinks)
+                        LinkButton(context, weblink = smartlink)
+                }
+            }
+    }
+}
+
+
+@Composable
+fun LinkButton(context: Context, weblink: UsefulLinks.linkContainer) {
+    ElevatedButton(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        onClick = {
+            openUrl(context, weblink.link)
+        }) {
+        Text(
+            text = weblink.name.asString(context),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold,
+            fontStyle = FontStyle.Italic,
+            fontSize = 16.sp,
+            modifier = Modifier
+                .padding(6.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FacultyCard(context: Context) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable { isExpanded = !isExpanded }
+    )
+    {
+        Column(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.unsimage),
+                contentDescription = stringResource(R.string.university_of_novi_sad),
+                colorFilter = ColorFilter.tint(color = Color.Black),
+                modifier = Modifier
+                    .height(120.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+            Text(
+                text = stringResource(R.string.university_of_novi_sad),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+            RotatingIcon(isExpanded)
+        }
+        AnimatedVisibility(
+            isExpanded,
+            modifier = Modifier
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+        ) {
+            Column {
+                for (smartlink in UsefulLinks.allUnsAcRswebsites)
+                    LinkButton(context, weblink = smartlink)
+            }
+        }
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun RotatingIcon(expanded: Boolean) {
+    Icon(
+        Icons.Filled.ArrowDropDown,
+        null,
+        Modifier.rotate(if (expanded) 180f else 0f)
+    )
+}
+
+fun openUrl(context: Context, link: String) {
+    var uri = Uri.parse(link)
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+
+    context.startActivity(intent)
+}

@@ -5,8 +5,8 @@ import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.outlined.Fastfood
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.MealData
-import com.pappt04.menzans.data.Uitext
+import com.pappt04.menzans.models.MealData
+import com.pappt04.menzans.models.Uitext
 
 object MealSample {
     var MealSampleBudget = listOf(
