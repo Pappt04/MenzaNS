@@ -60,9 +60,11 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.compose)
     implementation(libs.androidx.material3)
     implementation(libs.gson)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
-    implementation (libs.play.services.location)
+    implementation(libs.play.services.location)
     implementation(libs.androidx.appcompat)
     implementation(libs.play.services.maps)
 

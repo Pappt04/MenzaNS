@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MenzaNS.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/applogo_vector_white</item>
+        <item name="postSplashScreenTheme">@style/Theme.MenzaNS</item>
+    </style>
+
+</resources>

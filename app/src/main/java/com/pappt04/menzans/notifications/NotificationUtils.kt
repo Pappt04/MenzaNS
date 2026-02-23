@@ -7,10 +7,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.pappt04.menzans.data.consts.DummyData
-import com.pappt04.menzans.appui.MainActivity
-import com.pappt04.menzans.data.MealData
+import com.pappt04.menzans.views.MainActivity
+import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.FileContainer
+import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.data.consts.MealSample
 
 fun createChannel(context: Context) {

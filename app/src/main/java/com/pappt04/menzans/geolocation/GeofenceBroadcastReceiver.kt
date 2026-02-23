@@ -13,31 +13,37 @@ import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.data.consts.DummyData.datetypeclock
 import com.pappt04.menzans.data.consts.DummyData.datetypedate
 import com.pappt04.menzans.data.consts.DummyData.datetypemonth
-import com.pappt04.menzans.data.EatingStatisticsData
-import com.pappt04.menzans.data.FileDAO
-import com.pappt04.menzans.data.MealData
-import com.pappt04.menzans.data.Uitext
-import com.pappt04.menzans.data.FileContainer
-import com.pappt04.menzans.data.FileContainer.FileUserID
+import com.pappt04.menzans.models.EatingStatisticsData
+import com.pappt04.menzans.data.local.FileContainer
+import com.pappt04.menzans.models.MealData
+import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
-import com.pappt04.menzans.data.StatisticsFileDAO
-import com.pappt04.menzans.data.UserIDString
+import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
-import com.pappt04.menzans.data.api.sendEnterEvent
-import com.pappt04.menzans.data.api.sendExitEvent
+import com.pappt04.menzans.repository.GeofenceRepository
+import com.pappt04.menzans.repository.StatisticsRepository
+import com.pappt04.menzans.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDate
 import java.util.Date
 import kotlin.math.abs
 
 
-class GeofenceBroadcastReceiver : BroadcastReceiver() {
+class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
     private val TAG = "GeofenceBroadcastReceiver"
 
-    override fun onReceive(context: Context?, intent: Intent?) {
+    private val geofenceRepository: GeofenceRepository by inject()
+    private val statisticsRepository: StatisticsRepository by inject()
+    private val userRepository: UserRepository by inject()
 
+    override fun onReceive(context: Context?, intent: Intent?) {
         Log.i(TAG, "Activated")
         val notificationManager = context?.let {
             ContextCompat.getSystemService(
@@ -57,44 +63,28 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val alertString = "Geofence Alert :" +
                 " Trigger ${geofencingEvent.triggeringGeofences}" +
                 " Transition ${geofencingEvent.geofenceTransition}"
-        Log.d(
-            TAG,
-            alertString
-        )
+        Log.d(TAG, alertString)
 
-        val fileDAO = FileDAO(context, FileUserID)
-
-        val ids = UserIDString(fileDAO.getDAOData())
+        val userId = userRepository.getUserId()
 
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-
                 Log.i(TAG,"GEOFENCE ENTERED")
                 val currentTime = datetypeclock.format(Date())
-                context.openFileOutput(FileContainer.FileGeoFenceEntered, Context.MODE_PRIVATE).use {
-                    it.write(currentTime.toByteArray())
+                geofenceRepository.saveEnterTime(currentTime)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    geofenceRepository.sendEnterEvent(
+                        datetypedate.format(Date()),
+                        currentTime
+                    )
                 }
-
-                sendEnterEvent(ids.userid, datetypedate.format(Date()),currentTime,context)
-
             }
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
                 Log.i(TAG,"GEOFENCE EXITED")
                 val timeExited = datetypeclock.format(Date())
-                var timeEntered = ""
-                val files: Array<String> = context.fileList()
-
-                if (FileContainer.FileGeoFenceEntered in files) {
-                    context.openFileInput(FileContainer.FileGeoFenceEntered).bufferedReader()
-                        .useLines { lines ->
-                            lines.fold("") { some, text ->
-                                timeEntered = "$some$text"
-                                timeEntered
-                            }
-                        }
-                }
-
+                val timeEntered = geofenceRepository.getEnterTime()
 
                 val enteredsplit = timeEntered.split(":").toTypedArray()
                 val exitedsplit = timeExited.split(":").toTypedArray()
@@ -104,29 +94,40 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
 
                 if (alldiff > DummyData.AUTOMATIC_EATING_SPEED_TRESHOLD && correctmeal!= null) {
-                    automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
-                    notificationManager.sendAutomaticDeductNotification(context, alldiff,correctmeal)
+                    if (context != null) {
+                        automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
+                        notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
 
-                    if(ids.userid != "")
-                        sendExitEvent(
-                            ids.userid,timeExited,
-                            findEngMeal(correctmeal.name),context )
+                        if(userId.isNotEmpty()) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                geofenceRepository.sendExitEvent(
+                                    timeExited,
+                                    findEngMeal(correctmeal.name)
+                                )
+                            }
+                        }
+                    }
 
-                } else if (correctmeal!=null /*&& alldiff >= DummyData.DWELL_TRESHOLD*/) {
-                    notificationManager.sendAteMealNotification(
-                        context,
-                        timeEntered,
-                        timeExited,
-                        correctmeal
-                    )
-
+                } else if (correctmeal!=null) {
+                    if (context != null) {
+                        notificationManager.sendAteMealNotification(
+                            context,
+                            timeEntered,
+                            timeExited,
+                            correctmeal
+                        )
+                    }
                 }
             }
 
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
                 val currentTime = datetypeclock.format(Date())
-
-                sendEnterEvent(ids.userid, datetypedate.format(Date()),currentTime,context)
+                CoroutineScope(Dispatchers.IO).launch {
+                    geofenceRepository.sendEnterEvent(
+                        datetypedate.format(Date()),
+                        currentTime
+                    )
+                }
             }
         }
     }
@@ -137,13 +138,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         timeExited: String,
         mealdata: MealData?
     ) {
-        if(mealdata!= null){
-            var mealIndex= findMealIndex(mealdata)
-
-            var dao= FileDAO(context, FileContainer.FileNames[mealIndex])
-
-            val currentTokens = dao.readFromFile()
-            dao.saveToFile(currentTokens.toInt()-1,true)
+        if(mealdata!= null) {
+            val mealIndex = findMealIndex(mealdata)
 
             val statisticsMeal = EatingStatisticsData(
                 LocalDate.now(),
@@ -151,8 +147,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 timeExited,
                 mealdata.name
             )
-            var fdao= StatisticsFileDAO(context, datetypemonth.format(Date()))
-            fdao.appendToStatisticsFile(statisticsMeal)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                statisticsRepository.appendToStatisticsFile(statisticsMeal, datetypemonth.format(Date()))
+            }
         }
     }
 }
@@ -160,8 +158,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 /**
  * Returns the meals english name
  */
-fun findEngMeal(type: Uitext): String
-{
+fun findEngMeal(type: Uitext): String {
     var i = 0
     for (m in MealSample.MealSampleBudget) {
         if (m.name == type) {
@@ -187,21 +184,17 @@ fun calculateCorrectMeal(
 }
 
 fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<String>): Int {
-
     val hourdiff: Int = abs(enteredsplit[0].toInt() - exitedsplit[0].toInt())
     val mindiff: Int = abs(enteredsplit[1].toInt() - exitedsplit[1].toInt())
 
     return hourdiff * 60 + mindiff
 }
 
-fun findMealIndex(mealdata: MealData): Int
-{
+fun findMealIndex(mealdata: MealData): Int {
     var found=false
     var mealIndex=0
-    for(m in MealSampleBudget)
-    {
-        if(mealdata == m)
-        {
+    for(m in MealSampleBudget) {
+        if(mealdata == m) {
             found=true
             break
         }
@@ -210,13 +203,11 @@ fun findMealIndex(mealdata: MealData): Int
 
     if(!found) {
         mealIndex=0
-        for(m in MealSampleSelfFinancing)
-        {
+        for(m in MealSampleSelfFinancing) {
             if(mealdata == m)
                 break
             mealIndex++
         }
     }
     return mealIndex
-
 }

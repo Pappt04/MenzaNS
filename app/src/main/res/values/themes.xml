@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.MenzaNS" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="Theme.MenzaNS.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/applogo_vector</item>
+        <item name="postSplashScreenTheme">@style/Theme.MenzaNS</item>
+    </style>
 </resources>

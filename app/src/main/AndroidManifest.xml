@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".MenzaApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,11 +24,11 @@
         android:localeConfig="@xml/locale_config"
         tools:targetApi="36">
         <activity
-            android:name=".appui.MainActivity"
+            android:name=".views.MainActivity"
             android:exported="true"
             android:configChanges="locale|layoutDirection"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MenzaNS">
+            android:theme="@style/Theme.MenzaNS.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,14 +37,26 @@
         </activity>
         <receiver android:name=".geolocation.GeofenceBroadcastReceiver"/>
 
-        <receiver android:name=".appui.widgets.CardWidgetReceiver" android:exported="true">
+        <receiver
+            android:name=".views.widgets.TokensWidgetReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-                <meta-data
-                    android:name="android.appwidget.provider"
-                    android:resource="@xml/menza_card_data_widget"
-                    />
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tokens_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".views.widgets.WaitTimeWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/waittime_widget_info" />
         </receiver>
     </application>
 
