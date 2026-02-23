@@ -25,12 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -49,39 +48,28 @@ import com.pappt04.menzans.data.local.FileDAO
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.data.consts.DummyData.permissionsNeeded
-import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
-import com.pappt04.menzans.models.SettingsPreferences
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import com.pappt04.menzans.viewmodels.MainViewModel
 import kotlin.math.roundToInt
 
 
 @Composable
 fun SettingsScreen(
     innerpadding: PaddingValues,
-    settingsdatamanager: SettingsDataStoreManager,
-    darkTheme: MutableState<Boolean>,
-    materialyoutheme: MutableState<Boolean>,
+    mainViewModel: MainViewModel,
     onBudget: MutableState<Boolean>
 ) {
 
-    val scope = rememberCoroutineScope()
-
     val context = LocalContext.current
 
-    val tokenwarning = remember { mutableFloatStateOf(0f) }
+    val state by mainViewModel.uiState.collectAsState()
+    val darkTheme = remember { mutableStateOf(state.darkTheme) }
+    val materialyoutheme = remember { mutableStateOf(state.materialYouTheme) }
+    val tokenwarning = remember { mutableFloatStateOf(state.tokenWarning.toFloat()) }
 
-    var settingprefs = SettingsPreferences(
-        darktheme = darkTheme.value,
-        materialyoutheme = materialyoutheme.value,
-        budget = onBudget.value,
-        tokenwarning = tokenwarning.floatValue.roundToInt()
-    )
-
-    LaunchedEffect(key1 = Unit) {
-        settingprefs = settingsdatamanager.getFromDataStore().first()
-        tokenwarning.floatValue=settingprefs.tokenwarning.toFloat()
-    }
+    // Keep local state in sync when ViewModel state changes
+    LaunchedEffect(state.darkTheme) { darkTheme.value = state.darkTheme }
+    LaunchedEffect(state.materialYouTheme) { materialyoutheme.value = state.materialYouTheme }
+    LaunchedEffect(state.tokenWarning) { tokenwarning.floatValue = state.tokenWarning.toFloat() }
 
     LazyColumn(
         modifier = Modifier
@@ -103,14 +91,8 @@ fun SettingsScreen(
                 darkTheme,
                 stringResource(R.string.use_dark_theme),
                 FileContainer.FileDarkThemeEnabled
-            )
-            {
-                settingprefs.darktheme=darkTheme.value
-                scope.launch {
-                    settingsdatamanager.saveToDataStore(
-                        settingsData = settingprefs
-                    )
-                }
+            ) {
+                mainViewModel.updateDarkTheme(darkTheme.value)
             }
         }
         item {
@@ -118,36 +100,18 @@ fun SettingsScreen(
                 materialyoutheme,
                 stringResource(R.string.use_materialyou_theme),
                 FileContainer.FileMaterialYouEnabled
-            )
-            {
-                settingprefs.materialyoutheme=materialyoutheme.value
-                scope.launch {
-                    settingsdatamanager.saveToDataStore(
-                        settingsData = settingprefs
-                    )
-                }
+            ) {
+                mainViewModel.updateMaterialYou(materialyoutheme.value)
             }
         }
         item {
-            PriceSwitcher(onBudget)
-            {
-                settingprefs.budget=onBudget.value
-                scope.launch {
-                    settingsdatamanager.saveToDataStore(
-                        settingsData = settingprefs
-                    )
-                }
+            PriceSwitcher(onBudget) {
+                mainViewModel.updateBudgetPricing(onBudget.value)
             }
         }
         item {
-            TokenLimitSlider(tokenwarning)
-            {
-                settingprefs.tokenwarning=tokenwarning.floatValue.toInt()
-                scope.launch {
-                    settingsdatamanager.saveToDataStore(
-                        settingsData = settingprefs
-                    )
-                }
+            TokenLimitSlider(tokenwarning) {
+                mainViewModel.updateTokenWarning(tokenwarning.floatValue.roundToInt())
             }
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }

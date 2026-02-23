@@ -13,15 +13,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
+import com.pappt04.menzans.viewmodels.MainViewModel
 
 @Composable
 fun MainNavigationDrawer(
-    darkTheme: MutableState<Boolean>,
-    materialtheme: MutableState<Boolean>,
+    mainViewModel: MainViewModel,
     onBudgetPricing: MutableState<Boolean>,
     firstWelcome: MutableState<Boolean>,
-    settingsdatamanager: SettingsDataStoreManager,
     savedMeals: SnapshotStateList<Int>,
 ) {
 
@@ -98,7 +96,7 @@ fun MainNavigationDrawer(
          MenzaScaffold(firstWelcome,drawerState,screenTitle,selectedItemIndex,navController,onBudgetPricing,savedMeals,waittime,darkTheme,materialtheme)
     }*/
     MenzaScaffold(
-        settingsdatamanager,
+        mainViewModel,
         firstWelcome,
         drawerState,
         screenTitle,
@@ -107,8 +105,6 @@ fun MainNavigationDrawer(
         onBudgetPricing,
         savedMeals,
         waittime,
-        darkTheme,
-        materialtheme
     )
 }
 

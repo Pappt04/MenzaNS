@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.views.navigation.MainNavigationDrawer
 import com.pappt04.menzans.data.local.FileContainer.CardHolderFileName
-import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
 import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.geolocation.GeofenceManager
 import com.pappt04.menzans.notifications.createChannel
@@ -78,8 +77,6 @@ class MainActivity : AppCompatActivity() {
                 createChannel(context)
 
                 if (state.isLoaded) {
-                    val darkTheme = remember(state.darkTheme) { mutableStateOf(state.darkTheme) }
-                    val materialTheme = remember(state.materialYouTheme) { mutableStateOf(state.materialYouTheme) }
                     val onBudgetPricing = remember(state.onBudgetPricing) { mutableStateOf(state.onBudgetPricing) }
 
                     val firstWelcome = remember { mutableStateOf(true) }
@@ -94,14 +91,10 @@ class MainActivity : AppCompatActivity() {
                         savedMeals.addAll(state.savedMeals)
                     }
 
-                    val settingsDataManager = remember { SettingsDataStoreManager(context) }
-
                     MainNavigationDrawer(
-                        darkTheme,
-                        materialTheme,
+                        mainViewModel,
                         onBudgetPricing,
                         firstWelcome,
-                        settingsDataManager,
                         savedMeals
                     )
                 } else {

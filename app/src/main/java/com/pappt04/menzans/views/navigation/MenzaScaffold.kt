@@ -34,13 +34,13 @@ import com.pappt04.menzans.data.consts.DummyData.datetypemonth
 import com.pappt04.menzans.data.consts.DummyData.engmonths
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
-import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
+import com.pappt04.menzans.viewmodels.MainViewModel
 import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun MenzaScaffold(
-    settingsdatamanager: SettingsDataStoreManager,
+    mainViewModel: MainViewModel,
     firstWelcome: MutableState<Boolean>,
     drawerState: DrawerState,
     screenTitle: String,
@@ -49,8 +49,6 @@ fun MenzaScaffold(
     onBudgetPricing: MutableState<Boolean>,
     savedMeals: SnapshotStateList<Int>,
     waittime: MutableIntState,
-    darkTheme: MutableState<Boolean>,
-    materialtheme: MutableState<Boolean>,
 ) {
     val gcvm = remember { GraphCardViewModel() }
 
@@ -127,9 +125,7 @@ fun MenzaScaffold(
                     AnimatedAppearance(enter = slideInVertically { it }) {
                         SettingsScreen(
                             innerpadding,
-                            settingsdatamanager,
-                            darkTheme,
-                            materialtheme,
+                            mainViewModel,
                             onBudgetPricing
                         )
                     }
