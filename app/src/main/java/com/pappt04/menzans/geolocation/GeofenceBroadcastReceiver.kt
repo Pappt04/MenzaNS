@@ -24,10 +24,12 @@ import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
 import com.pappt04.menzans.repository.GeofenceRepository
+import com.pappt04.menzans.repository.MealRepository
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -40,6 +42,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
     private val TAG = "GeofenceBroadcastReceiver"
 
     private val geofenceRepository: GeofenceRepository by inject()
+    private val mealRepository: MealRepository by inject()
     private val statisticsRepository: StatisticsRepository by inject()
     private val userRepository: UserRepository by inject()
 
@@ -150,6 +153,24 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
             CoroutineScope(Dispatchers.IO).launch {
                 statisticsRepository.appendToStatisticsFile(statisticsMeal, datetypemonth.format(Date()))
+
+                val mealPrefs = mealRepository.getMealCounts().first()
+                val currentMeals = when (mealIndex) {
+                    0 -> mealPrefs.breakfast
+                    1 -> mealPrefs.lunch
+                    2 -> mealPrefs.dinner
+                    else -> 0
+                }
+
+                if (currentMeals > 0) {
+                    val newMeals = currentMeals - 1
+                    val newPrefs = mealPrefs.copy(
+                        breakfast = if (mealIndex == 0) newMeals else mealPrefs.breakfast,
+                        lunch = if (mealIndex == 1) newMeals else mealPrefs.lunch,
+                        dinner = if (mealIndex == 2) newMeals else mealPrefs.dinner
+                    )
+                    mealRepository.saveMealCounts(newPrefs)
+                }
             }
         }
     }
