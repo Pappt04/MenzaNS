@@ -53,7 +53,7 @@ import com.pappt04.menzans.data.consts.DummyData.datetypedate
 import com.pappt04.menzans.models.MealEventString
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.local.StatisticsFileDAO
-import com.pappt04.menzans.data.api.sendAddMeal
+import com.pappt04.menzans.service.sendAddMeal
 import com.pappt04.menzans.geolocation.findEngMeal
 import java.time.LocalDate
 import java.util.Date

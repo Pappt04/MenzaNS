@@ -2,11 +2,14 @@
 package com.pappt04.menzans.service
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.pappt04.menzans.models.MealEventString
 import com.pappt04.menzans.models.UserIDString
 import com.pappt04.menzans.models.WaitTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -110,6 +113,16 @@ fun getLineGraph(onGotMap: (Map<String, Double>?) -> Unit) {
             }
         } catch (_: Exception) {
             onGotMap(null)
+        }
+    }
+}
+
+@Composable
+fun MinuteTicker(onTick: () -> Unit) {
+    LaunchedEffect(Unit) {
+        while (true) {
+            onTick()
+            delay(60_000L) // Delay for 60 seconds
         }
     }
 }

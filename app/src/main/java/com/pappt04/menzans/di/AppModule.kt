@@ -21,28 +21,29 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val appModule: Module = module {
-    // DataStore managers
-    single { SettingsDataStoreManager(androidContext()) }
-    single { MealDataStoreManager(androidContext()) }
-    single { CardDataStoreManager(androidContext()) }
+val appModule: Module =
+    module {
+        // DataStore managers
+        single { SettingsDataStoreManager(androidContext()) }
+        single { MealDataStoreManager(androidContext()) }
+        single { CardDataStoreManager(androidContext()) }
 
-    // Service
-    single { RetrofitClient.apiService }
+        // Service
+        single { RetrofitClient.apiService }
 
-    // Repositories
-    single { UserRepository(get(), get(), androidContext()) }
-    single { MealRepository(get()) }
-    single { CardRepository(get()) }
-    single { SettingsRepository(get()) }
-    single { WaitTimeRepository(get()) }
-    single { StatisticsRepository(get(), get(), androidContext()) }
-    single { GeofenceRepository(get(), get(), androidContext()) }
+        // Repositories
+        single { UserRepository(get(), get(), androidContext()) }
+        single { MealRepository(get()) }
+        single { CardRepository(get()) }
+        single { SettingsRepository(get()) }
+        single { WaitTimeRepository(get()) }
+        single { StatisticsRepository(get(), get(), androidContext()) }
+        single { GeofenceRepository(get(), get(), androidContext()) }
 
-    // ViewModels
-    viewModel { MainViewModel(get(), get(), get()) }
-    viewModel { DashboardViewModel(get(), get()) }
-    viewModel { StatisticsViewModel(get(), get()) }
-    viewModel { CardViewModel(get()) }
-    viewModel { SettingsViewModel(get()) }
-}
+        // ViewModels
+        viewModel { MainViewModel(get(), get(), get()) }
+        viewModel { DashboardViewModel(get(), get()) }
+        viewModel { StatisticsViewModel(get(), get()) }
+        viewModel { CardViewModel(get()) }
+        viewModel { SettingsViewModel(get()) }
+    }

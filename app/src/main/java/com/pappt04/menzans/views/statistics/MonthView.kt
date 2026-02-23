@@ -34,7 +34,7 @@ import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.local.StatisticsFileDAO
 import com.pappt04.menzans.geolocation.findEngMeal
-import com.pappt04.menzans.data.api.sendRemoveMeal
+import com.pappt04.menzans.service.sendRemoveMeal
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.ZoneId

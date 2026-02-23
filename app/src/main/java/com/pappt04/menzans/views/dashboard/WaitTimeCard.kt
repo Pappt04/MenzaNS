@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.views.common.AnimatedNumber
-import com.pappt04.menzans.data.api.MinuteTicker
-import com.pappt04.menzans.data.api.getWaitTime
+import com.pappt04.menzans.service.MinuteTicker
+import com.pappt04.menzans.service.getWaitTime
 
 @Composable
 fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
