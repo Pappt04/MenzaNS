@@ -1,4 +1,5 @@
-import androidx.compose.foundation.background
+package com.pappt04.menzans.views.info
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

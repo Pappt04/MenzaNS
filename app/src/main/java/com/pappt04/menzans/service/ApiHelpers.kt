@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.pappt04.menzans.service
 
 import android.content.Context
@@ -8,7 +9,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+/**
+ * Transitional API helper functions for backward compatibility.
+ * These use GlobalScope as a temporary solution during MVVM migration.
+ * TODO: Replace with repository-based calls in composables or ViewModels.
+ */
+
 fun registerNewUser(context: Context, onIdGenerated: (String) -> Unit) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val response = RetrofitClient.apiService.registerUser()
@@ -22,6 +30,7 @@ fun registerNewUser(context: Context, onIdGenerated: (String) -> Unit) {
 }
 
 fun sendEnterEvent(userId: String, date: String, enteredTime: String, context: Context) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val enterEventData = com.pappt04.menzans.models.EnterEventString(userId, date, enteredTime)
@@ -32,6 +41,7 @@ fun sendEnterEvent(userId: String, date: String, enteredTime: String, context: C
 }
 
 fun sendExitEvent(userId: String, exitTime: String, token: String, context: Context) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val exitEventData = com.pappt04.menzans.models.ExitEventString(userId, exitTime, token)
@@ -42,6 +52,7 @@ fun sendExitEvent(userId: String, exitTime: String, token: String, context: Cont
 }
 
 fun sendDeleteUser(userId: String, context: Context) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val deletedUser = UserIDString(userId)
@@ -52,6 +63,7 @@ fun sendDeleteUser(userId: String, context: Context) {
 }
 
 fun sendAddMeal(meal: MealEventString, context: Context) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             RetrofitClient.apiService.addMeal(meal)
@@ -61,6 +73,7 @@ fun sendAddMeal(meal: MealEventString, context: Context) {
 }
 
 fun sendRemoveMeal(meal: MealEventString, context: Context) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             RetrofitClient.apiService.removeMeal(meal)
@@ -70,6 +83,7 @@ fun sendRemoveMeal(meal: MealEventString, context: Context) {
 }
 
 fun getWaitTime(context: Context, onGotWaitTime: (WaitTime?) -> Unit) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val response = RetrofitClient.apiService.getWaitTime()
@@ -85,6 +99,7 @@ fun getWaitTime(context: Context, onGotWaitTime: (WaitTime?) -> Unit) {
 }
 
 fun getLineGraph(onGotMap: (Map<String, Double>?) -> Unit) {
+    @Suppress("DEPRECATION")
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val response = RetrofitClient.apiService.getLineGraph()

@@ -17,10 +17,11 @@ import com.pappt04.menzans.viewmodels.MainViewModel
 import com.pappt04.menzans.viewmodels.SettingsViewModel
 import com.pappt04.menzans.viewmodels.StatisticsViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val appModule = module {
+val appModule: Module = module {
     // DataStore managers
     single { SettingsDataStoreManager(androidContext()) }
     single { MealDataStoreManager(androidContext()) }
