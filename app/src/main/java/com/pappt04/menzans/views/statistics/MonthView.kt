@@ -53,8 +53,10 @@ fun CalendarMonthView(
     val today = LocalDate.now()
 
     // Get localized names for days of the week
-    val daysOfWeek = DayOfWeek.entries.map { dayOfWeek ->
-        dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+    val daysOfWeek = remember {
+        DayOfWeek.entries.map { dayOfWeek ->
+            dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+        }
     }
 
     // Generate the list of days

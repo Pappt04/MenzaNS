@@ -30,13 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.CalendarData.monthFormat
-import com.pappt04.menzans.data.consts.CalendarData.mealNames
 import com.pappt04.menzans.data.consts.CalendarData.monthNames
 import com.pappt04.menzans.models.EatingStatisticsData
+import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
-import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
-import com.pappt04.menzans.models.Uitext
-import com.pappt04.menzans.geolocation.findEngMeal
 import com.pappt04.menzans.viewmodels.StatisticsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.Month
@@ -149,58 +146,52 @@ fun StatisticsScreen(
 }
 
 
-fun getMealNumber(data: List<EatingStatisticsData>, token: Uitext): Number {
-    var i = 0
-    for (d in data) {
-        if (d.tokentype == token)
-            i++
-    }
-    return i
+private val tokenToIndex by lazy {
+    MealSampleBudget.withIndex().associate { (i, meal) -> meal.name to i }
 }
 
-fun getMealsOnDay(data: List<EatingStatisticsData>, token: Uitext): List<Number> {
-    val listmeals = mutableListOf<Int>()
-    repeat(
-        7
-    ) { listmeals += 0 }
+/** Single pass over data: returns per-weekday counts for breakfast, lunch, dinner. */
+fun getWeeklyMealCounts(data: List<EatingStatisticsData>): Triple<List<Number>, List<Number>, List<Number>> {
+    val counts = Array(3) { IntArray(7) }
     for (d in data) {
-        if (d.tokentype == token)
-            listmeals[d.date.dayOfWeek.value - 1] = listmeals[d.date.dayOfWeek.value - 1] + 1
+        val mealIndex = tokenToIndex[d.tokentype] ?: continue
+        counts[mealIndex][d.date.dayOfWeek.value - 1]++
     }
-    return listmeals
+    return Triple(counts[0].asList(), counts[1].asList(), counts[2].asList())
 }
 
+/** Single pass over data: returns total counts for breakfast, lunch, dinner. */
+fun getMealCounts(data: List<EatingStatisticsData>): Triple<Number, Number, Number> {
+    val counts = IntArray(3)
+    for (d in data) {
+        val mealIndex = tokenToIndex[d.tokentype] ?: continue
+        counts[mealIndex]++
+    }
+    return Triple(counts[0], counts[1], counts[2])
+}
+
+/** Single pass over data: returns cumulative daily spending. O(n) instead of O(days * n * meals). */
 fun getSpentMoney(
-    onBudget: MutableState<Boolean>,
+    onBudget: Boolean,
     selectedMonth: String,
     data: List<EatingStatisticsData>
 ): List<Number> {
+    val daysInMonth = Month.valueOf(selectedMonth.uppercase()).maxLength()
+    val meals = MealSample.getMeals(onBudget)
+    val priceByToken = meals.associate { it.name to it.price }
 
-    val daysInMonth: Int = Month.valueOf(selectedMonth.uppercase()).maxLength()
-
-    val moneyList = MutableList(daysInMonth) { 0 }
-    var sum = 0
-
-    for (i in (1..Month.valueOf(selectedMonth.uppercase()).maxLength())) {
-        for (d in data) {
-            if (i == d.date.dayOfMonth) {
-                var j = 0
-                for (e in mealNames) {
-                    if (findEngMeal(d.tokentype) == e) {
-                        sum += when (onBudget.value) {
-                            true -> MealSampleBudget[j].price
-                            else -> MealSampleSelfFinancing[j].price
-                        }
-                        break
-                    }
-                    j++
-                }
-            }
-        }
-        moneyList[i - 1] = sum
+    val dailySpending = IntArray(daysInMonth)
+    for (d in data) {
+        dailySpending[d.date.dayOfMonth - 1] += priceByToken[d.tokentype] ?: 0
     }
 
-    return moneyList
+    val result = ArrayList<Number>(daysInMonth)
+    var sum = 0
+    for (i in 0 until daysInMonth) {
+        sum += dailySpending[i]
+        result.add(sum)
+    }
+    return result
 }
 
 

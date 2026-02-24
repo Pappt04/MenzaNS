@@ -35,15 +35,11 @@ fun PredictedSpendingChart(selectedMonth: String, onBudget: MutableState<Boolean
 
 
     LaunchedEffect(data, selectedMonth, onBudget.value) {
+        val daysInMonth = Month.valueOf(selectedMonth.uppercase(Locale.ROOT)).maxLength()
+        val spending = getSpentMoney(onBudget.value, selectedMonth, data)
         modelProducer.runTransaction {
             lineSeries {
-                series(
-                    (1..Month.valueOf(selectedMonth.uppercase(Locale.ROOT)).maxLength()).toList(), getSpentMoney(
-                        onBudget,
-                        selectedMonth,
-                        data
-                    )
-                )
+                series((1..daysInMonth).toList(), spending)
             }
         }
     }

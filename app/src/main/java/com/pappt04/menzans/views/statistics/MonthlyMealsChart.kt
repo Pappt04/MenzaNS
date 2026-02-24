@@ -8,11 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.data.consts.CalendarData.mealNames
-import com.pappt04.menzans.data.consts.CalendarData.mealNameToRes
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
-import com.pappt04.menzans.models.Uitext
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -37,18 +34,11 @@ fun MonthlyMealsChart(data: List<EatingStatisticsData>) {
 
     }
 
-    val displayBreakfast = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[0])))
-    val displayLunch = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[1])))
-    val displayDinner = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[2])))
-
     LaunchedEffect(data) {
+        val (breakfast, lunch, dinner) = getMealCounts(data)
         modelProducer.runTransaction {
             columnSeries {
-                series(
-                    displayBreakfast,
-                    displayLunch,
-                    displayDinner
-                )
+                series(breakfast, lunch, dinner)
             }
         }
     }
