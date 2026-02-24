@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -81,7 +80,6 @@ fun AddMealDialog(
             elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp)
                 .padding(8.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
@@ -291,7 +289,7 @@ fun TimePickerDialog(
         },
         confirmButton = {
             TextButton(onClick = {
-                enteredtime.value = "${timeState.hour}:${timeState.minute}"
+                enteredtime.value = "%02d:%02d".format(timeState.hour, timeState.minute)
                 onDismiss()
             }) {
                 Text(stringResource(R.string.ok))

@@ -41,7 +41,7 @@ fun MonthlyMealsChart(data: List<EatingStatisticsData>) {
     val displayLunch = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[1])))
     val displayDinner = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[2])))
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(data) {
         modelProducer.runTransaction {
             columnSeries {
                 series(

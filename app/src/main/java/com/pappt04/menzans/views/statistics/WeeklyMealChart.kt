@@ -48,7 +48,7 @@ fun WeeklyMealChart(data: List<EatingStatisticsData>) {
     val displayLunch = getMealsOnDay(data, Uitext.StringResource(mealNameToRes(mealNames[1])))
     val displayDinner = getMealsOnDay(data, Uitext.StringResource(mealNameToRes(mealNames[2])))
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(data) {
         modelProducer.runTransaction {
             columnSeries {
                 series(displayBreakfast)

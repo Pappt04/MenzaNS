@@ -34,7 +34,7 @@ fun PredictedSpendingChart(selectedMonth: String, onBudget: MutableState<Boolean
     val modelProducer = remember { CartesianChartModelProducer() }
 
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(data, selectedMonth, onBudget.value) {
         modelProducer.runTransaction {
             lineSeries {
                 series(

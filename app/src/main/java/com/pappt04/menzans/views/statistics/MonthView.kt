@@ -49,10 +49,7 @@ fun CalendarMonthView(
     }
     val startOfMonth = yearMonth.atDay(1)
     val totalDays = yearMonth.lengthOfMonth()
-    val startDayOfWeekIndex = when (startOfMonth.dayOfWeek.value) {
-        1 -> 7
-        else -> startOfMonth.dayOfWeek.value % 7 - 1
-    }
+    val startDayOfWeekIndex = startOfMonth.dayOfWeek.value - 1
     val today = LocalDate.now()
 
     // Get localized names for days of the week
