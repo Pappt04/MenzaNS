@@ -3,7 +3,6 @@ package com.pappt04.menzans.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pappt04.menzans.models.EatingStatisticsData
-import com.pappt04.menzans.models.MealEventString
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,26 +15,25 @@ class StatisticsViewModel(
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    private val _statistics = MutableStateFlow<MutableList<EatingStatisticsData>>(mutableListOf())
-    val statistics: StateFlow<MutableList<EatingStatisticsData>> = _statistics.asStateFlow()
+    private val _statistics = MutableStateFlow<List<EatingStatisticsData>>(emptyList())
+    val statistics: StateFlow<List<EatingStatisticsData>> = _statistics.asStateFlow()
 
     fun loadStatistics(month: String) {
         viewModelScope.launch {
-            val stats = statisticsRepository.getStatisticsForMonth(month)
-            _statistics.value = stats
+            _statistics.value = statisticsRepository.getStatisticsForMonth(month)
         }
     }
 
-    fun addMealEvent(meal: MealEventString, month: String, mealData: EatingStatisticsData) {
+    fun addMealEvent(mealData: EatingStatisticsData, month: String) {
         viewModelScope.launch {
-            statisticsRepository.addMealEvent(meal, month, mealData)
+            statisticsRepository.addMealEvent(mealData)
             loadStatistics(month)
         }
     }
 
-    fun removeMealEvent(meal: MealEventString, data: EatingStatisticsData, month: String) {
+    fun removeMealEvent(data: EatingStatisticsData, month: String) {
         viewModelScope.launch {
-            statisticsRepository.removeMealEvent(meal, data, month, _statistics.value)
+            statisticsRepository.removeMealEvent(data)
             loadStatistics(month)
         }
     }

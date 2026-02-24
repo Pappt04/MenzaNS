@@ -1,8 +1,6 @@
 package com.pappt04.menzans.repository
 
 import android.content.Context
-import com.pappt04.menzans.data.local.FileContainer
-import com.pappt04.menzans.data.local.FileDAO
 import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
 import com.pappt04.menzans.models.SettingsPreferences
 import com.pappt04.menzans.models.UserIDString
@@ -26,14 +24,6 @@ class UserRepository(
     suspend fun loadOrRegisterUser() {
         val settings = settingsDataStoreManager.getFromDataStore().first()
         var id = settings.userID
-
-        if (id.isEmpty()) {
-            val fileDao = FileDAO(context, FileContainer.FileUserID)
-            val fileId = fileDao.readFromFile()
-            if (fileId.isNotEmpty()) {
-                id = fileId
-            }
-        }
 
         if (id.isEmpty()) {
             try {

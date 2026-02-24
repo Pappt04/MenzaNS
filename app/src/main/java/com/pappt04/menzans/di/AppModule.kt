@@ -3,6 +3,7 @@ package com.pappt04.menzans.di
 import com.pappt04.menzans.data.local.datastore.CardDataStoreManager
 import com.pappt04.menzans.data.local.datastore.MealDataStoreManager
 import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
+import com.pappt04.menzans.data.local.room.MenzaDatabase
 import com.pappt04.menzans.repository.CardRepository
 import com.pappt04.menzans.repository.GeofenceRepository
 import com.pappt04.menzans.repository.MealRepository
@@ -28,6 +29,10 @@ val appModule: Module =
         single { MealDataStoreManager(androidContext()) }
         single { CardDataStoreManager(androidContext()) }
 
+        // Database
+        single { MenzaDatabase.create(androidContext()) }
+        single { get<MenzaDatabase>().mealEventDao() }
+
         // Service
         single { RetrofitClient.apiService }
 
@@ -37,7 +42,7 @@ val appModule: Module =
         single { CardRepository(get()) }
         single { SettingsRepository(get()) }
         single { WaitTimeRepository(get()) }
-        single { StatisticsRepository(get(), get(), androidContext()) }
+        single { StatisticsRepository(get(), get(), get()) }
         single { GeofenceRepository(get(), get(), androidContext()) }
 
         // ViewModels

@@ -44,10 +44,9 @@ import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.local.FileContainer
-import com.pappt04.menzans.data.local.FileDAO
 import com.pappt04.menzans.models.Uitext
-import com.pappt04.menzans.data.consts.DummyData
-import com.pappt04.menzans.data.consts.DummyData.permissionsNeeded
+import com.pappt04.menzans.data.consts.PermissionData
+import com.pappt04.menzans.data.consts.PermissionData.permissionsNeeded
 import com.pappt04.menzans.viewmodels.MainViewModel
 import kotlin.math.roundToInt
 
@@ -124,7 +123,7 @@ fun SettingsScreen(
                     i++
                 }
             }
-            PermissionSwitch(context, DummyData.permissionExplanations[i].explanation, permission)
+            PermissionSwitch(context, PermissionData.permissionExplanations[i].explanation, permission)
         }
 
     }

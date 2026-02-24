@@ -9,10 +9,10 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
-import com.pappt04.menzans.data.consts.DummyData
-import com.pappt04.menzans.data.consts.DummyData.datetypeclock
-import com.pappt04.menzans.data.consts.DummyData.datetypedate
-import com.pappt04.menzans.data.consts.DummyData.datetypemonth
+import com.pappt04.menzans.data.consts.CalendarData
+import com.pappt04.menzans.data.consts.CalendarData.timeFormat
+import com.pappt04.menzans.data.consts.CalendarData.dateFormat
+import com.pappt04.menzans.data.consts.GeofenceConstants
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.models.MealData
@@ -73,12 +73,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
                 Log.i(TAG,"GEOFENCE ENTERED")
-                val currentTime = datetypeclock.format(Date())
+                val currentTime = timeFormat.format(Date())
                 geofenceRepository.saveEnterTime(currentTime)
 
                 CoroutineScope(Dispatchers.IO).launch {
                     geofenceRepository.sendEnterEvent(
-                        datetypedate.format(Date()),
+                        dateFormat.format(Date()),
                         currentTime
                     )
                 }
@@ -86,7 +86,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
                 Log.i(TAG,"GEOFENCE EXITED")
-                val timeExited = datetypeclock.format(Date())
+                val timeExited = timeFormat.format(Date())
                 val timeEntered = geofenceRepository.getEnterTime()
 
                 val enteredsplit = timeEntered.split(":").toTypedArray()
@@ -96,7 +96,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
                 val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
 
-                if (alldiff > DummyData.AUTOMATIC_EATING_SPEED_TRESHOLD && correctmeal!= null) {
+                if (alldiff > GeofenceConstants.EATING_SPEED_THRESHOLD && correctmeal!= null) {
                     if (context != null) {
                         automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
                         notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
@@ -124,10 +124,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
             }
 
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
-                val currentTime = datetypeclock.format(Date())
+                val currentTime = timeFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
                     geofenceRepository.sendEnterEvent(
-                        datetypedate.format(Date()),
+                        dateFormat.format(Date()),
                         currentTime
                     )
                 }
@@ -152,7 +152,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
             )
 
             CoroutineScope(Dispatchers.IO).launch {
-                statisticsRepository.appendToStatisticsFile(statisticsMeal, datetypemonth.format(Date()))
+                statisticsRepository.appendMealEvent(statisticsMeal)
 
                 val mealPrefs = mealRepository.getMealCounts().first()
                 val currentMeals = when (mealIndex) {
@@ -183,7 +183,7 @@ fun findEngMeal(type: Uitext): String {
     var i = 0
     for (m in MealSample.MealSampleBudget) {
         if (m.name == type) {
-            return DummyData.engmeals[i]
+            return CalendarData.mealNames[i]
         }
         i++
     }

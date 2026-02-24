@@ -1,6 +1,6 @@
 package com.pappt04.menzans.service
 
-import com.pappt04.menzans.data.consts.DummyData.BASE_API_NAME
+import com.pappt04.menzans.data.consts.AppConfig.BASE_API_NAME
 import com.pappt04.menzans.models.EnterEventString
 import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.models.MealEventString

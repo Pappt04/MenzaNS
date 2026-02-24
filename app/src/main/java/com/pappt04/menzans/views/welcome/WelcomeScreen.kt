@@ -25,7 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.GeofenceConstants
+import com.pappt04.menzans.data.consts.PermissionData
 import com.pappt04.menzans.geolocation.GeofenceManager
 
 @Composable
@@ -73,7 +74,7 @@ fun WelcomeScreen(onCompleted:() -> Unit,innerpadding: PaddingValues)
         }
         item{
             Text(
-                DummyData.permissionExplanations[selectedPermissionIndex].explanation.asString(
+                PermissionData.permissionExplanations[selectedPermissionIndex].explanation.asString(
                     context = LocalContext.current
                 ),
                 textAlign = TextAlign.Center,
@@ -83,20 +84,20 @@ fun WelcomeScreen(onCompleted:() -> Unit,innerpadding: PaddingValues)
         }
         item{
             Text(
-                "$selectedPermissionIndex/${DummyData.permissionsNeeded.size}"
+                "$selectedPermissionIndex/${PermissionData.permissionsNeeded.size}"
             )
         }
         item{
             Button(
                 onClick = {
-                    permissionLauncher.launch(DummyData.permissionsNeeded[selectedPermissionIndex++])
+                    permissionLauncher.launch(PermissionData.permissionsNeeded[selectedPermissionIndex++])
 
-                    if (selectedPermissionIndex == DummyData.permissionsNeeded.size) {
+                    if (selectedPermissionIndex == PermissionData.permissionsNeeded.size) {
                         onCompleted()
 
                         val geofenceManager = GeofenceManager(context)
 
-                        for (geofence in DummyData.LANDMARK_DATA) {
+                        for (geofence in GeofenceConstants.LANDMARKS) {
                             geofenceManager.addGeofence(
                                 geofence.key,
                                 geofence.location,
@@ -112,7 +113,7 @@ fun WelcomeScreen(onCompleted:() -> Unit,innerpadding: PaddingValues)
                     .fillMaxWidth(0.9f)
             ) {
                 Text(
-                    stringResource(R.string.request) + "\n" + DummyData.permissionExplanations[selectedPermissionIndex].name.asString(
+                    stringResource(R.string.request) + "\n" + PermissionData.permissionExplanations[selectedPermissionIndex].name.asString(
                         LocalContext.current
                     ) + " " + stringResource(R.string.permission),
                     textAlign = TextAlign.Center

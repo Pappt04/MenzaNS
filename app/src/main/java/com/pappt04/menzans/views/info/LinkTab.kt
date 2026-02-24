@@ -66,7 +66,7 @@ fun LinkTab(context: Context) {
 
 
 @Composable
-fun LinkButton(context: Context, weblink: UsefulLinks.linkContainer) {
+fun LinkButton(context: Context, weblink: UsefulLinks.LinkContainer) {
     ElevatedButton(
         modifier = Modifier
             .padding(10.dp)

@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.views.navigation.MainNavigationDrawer
 import com.pappt04.menzans.data.local.FileContainer.CardHolderFileName
-import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.GeofenceConstants
 import com.pappt04.menzans.geolocation.GeofenceManager
 import com.pappt04.menzans.notifications.createChannel
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(state.isLoaded) {
                 if (state.isLoaded) {
                     val geofenceManager = GeofenceManager(context)
-                    for (geofence in DummyData.LANDMARK_DATA) {
+                    for (geofence in GeofenceConstants.LANDMARKS) {
                         geofenceManager.addGeofence(
                             geofence.key,
                             geofence.location,

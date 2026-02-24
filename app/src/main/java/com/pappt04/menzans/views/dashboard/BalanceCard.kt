@@ -80,7 +80,7 @@ fun BalanceCard(balance: MutableIntState)
                 onDismissRequest = {
                     showBalanceDialog = false
                 },
-                balance, LocalContext.current, FileContainer.FileNames[3]
+                balance, LocalContext.current
             )
         }
     }

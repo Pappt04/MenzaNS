@@ -8,17 +8,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.pappt04.menzans.data.local.FileDAO
-
 @Composable
 fun SettingSwitch(pref: MutableState<Boolean>, name: String, filename: String, onChanged: () -> Unit) {
-    val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(10.dp)
@@ -44,12 +40,7 @@ fun SettingSwitch(pref: MutableState<Boolean>, name: String, filename: String, o
             checked = pref.value,
             onCheckedChange = {
                 pref.value = it
-
                 onChanged()
-//                val dark = if (pref.value) 1 else 0
-//
-//                val fdao = FileDAO(context, filename)
-//                fdao.saveToFile(dark, false)
             },
             modifier = Modifier
                 .weight(1f)

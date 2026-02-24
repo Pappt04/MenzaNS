@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.pappt04.menzans.data.local.FileDAO
 import com.pappt04.menzans.R
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
@@ -41,8 +40,7 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 fun BalanceDialog(
     onDismissRequest: () -> Unit,
     balance: MutableState<Int>,
-    context: Context,
-    filename: String
+    context: Context
 ) {
     var mText by remember { mutableStateOf("") }
 
@@ -104,8 +102,6 @@ fun BalanceDialog(
                                 context.getString(R.string.your_balance_is_still_rsd, balance.value.toString()),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            var f= FileDAO(context,filename)
-                            f.saveToFile(balance.value,false)
                             onDismissRequest()
                         },
                     ) {
@@ -114,12 +110,8 @@ fun BalanceDialog(
                     Button(onClick = {
                         try {
                             balance.value += mText.toInt()
-
                             if (balance.value < 0)
                                 balance.value = 0
-
-                            var f= FileDAO(context,filename)
-                            f.saveToFile(balance.value,false)
                         } catch (_: Exception) {
                         }
                         Toast.makeText(

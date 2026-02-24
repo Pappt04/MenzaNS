@@ -1,5 +1,5 @@
 package com.pappt04.menzans.views.statistics
-import android.content.Context
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -18,47 +18,40 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pappt04.menzans.data.consts.DummyData.engmeals
+import com.pappt04.menzans.data.consts.CalendarData.mealNames
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
 import java.util.*
 
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
-import com.pappt04.menzans.data.consts.DummyData.datetypedate
 import com.pappt04.menzans.models.EatingStatisticsData
-import com.pappt04.menzans.models.MealEventString
 import com.pappt04.menzans.R
-import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
-import com.pappt04.menzans.data.local.StatisticsFileDAO
 import com.pappt04.menzans.geolocation.findEngMeal
-import com.pappt04.menzans.service.sendRemoveMeal
+import com.pappt04.menzans.viewmodels.StatisticsViewModel
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-import java.time.ZoneId
 import java.time.format.TextStyle
 
 @Composable
 fun CalendarMonthView(
     monthName: String,
-    data: MutableList<EatingStatisticsData>
+    data: List<EatingStatisticsData>,
+    viewModel: StatisticsViewModel
 ) {
-    val context= LocalContext.current
-
     val currentYear = LocalDate.now().year
-    val currentMonth= LocalDate.now().month
+    val currentMonth = LocalDate.now().month
     val month = Month.valueOf(monthName.uppercase(Locale.getDefault()))
     val yearMonth = when (currentMonth.value >= month.value) {
         true -> YearMonth.of(currentYear, month)
-        false -> YearMonth.of(currentYear-1,month)
+        false -> YearMonth.of(currentYear - 1, month)
     }
     val startOfMonth = yearMonth.atDay(1)
     val totalDays = yearMonth.lengthOfMonth()
-    val startDayOfWeekIndex = when(startOfMonth.dayOfWeek.value) {
+    val startDayOfWeekIndex = when (startOfMonth.dayOfWeek.value) {
         1 -> 7
-        else -> startOfMonth.dayOfWeek.value%7 -1
+        else -> startOfMonth.dayOfWeek.value % 7 - 1
     }
     val today = LocalDate.now()
 
@@ -74,9 +67,6 @@ fun CalendarMonthView(
 
     val showDialog = remember { mutableStateOf(false) }
 
-    //var isToday by remember { mutableStateOf(false) }
-    //var isSelected by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,7 +81,10 @@ fun CalendarMonthView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Day Headers using localized day names
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Absolute.SpaceEvenly) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Absolute.SpaceEvenly
+            ) {
                 daysOfWeek.forEach { day ->
                     Text(text = day, modifier = Modifier.weight(1f), maxLines = 1)
                 }
@@ -130,20 +123,18 @@ fun CalendarMonthView(
                 ) {
                     week.forEach { day ->
                         if (day != null) {
-                            var isToday = day==today
+                            var isToday = day == today
                             var isSelected = day == selectedDay.value
                             Surface(
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(4.dp)
                                     .clickable { selectedDay.value = day },
-                                color = if (isToday)
-                                {
+                                color = if (isToday) {
                                     MaterialTheme.colorScheme.primaryContainer
-                                } else if( isSelected) {
+                                } else if (isSelected) {
                                     MaterialTheme.colorScheme.tertiaryContainer
-                                } else
-                                {
+                                } else {
                                     MaterialTheme.colorScheme.surface
                                 }
                             ) {
@@ -153,20 +144,20 @@ fun CalendarMonthView(
                                 ) {
                                     Text(
                                         text = day.dayOfMonth.toString(),
-                                        color = if (isToday || isSelected)
-                                        {
+                                        color = if (isToday || isSelected) {
                                             Color.White
-                                        } else
-                                        {
-                                           MaterialTheme.colorScheme.onBackground
+                                        } else {
+                                            MaterialTheme.colorScheme.onBackground
                                         }
                                     )
                                 }
                             }
                         } else {
-                            Spacer(modifier = Modifier
-                                .weight(1f)
-                                .padding(4.dp))
+                            Spacer(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(4.dp)
+                            )
                         }
                     }
                 }
@@ -177,22 +168,21 @@ fun CalendarMonthView(
             modifier =
             Modifier.run {
                 animateContentSize(
-                        animationSpec =
-                        spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
+                    animationSpec =
+                    spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
                     )
+                )
             }
         ) {
             Column {
                 HorizontalDivider(modifier = Modifier.padding(10.dp))
 
-                ConsumedMealsDay(context,monthName,selectedDay,data)
+                ConsumedMealsDay(monthName, selectedDay, data, viewModel)
 
                 Button(
-                    onClick = { showDialog.value = true
-                              println(data) },
+                    onClick = { showDialog.value = true },
                     modifier =
                     Modifier
                         .padding(10.dp)
@@ -202,8 +192,10 @@ fun CalendarMonthView(
                 if (showDialog.value)
                     AddMealDialog(
                         onDismissRequest = { showDialog.value = false },
-                        context = context,
-                        selectedDay
+                        context = LocalContext.current,
+                        selectedDay,
+                        viewModel,
+                        monthName
                     )
             }
         }
@@ -212,45 +204,43 @@ fun CalendarMonthView(
 
 
 @Composable
-fun ConsumedMealsDay(context: Context,monthName: String,day: MutableState<LocalDate>, data: MutableList<EatingStatisticsData>)
-{
-
-    val sdao= StatisticsFileDAO(context,monthName)
-
-    key(data) {
-        Column(
+fun ConsumedMealsDay(
+    monthName: String,
+    day: MutableState<LocalDate>,
+    data: List<EatingStatisticsData>,
+    viewModel: StatisticsViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        Text(
+            text = "${day.value}",
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Text(
-                text = "${day.value}",
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-            for(d in data)
-            {
-                if(d.date == day.value)
-                    MealView(context,sdao,data,d)
-            }
+        )
+        for (d in data) {
+            if (d.date == day.value)
+                MealView(d, viewModel, monthName)
         }
-
     }
-
 }
 
 @Composable
-fun MealView(context: Context, sdao: StatisticsFileDAO, data: MutableList<EatingStatisticsData>, mealEvent: EatingStatisticsData)
-{
+fun MealView(
+    mealEvent: EatingStatisticsData,
+    viewModel: StatisticsViewModel,
+    monthName: String
+) {
     val scope = rememberCoroutineScope()
 
     var i = 0
-    for (e in engmeals) {
-
-        if(findEngMeal(mealEvent.tokentype) == e)
+    for (e in mealNames) {
+        if (findEngMeal(mealEvent.tokentype) == e)
             break
         i++
     }
@@ -275,24 +265,7 @@ fun MealView(context: Context, sdao: StatisticsFileDAO, data: MutableList<Eating
                     .fillMaxHeight()
                     .clickable {
                         scope.launch {
-                            data.removeAt(data.indexOf(mealEvent))
-                            sdao.removeFromStatistics(mealEvent)
-                            sdao.saveStatisticsToFile()
-
-                            val es = MealEventString(
-                                UserID.userid, datetypedate.format(
-                                    Date.from(
-                                        mealEvent.date
-                                            .atStartOfDay(
-                                                ZoneId.systemDefault()
-                                            )
-                                            .toInstant()
-                                    )
-                                ), mealEvent.timeentered, mealEvent.timeexited,
-                                findEngMeal(mealEvent.tokentype)
-                            )
-
-                            sendRemoveMeal(es, context)
+                            viewModel.removeMealEvent(mealEvent, monthName)
                         }
                     }
             )

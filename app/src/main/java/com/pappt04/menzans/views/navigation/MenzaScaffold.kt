@@ -29,13 +29,9 @@ import com.pappt04.menzans.views.settings.SettingsScreen
 import com.pappt04.menzans.views.statistics.StatisticsScreen
 import com.pappt04.menzans.views.welcome.WelcomeScreen
 import com.pappt04.menzans.data.local.FileContainer.CardHolderFileName
-import com.pappt04.menzans.data.local.StatisticsFileDAO
-import com.pappt04.menzans.data.consts.DummyData.datetypemonth
-import com.pappt04.menzans.data.consts.DummyData.engmonths
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.viewmodels.MainViewModel
-import java.util.Date
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -59,8 +55,6 @@ fun MenzaScaffold(
     val bottomController = rememberNavController()
 
     val scope = rememberCoroutineScope()
-
-    val statDAO = StatisticsFileDAO(context, engmonths[datetypemonth.format(Date()).toInt() - 1])
 
     Scaffold(
         topBar = {
@@ -108,7 +102,7 @@ fun MenzaScaffold(
                 }
                 composable(route = Screen.StatisticsScreen.route) {
                     AnimatedAppearance(enter = slideInVertically { it }) {
-                        StatisticsScreen(innerpadding, onBudgetPricing, statDAO)
+                        StatisticsScreen(innerpadding, onBudgetPricing)
                     }
                 }
                 composable(route = Screen.InfoScreen.route) {

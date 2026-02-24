@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.local.FileContainer
-import com.pappt04.menzans.data.local.FileDAO
 
 @Composable
 fun PriceSwitcher(onBudget: MutableState<Boolean>, onChanged: () -> Unit) {

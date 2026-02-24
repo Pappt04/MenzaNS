@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.NotificationConstants
 import com.pappt04.menzans.views.MainActivity
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.R
@@ -14,7 +14,7 @@ import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.data.consts.MealSample
 
 fun createChannel(context: Context) {
-    for (channel in DummyData.CHANNEL_IDs) {
+    for (channel in NotificationConstants.CHANNEL_IDs) {
         val notificationChannel = NotificationChannel(
             channel,
             channel,
@@ -45,7 +45,7 @@ fun NotificationManager.sendAteMealNotification(
         PendingIntent.getActivity(context, 0, Tapintent, PendingIntent.FLAG_IMMUTABLE)
 
     val Dismissintent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
-        putExtra("ACTION", DummyData.ACTION_DISMISS)
+        putExtra("ACTION", NotificationConstants.ACTION_DISMISS)
         putExtra("START_TIME", timeEntered)
         putExtra("END_TIME", timeExited)
         putExtra("MEAL",mealData.name.asString(context))
@@ -54,7 +54,7 @@ fun NotificationManager.sendAteMealNotification(
     val DismisspendingIntent = PendingIntent.getBroadcast(context, 100, Dismissintent, flag)
 
     val Confrimintent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
-        putExtra("ACTION", DummyData.ACTION_CONFIRM)
+        putExtra("ACTION", NotificationConstants.ACTION_CONFIRM)
         putExtra("START_TIME", timeEntered)
         putExtra("END_TIME", timeExited)
         putExtra("MEAL",mealData.name.asString(context))
@@ -62,14 +62,14 @@ fun NotificationManager.sendAteMealNotification(
     val ConfirmpendingIntent = PendingIntent.getBroadcast(context, 200, Confrimintent, flag)
 
     val Twiceintent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
-        putExtra("ACTION", DummyData.ACTION_TWICE)
+        putExtra("ACTION", NotificationConstants.ACTION_TWICE)
         putExtra("START_TIME", timeEntered)
         putExtra("END_TIME", timeExited)
         putExtra("MEAL",mealData.name.asString(context))
     }
     val TwicependingIntent = PendingIntent.getBroadcast(context, 300, Twiceintent, flag)
 
-    val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[0])
+    val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_IDs[0])
         .setContentTitle(context.getString(R.string.record_your_consumed_meals_notification))
         .setContentText(
             context.getString(
@@ -84,11 +84,11 @@ fun NotificationManager.sendAteMealNotification(
         .addAction(0, context.getString(R.string.no), DismisspendingIntent)
         .addAction(0, context.getString(R.string.yes), ConfirmpendingIntent)
         .addAction(0, context.getString(R.string.twice), TwicependingIntent)
-    notify(DummyData.NOTIFICATION_IDs.first, notification.build())
+    notify(NotificationConstants.NOTIFICATION_IDs.first, notification.build())
 }
 
 fun NotificationManager.sendAutomaticDeductNotification(context: Context, minutes: Int, mealData: MealData) {
-    val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[0])
+    val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_IDs[0])
         .setContentTitle(context.getString(R.string.we_automatically_deducted_one_meal_token_for_you_notification))
         .setContentText(
             context.getString(
@@ -115,7 +115,7 @@ fun NotificationManager.sendTopUpReminder(context: Context, file: String, remain
         s1 = MealSample.MealSampleBudget[i].name.asString(context)
     } catch (_: Exception) {}
 
-    val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[1])
+    val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_IDs[1])
         .setContentTitle(context.getString(R.string.you_should_top_up_your_card))
         .setContentText(
             context.getString(
@@ -130,7 +130,7 @@ fun NotificationManager.sendTopUpReminder(context: Context, file: String, remain
 }
 
 fun NotificationManager.sendDummyText(context: Context, text: String) {
-    val notification = NotificationCompat.Builder(context, DummyData.CHANNEL_IDs[1])
+    val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_IDs[1])
         .setContentTitle("Menza TEST Message")
         .setContentText(text)
         .setSmallIcon(R.drawable.ic_launcher_background)

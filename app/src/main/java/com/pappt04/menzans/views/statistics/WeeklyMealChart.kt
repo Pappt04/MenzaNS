@@ -9,9 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.data.consts.DummyData.dataweek
-import com.pappt04.menzans.data.consts.DummyData.engmeals
-import com.pappt04.menzans.data.consts.DummyData.engtosresc
+import com.pappt04.menzans.data.consts.CalendarData.weekDays
+import com.pappt04.menzans.data.consts.CalendarData.mealNames
+import com.pappt04.menzans.data.consts.CalendarData.mealNameToRes
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.models.Uitext
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -41,12 +41,12 @@ fun WeeklyMealChart(data: List<EatingStatisticsData>) {
     val startAxisItemPlacer = VerticalAxis.ItemPlacer.count({ 3 })
 
     val bottomaxisformatter = CartesianValueFormatter { _, x, _ ->
-        dataweek[x.toInt() % 7].asString(context)
+        weekDays[x.toInt() % 7].asString(context)
     }
 
-    val displayBreakfast = getMealsOnDay(data, Uitext.StringResource(engtosresc(engmeals[0])))
-    val displayLunch = getMealsOnDay(data, Uitext.StringResource(engtosresc(engmeals[1])))
-    val displayDinner = getMealsOnDay(data, Uitext.StringResource(engtosresc(engmeals[2])))
+    val displayBreakfast = getMealsOnDay(data, Uitext.StringResource(mealNameToRes(mealNames[0])))
+    val displayLunch = getMealsOnDay(data, Uitext.StringResource(mealNameToRes(mealNames[1])))
+    val displayDinner = getMealsOnDay(data, Uitext.StringResource(mealNameToRes(mealNames[2])))
 
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {

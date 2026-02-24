@@ -3,8 +3,8 @@ package com.pappt04.menzans.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.pappt04.menzans.data.consts.DummyData
-import com.pappt04.menzans.data.consts.DummyData.engmeals
+import com.pappt04.menzans.data.consts.NotificationConstants
+import com.pappt04.menzans.data.consts.CalendarData.mealNames
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.repository.GeofenceRepository
@@ -39,9 +39,9 @@ class NotificationBroadcastReceiver : BroadcastReceiver(), KoinComponent {
             }
 
             when (message) {
-                DummyData.ACTION_DISMISS -> usedMeals = 0
-                DummyData.ACTION_CONFIRM -> usedMeals = 1
-                DummyData.ACTION_TWICE -> usedMeals = 2
+                NotificationConstants.ACTION_DISMISS -> usedMeals = 0
+                NotificationConstants.ACTION_CONFIRM -> usedMeals = 1
+                NotificationConstants.ACTION_TWICE -> usedMeals = 2
             }
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -64,7 +64,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver(), KoinComponent {
                         )
                         mealRepository.saveMealCounts(newPrefs)
 
-                        geofenceRepository.sendExitEvent(exited, engmeals[mealIndex])
+                        geofenceRepository.sendExitEvent(exited, mealNames[mealIndex])
                     }
                 }
             }

@@ -34,7 +34,6 @@ import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
 import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.views.common.AutoResizedText
-import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.data.consts.UsefulLinks
 import com.pappt04.menzans.ui.theme.megatitleFont
 

@@ -8,8 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.data.consts.DummyData.engmeals
-import com.pappt04.menzans.data.consts.DummyData.engtosresc
+import com.pappt04.menzans.data.consts.CalendarData.mealNames
+import com.pappt04.menzans.data.consts.CalendarData.mealNameToRes
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.models.Uitext
@@ -37,9 +37,9 @@ fun MonthlyMealsChart(data: List<EatingStatisticsData>) {
 
     }
 
-    val displayBreakfast = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[0])))
-    val displayLunch = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[1])))
-    val displayDinner = getMealNumber(data, Uitext.StringResource(engtosresc(engmeals[2])))
+    val displayBreakfast = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[0])))
+    val displayLunch = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[1])))
+    val displayDinner = getMealNumber(data, Uitext.StringResource(mealNameToRes(mealNames[2])))
 
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {

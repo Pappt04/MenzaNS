@@ -33,6 +33,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,34 +41,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.pappt04.menzans.data.consts.DummyData
-import com.pappt04.menzans.data.consts.DummyData.engmeals
-import com.pappt04.menzans.data.consts.DummyData.engtosresc
+import com.pappt04.menzans.data.consts.CalendarData.mealNames
+import com.pappt04.menzans.data.consts.CalendarData.mealNameToRes
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.R
-import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.views.common.AutoResizedText
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.views.card.convertMillisToDate
-import com.pappt04.menzans.data.consts.DummyData.datetypedate
-import com.pappt04.menzans.models.MealEventString
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
-import com.pappt04.menzans.data.local.StatisticsFileDAO
-import com.pappt04.menzans.service.sendAddMeal
-import com.pappt04.menzans.geolocation.findEngMeal
+import com.pappt04.menzans.viewmodels.StatisticsViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableState<LocalDate>) {
-    /*
-    SAVED FOR FUTURE USE
-    var dateofMeal = remember { mutableStateOf("") }
-    var showMealDialog = remember { mutableStateOf(false) }
-    var mealDialogState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-    */
-
+fun AddMealDialog(
+    onDismissRequest: () -> Unit,
+    context: Context,
+    day: MutableState<LocalDate>,
+    viewModel: StatisticsViewModel,
+    monthName: String
+) {
     val timeofEnter = remember { mutableStateOf("") }
     val showEnterDialog = remember { mutableStateOf(false) }
     val enterPickerState = rememberTimePickerState(0, 0, true)
@@ -79,6 +73,8 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
     var selectedMeal by remember { mutableStateOf(Uitext.StringResource(R.string.breakfast)) }
 
     var isExpanded by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(
@@ -166,13 +162,13 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     ExposedDropdownMenu(
                         expanded = isExpanded,
                         onDismissRequest = { isExpanded = false }) {
-                        engmeals.forEach { meal ->
+                        mealNames.forEach { meal ->
                             DropdownMenuItem(
                                 onClick = {
                                     isExpanded = false
-                                    selectedMeal = Uitext.StringResource(engtosresc(meal))
+                                    selectedMeal = Uitext.StringResource(mealNameToRes(meal))
                                 },
-                                text = { Text(Uitext.StringResource(engtosresc(meal)).asString(context)) }
+                                text = { Text(Uitext.StringResource(mealNameToRes(meal)).asString(context)) }
                             )
                         }
                     }
@@ -192,16 +188,15 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
                     }
                     Button(onClick = {
                         try {
-                            val statisticsMeal= EatingStatisticsData(day.value,timeofEnter.value,timeofExit.value,selectedMeal)
-                            var sdao= StatisticsFileDAO(context, DummyData.engmonths[day.value.monthValue-1])
-                            sdao.appendToStatisticsFile(statisticsMeal)
-
-                            var es= MealEventString(
-                                UserID.userid, datetypedate.format(Date()),statisticsMeal.timeentered,statisticsMeal.timeexited,
-                                findEngMeal(statisticsMeal.tokentype)
+                            val statisticsMeal = EatingStatisticsData(
+                                day.value,
+                                timeofEnter.value,
+                                timeofExit.value,
+                                selectedMeal
                             )
-
-                            sendAddMeal(es,context)
+                            scope.launch {
+                                viewModel.addMealEvent(statisticsMeal, monthName)
+                            }
                         } catch (_: Exception) {
                         }
                         onDismissRequest()
@@ -216,7 +211,7 @@ fun AddMealDialog(onDismissRequest: () -> Unit, context: Context, day: MutableSt
 
 fun getUniversalLanguageMeal(context: Context, meal: String): Uitext {
     var i = 0
-    for (m in engmeals) {
+    for (m in mealNames) {
         if (meal == m)
             return MealSampleBudget[i].name
         i++

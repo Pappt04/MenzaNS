@@ -12,7 +12,7 @@ import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_ENTER
 import com.google.android.gms.location.Geofence.GEOFENCE_TRANSITION_EXIT
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-import com.pappt04.menzans.data.consts.DummyData.CUSTOM_REQUEST_CODE_GEOFENCE
+import com.pappt04.menzans.data.consts.GeofenceConstants.REQUEST_CODE
 import kotlinx.coroutines.tasks.await
 
 class GeofenceManager(context: Context) {
@@ -25,7 +25,7 @@ class GeofenceManager(context: Context) {
         val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(
             context,
-            CUSTOM_REQUEST_CODE_GEOFENCE,
+            REQUEST_CODE,
             intent,
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 PendingIntent.FLAG_CANCEL_CURRENT

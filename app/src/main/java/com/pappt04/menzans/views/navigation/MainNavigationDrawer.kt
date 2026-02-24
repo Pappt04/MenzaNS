@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.consts.NavigationConstants
 import com.pappt04.menzans.viewmodels.MainViewModel
 
 @Composable
@@ -62,7 +63,7 @@ fun MainNavigationDrawer(
             //TODO CREATE A BETTER DESIGN FOR THIS CARD IN THIS STATE IT IS UNUSABLE
             //MenzaCard(cardData)
             HorizontalDivider(modifier = Modifier.padding(4.dp))
-            DummyData.navDrawerItemData.forEachIndexed { index, item ->
+            NavigationConstants.navItems.forEachIndexed { index, item ->
                 NavigationDrawerItem(
                     selected = selectedItemIndex.intValue == index,
                     label = { Text(text = item.title.asString(context)) },

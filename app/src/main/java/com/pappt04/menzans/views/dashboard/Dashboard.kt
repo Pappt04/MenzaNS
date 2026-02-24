@@ -45,14 +45,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.MealSample.mealIcons
 import com.pappt04.menzans.data.local.datastore.MealDataStoreManager
 import com.pappt04.menzans.models.MealPreferences
+import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 fun DashboardScreen(
@@ -69,6 +70,7 @@ fun DashboardScreen(
     val graphcardState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
+    val statisticsRepository: StatisticsRepository = koinInject()
 
     val mealmanager = remember { MealDataStoreManager(context) }
 
@@ -156,6 +158,11 @@ fun DashboardScreen(
                                         mealmanager.saveToDataStore(mealprefs)
                                     }
                                 }
+                            },
+                            onConsumeMeal = { meal ->
+                                scope.launch {
+                                    statisticsRepository.addMealEvent(meal)
+                                }
                             }
                             )
                 }
@@ -216,18 +223,16 @@ fun DashboardScreen(
                 onDismissRequest = {
                     showBalanceDialog = false
                     scope.launch {
-                        if(mealValueList.size==4) {
-                            val mealprefs = MealPreferences(
-                                breakfast = mealValueList[0].intValue,
-                                lunch = mealValueList[1].intValue,
-                                dinner = mealValueList[2].intValue,
-                                balance = balance.intValue,
-                            )
-                            mealmanager.saveToDataStore(mealprefs)
-                        }
+                        val mealprefs = MealPreferences(
+                            breakfast = mealValueList[0].intValue,
+                            lunch = mealValueList[1].intValue,
+                            dinner = mealValueList[2].intValue,
+                            balance = balance.intValue,
+                        )
+                        mealmanager.saveToDataStore(mealprefs)
                     }
                 },
-                balance, LocalContext.current, FileContainer.FileNames[3]
+                balance, LocalContext.current
             )
         }
     }

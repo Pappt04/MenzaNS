@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.pappt04.menzans.views.common.AutoResizedText
-import com.pappt04.menzans.data.consts.DummyData
+import com.pappt04.menzans.data.consts.NavigationConstants
 
 @Composable
 fun MenzaBottomNavigation(
@@ -21,7 +21,7 @@ fun MenzaBottomNavigation(
 
     NavigationBar(
     ) {
-        DummyData.bottomNavItemData.forEachIndexed { index, item ->
+        NavigationConstants.navItems.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedNavigationIndex.intValue == index,
                 onClick = {

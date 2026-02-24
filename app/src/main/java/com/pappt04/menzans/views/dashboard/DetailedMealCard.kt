@@ -29,11 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.views.common.AnimatedNumber
-import com.pappt04.menzans.data.consts.DummyData.datetypeclock
-import com.pappt04.menzans.data.consts.DummyData.engmonths
+import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.models.MealData
-import com.pappt04.menzans.data.local.StatisticsFileDAO
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Date
@@ -41,7 +39,7 @@ import java.util.Date
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit, onChanged:() -> Unit) {
+fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit, onChanged:() -> Unit, onConsumeMeal: (EatingStatisticsData) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     Card(
@@ -126,18 +124,13 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                                 if (remaining.value > 0) {
                                     remaining.value--
 
-                                    scope.launch {
-                                        val statisticsMeal = EatingStatisticsData(
-                                            LocalDate.now(),
-                                            datetypeclock.format(Date()),
-                                            datetypeclock.format(Date()),
-                                            meal.name
-                                        )
-                                        val fdao= StatisticsFileDAO(context, engmonths[LocalDate.now().monthValue-1])
-                                        fdao.appendToStatisticsFile(statisticsMeal)
-
-
-                                    }
+                                    val statisticsMeal = EatingStatisticsData(
+                                        LocalDate.now(),
+                                        timeFormat.format(Date()),
+                                        timeFormat.format(Date()),
+                                        meal.name
+                                    )
+                                    onConsumeMeal(statisticsMeal)
                                 }
                                 onChanged()
                             },

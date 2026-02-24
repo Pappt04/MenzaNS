@@ -23,9 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.consts.DummyData
 import com.pappt04.menzans.data.local.FileContainer
-import com.pappt04.menzans.data.local.FileDAO
 import kotlin.math.roundToInt
 
 

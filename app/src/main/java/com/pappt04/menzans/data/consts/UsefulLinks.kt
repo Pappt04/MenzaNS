@@ -2,46 +2,46 @@ package com.pappt04.menzans.data.consts
 
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.Uitext
+import com.pappt04.menzans.data.consts.AppConfig
 
 object UsefulLinks {
 
-    /*--------------------------------------------------------------------------------------------*/
-    data class linkContainer(val name: Uitext, val link: String)
+    data class LinkContainer(val name: Uitext, val link: String)
 
     val usefulLinks = listOf(
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.student_center_novi_sad),
             "https://www.scns.rs/"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.student_menza),
             "https://www.scns.rs/sektor-ishrane/"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.zavod_za_zdravstvenu_zastitu_studenata_novi_sad),
             "https://www.zzzzsns.co.rs"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.new_facebook_group_for_students_in_novi_sad),
             "https://www.facebook.com/groups/294889734815953"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.center_for_career_and_work),
             "https://www.infostud.com"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.university_of_novi_sad),
             "https://www.uns.ac.rs/index.php/"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.university_library),
             "https://www.uns.ac.rs/index.php/en/faculties/university-centres/central-library"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.moja_kartica_discounts_serbia),
             "https://mojakartica.rs"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.international_student_identity_card_discounts),
             "https://www.isic.org"
         ),
@@ -49,61 +49,61 @@ object UsefulLinks {
 
     /*--------------------------------------------------------------------------------------------*/
     val allUnsAcRswebsites = listOf(
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_technical_sciences),
             "http://www.ftn.uns.ac.rs/691618389/fakultet-tehnickih-nauka"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_agriculture),
             "http://polj.uns.ac.rs"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_economics_in_subotica),
             "https://www.ef.uns.ac.rs"
         ),
-        linkContainer(Uitext.StringResource(R.string.faculty_of_law), "https://pf.uns.ac.rs/rs/"),
-        linkContainer(
+        LinkContainer(Uitext.StringResource(R.string.faculty_of_law), "https://pf.uns.ac.rs/rs/"),
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_philosophy),
             "https://www.ff.uns.ac.rs"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_technology),
             "https://www.tf.uns.ac.rs/en#lat"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_medicine),
             "https://www.mf.uns.ac.rs/En/index_Eng.php"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_sciences),
             "https://www.pmf.uns.ac.rs/en/"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.academy_of_arts),
             "https://en.akademija.uns.ac.rs"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.faculty_of_sport_and_physical_education),
             "https://fspe.edu.rs"
         ),
     )
 
     val topbarLinks= listOf(
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.privacy_policy),
             "https://apollo4.duckdns.org/menzaapi/privacyPolicy"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.data_disclosure),
             "https://apollo4.duckdns.org/menzaapi/dataDeletionDisclosure"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.open_source_code),
             "https://github.com/Pappt04/MenzaNS"
         ),
-        linkContainer(
+        LinkContainer(
             Uitext.StringResource(R.string.google_play),
-            DummyData.APPLINK
+            AppConfig.APP_STORE_URL
         ),
     )
 }

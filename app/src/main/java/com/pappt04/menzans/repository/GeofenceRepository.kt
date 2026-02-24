@@ -1,8 +1,6 @@
 package com.pappt04.menzans.repository
 
 import android.content.Context
-import com.pappt04.menzans.data.local.FileContainer
-import com.pappt04.menzans.data.local.FileDAO
 import com.pappt04.menzans.models.EnterEventString
 import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.service.MenzaApiService
@@ -14,17 +12,14 @@ class GeofenceRepository(
     private val userRepository: UserRepository,
     private val context: Context
 ) {
+    private val prefs = context.getSharedPreferences("geofence_prefs", Context.MODE_PRIVATE)
+
     fun saveEnterTime(time: String) {
-        val dao = FileDAO(context, FileContainer.FileGeoFenceEntered)
-        dao.saveToFile(0, false)
-        context.openFileOutput(FileContainer.FileGeoFenceEntered, Context.MODE_PRIVATE).use {
-            it.write(time.toByteArray())
-        }
+        prefs.edit().putString("enter_time", time).apply()
     }
 
     fun getEnterTime(): String {
-        val dao = FileDAO(context, FileContainer.FileGeoFenceEntered)
-        return dao.readFromFile()
+        return prefs.getString("enter_time", "") ?: ""
     }
 
     suspend fun sendEnterEvent(date: String, time: String) {

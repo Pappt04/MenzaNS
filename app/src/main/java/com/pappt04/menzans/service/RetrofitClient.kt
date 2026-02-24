@@ -1,6 +1,6 @@
 package com.pappt04.menzans.service
 
-import com.pappt04.menzans.data.consts.DummyData.BASE_SERVER_URL
+import com.pappt04.menzans.data.consts.AppConfig.BASE_SERVER_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

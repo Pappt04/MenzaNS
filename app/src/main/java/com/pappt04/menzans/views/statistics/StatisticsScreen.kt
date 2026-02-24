@@ -16,30 +16,29 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.consts.DummyData.datetypemonth
-import com.pappt04.menzans.data.consts.DummyData.engmeals
-import com.pappt04.menzans.data.consts.DummyData.engmonths
+import com.pappt04.menzans.data.consts.CalendarData.monthFormat
+import com.pappt04.menzans.data.consts.CalendarData.mealNames
+import com.pappt04.menzans.data.consts.CalendarData.monthNames
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
-import com.pappt04.menzans.data.local.StatisticsFileDAO
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.geolocation.findEngMeal
-import kotlinx.coroutines.launch
+import com.pappt04.menzans.viewmodels.StatisticsViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Date
@@ -49,120 +48,101 @@ import java.util.Locale
 fun StatisticsScreen(
     innerpadding: PaddingValues,
     onBudget: MutableState<Boolean>,
-    statDAO: StatisticsFileDAO
+    viewModel: StatisticsViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
+    val initialMonth = monthNames[monthFormat.format(Date()).toInt() - 1]
 
-    val scope = rememberCoroutineScope()
+    var selectedMonth by remember { mutableStateOf(initialMonth) }
 
-    var selectedMonth by remember {
-        mutableStateOf(
-            engmonths[datetypemonth.format(Date()).toInt() - 1]
-        )
-    }
-    var prevMonth by remember {
-        mutableStateOf(
-            engmonths[datetypemonth.format(Date()).toInt() - 1]
-        )
+    val formattedStatisticsData by viewModel.statistics.collectAsState()
+
+    LaunchedEffect(selectedMonth) {
+        viewModel.loadStatistics(selectedMonth)
     }
 
-    var formattedStatisticsData = remember { statDAO.getStatisticsData() }
+    LazyColumn(
+        modifier = Modifier
+            .padding(innerpadding)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    var dir: Boolean
-
-    key(formattedStatisticsData) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(innerpadding)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(engmonths) { month ->
-                        val localizedMonth = Month.valueOf(month.uppercase()).getDisplayName(
-                            TextStyle.SHORT,
-                            Locale.getDefault()
-                        )
-
-                        FilterChip(
-                            onClick = {
-                                prevMonth = selectedMonth
-
-                                selectedMonth = if (selectedMonth == month) {
-                                    engmonths[datetypemonth.format(Date()).toInt() - 1]
-                                } else {
-                                    month
-                                }
-                                scope.launch {
-                                    statDAO.changeJob(context, selectedMonth)
-                                    formattedStatisticsData = statDAO.getStatisticsData()
-                                }
-
-                            },
-                            label = { Text(localizedMonth) },
-                            selected = selectedMonth == month
-                        )
-                    }
-                }
-            }
-
-            item {
-                CalendarMonthView(selectedMonth, formattedStatisticsData)
-
-            }
-
-            item {
-                Card(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier = Modifier
-                        .padding(8.dp)
-                )
-                {
-                    Text(
-                        stringResource(R.string.your_monthly_token_usage),
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .align(Alignment.CenterHorizontally)
+        item {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(monthNames) { month ->
+                    val localizedMonth = Month.valueOf(month.uppercase()).getDisplayName(
+                        TextStyle.SHORT,
+                        Locale.getDefault()
                     )
-                    MonthlyMealsChart(formattedStatisticsData)
+
+                    FilterChip(
+                        onClick = {
+                            selectedMonth = if (selectedMonth == month) {
+                                initialMonth
+                            } else {
+                                month
+                            }
+                        },
+                        label = { Text(localizedMonth) },
+                        selected = selectedMonth == month
+                    )
                 }
             }
-            item {
-                Card(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        }
+
+        item {
+            CalendarMonthView(selectedMonth, formattedStatisticsData, viewModel)
+        }
+
+        item {
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+            {
+                Text(
+                    stringResource(R.string.your_monthly_token_usage),
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(2.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
-                {
-                    Text(
-                        stringResource(R.string.your_weekly_token_usage),
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    WeeklyMealChart(formattedStatisticsData)
-                }
+                MonthlyMealsChart(formattedStatisticsData)
             }
-            item {
-                Card(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        }
+        item {
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+            {
+                Text(
+                    stringResource(R.string.your_weekly_token_usage),
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(2.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
-                {
-                    Text(
-                        stringResource(R.string.predicted_spending),
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    PredictedSpendingChart(selectedMonth, onBudget, formattedStatisticsData)
-                }
+                WeeklyMealChart(formattedStatisticsData)
+            }
+        }
+        item {
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+            {
+                Text(
+                    stringResource(R.string.predicted_spending),
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                PredictedSpendingChart(selectedMonth, onBudget, formattedStatisticsData)
             }
         }
     }
@@ -205,7 +185,7 @@ fun getSpentMoney(
         for (d in data) {
             if (i == d.date.dayOfMonth) {
                 var j = 0
-                for (e in engmeals) {
+                for (e in mealNames) {
                     if (findEngMeal(d.tokentype) == e) {
                         sum += when (onBudget.value) {
                             true -> MealSampleBudget[j].price
@@ -233,16 +213,13 @@ fun getSpentMoney(
 )
 @Composable
 fun StatisticsScreenPreview() {
-
     val b = remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-    val statdao = StatisticsFileDAO(context, "haha")
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
         }
     ) { innerPadding ->
-        StatisticsScreen(innerPadding, b, statdao)
+        StatisticsScreen(innerPadding, b)
     }
 }
