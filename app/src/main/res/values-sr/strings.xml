@@ -111,4 +111,23 @@
     <string name="background_location">Pozadinska lokacija</string>
     <string name="notification">Notifikacija</string>
     <string name="permission">dozvolu</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_tagline">Vaš sve-u-jednom pratilac kantine za studente UNS-a</string>
+    <string name="onboarding_token_title">Pratite Tokene</string>
+    <string name="onboarding_token_body">Pogledajte stanje tokena za doručak, ručak i večeru na jednom mestu. Nikad više ne ostanete bez tokena.</string>
+    <string name="onboarding_waittime_title">Vreme Čekanja Uživo</string>
+    <string name="onboarding_waittime_body">Proverite procenu reda u realnom vremenu od kolega studenata pre nego što izađete iz doma.</string>
+    <string name="onboarding_location_title">Pametno Beleženje Obroka</string>
+    <string name="onboarding_location_body">MenzaNS koristi vašu lokaciju da automatski beleži posete kantini — bez ručnog unosa.</string>
+    <string name="onboarding_stats_title">Mesečni Uvid</string>
+    <string name="onboarding_stats_body">Pratite navike ishrane, vizualizujte trendove potrošnje i vidite koliko tokena ostaje do kraja meseca.</string>
+    <string name="onboarding_permissions_title">Poslednji Korak</string>
+    <string name="onboarding_permissions_body">MenzaNS treba nekoliko dozvola za potpuno iskustvo. Uvek ih možete promeniti u Podešavanjima.</string>
+    <string name="onboarding_next">Dalje</string>
+    <string name="onboarding_get_started">Počni</string>
+    <string name="onboarding_grant_all">Daj Dozvole</string>
+    <string name="onboarding_skip">Preskoči za sada</string>
+    <string name="onboarding_skip_setup">Preskoči podešavanje</string>
+    <string name="onboarding_required_for_full">Potrebno za punu funkcionalnost</string>
 </resources>

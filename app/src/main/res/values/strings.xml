@@ -115,4 +115,23 @@
     <string name="background_location">Background location</string>
     <string name="notification">Notification</string>
     <string name="permission">permission</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_tagline">Your all-in-one canteen companion for UNS students</string>
+    <string name="onboarding_token_title">Track Your Tokens</string>
+    <string name="onboarding_token_body">See your Breakfast, Lunch, and Dinner token balance at a glance. Get notified before you run out.</string>
+    <string name="onboarding_waittime_title">Live Wait Times</string>
+    <string name="onboarding_waittime_body">Check real-time queue estimates contributed by fellow students before you even leave your dorm.</string>
+    <string name="onboarding_location_title">Smart Meal Detection</string>
+    <string name="onboarding_location_body">MenzaNS uses your location to automatically log canteen visits — no manual input needed.</string>
+    <string name="onboarding_stats_title">Monthly Insights</string>
+    <string name="onboarding_stats_body">Track your eating habits, visualize spending trends, and see how many tokens are left for the rest of the month.</string>
+    <string name="onboarding_permissions_title">One Last Step</string>
+    <string name="onboarding_permissions_body">MenzaNS needs a few permissions to deliver the full experience. You can always manage them later in Settings.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding_grant_all">Grant Permissions</string>
+    <string name="onboarding_skip">Skip for now</string>
+    <string name="onboarding_skip_setup">Skip setup</string>
+    <string name="onboarding_required_for_full">Required for full functionality</string>
 </resources>
