@@ -17,10 +17,9 @@ fun MenzaBottomNavigation(
 ) {
     val context = LocalContext.current
 
-    var selectedNavigationIndex = remember { mutableIntStateOf(0) }
+    val selectedNavigationIndex = remember { mutableIntStateOf(0) }
 
-    NavigationBar(
-    ) {
+    NavigationBar {
         NavigationConstants.navItems.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedNavigationIndex.intValue == index,

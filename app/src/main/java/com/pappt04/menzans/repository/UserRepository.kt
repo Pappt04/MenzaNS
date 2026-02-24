@@ -1,6 +1,5 @@
 package com.pappt04.menzans.repository
 
-import android.content.Context
 import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
 import com.pappt04.menzans.models.SettingsPreferences
 import com.pappt04.menzans.models.UserIDString
@@ -8,18 +7,14 @@ import com.pappt04.menzans.service.MenzaApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class UserRepository(
     private val settingsDataStoreManager: SettingsDataStoreManager,
-    private val apiService: MenzaApiService,
-    private val context: Context
+    private val apiService: MenzaApiService
 ) {
     private val _userId = MutableStateFlow("")
-    val userId: StateFlow<String> = _userId.asStateFlow()
 
     suspend fun loadOrRegisterUser() {
         val settings = settingsDataStoreManager.getFromDataStore().first()

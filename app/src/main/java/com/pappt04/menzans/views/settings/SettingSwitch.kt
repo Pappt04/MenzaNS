@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 @Composable
-fun SettingSwitch(pref: MutableState<Boolean>, name: String, filename: String, onChanged: () -> Unit) {
+fun SettingSwitch(pref: MutableState<Boolean>, name: String, onChanged: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(10.dp)

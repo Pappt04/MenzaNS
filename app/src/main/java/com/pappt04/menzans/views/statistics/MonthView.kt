@@ -122,8 +122,8 @@ fun CalendarMonthView(
                 ) {
                     week.forEach { day ->
                         if (day != null) {
-                            var isToday = day == today
-                            var isSelected = day == selectedDay.value
+                            val isToday = day == today
+                            val isSelected = day == selectedDay.value
                             Surface(
                                 modifier = Modifier
                                     .weight(1f)

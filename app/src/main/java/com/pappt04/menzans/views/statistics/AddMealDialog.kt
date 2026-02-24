@@ -207,17 +207,6 @@ fun AddMealDialog(
     }
 }
 
-fun getUniversalLanguageMeal(context: Context, meal: String): Uitext {
-    var i = 0
-    for (m in mealNames) {
-        if (meal == m)
-            return MealSampleBudget[i].name
-        i++
-    }
-    return MealSampleBudget[0].name
-}
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateofMealPicker(

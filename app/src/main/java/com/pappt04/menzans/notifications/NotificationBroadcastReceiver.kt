@@ -6,7 +6,6 @@ import android.content.Intent
 import com.pappt04.menzans.data.consts.NotificationConstants
 import com.pappt04.menzans.data.consts.CalendarData.mealNames
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
-import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.repository.GeofenceRepository
 import com.pappt04.menzans.repository.MealRepository
 import com.pappt04.menzans.repository.UserRepository

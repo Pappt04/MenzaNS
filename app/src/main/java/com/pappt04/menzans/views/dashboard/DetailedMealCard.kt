@@ -32,7 +32,6 @@ import com.pappt04.menzans.views.common.AnimatedNumber
 import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.models.MealData
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Date
 
@@ -41,7 +40,6 @@ import java.util.Date
 @Composable
 fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: MutableState<Int>, onClicked: () -> Unit, noFunds:() -> Unit, onChanged:() -> Unit, onConsumeMeal: (EatingStatisticsData) -> Unit) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
@@ -107,9 +105,9 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                     ) {
                         Button(
                             onClick = {
-                                if (remaining.value > 0) {
+                                if (remaining.intValue > 0) {
                                     balance.value += meal.price
-                                    remaining.value--
+                                    remaining.intValue--
                                 }
                                 onChanged()
                             },
@@ -121,8 +119,8 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                         }
                         Button(
                             onClick = {
-                                if (remaining.value > 0) {
-                                    remaining.value--
+                                if (remaining.intValue > 0) {
+                                    remaining.intValue--
 
                                     val statisticsMeal = EatingStatisticsData(
                                         LocalDate.now(),
@@ -141,7 +139,7 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                         Button(onClick = {
                             if (balance.value > meal.price) {
                                 balance.value -= meal.price
-                                remaining.value++
+                                remaining.intValue++
                                 onChanged()
                             } else
                             {

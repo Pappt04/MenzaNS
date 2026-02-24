@@ -14,13 +14,11 @@ import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.data.consts.CalendarData.dateFormat
 import com.pappt04.menzans.data.consts.GeofenceConstants
 import com.pappt04.menzans.models.EatingStatisticsData
-import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
-import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
 import com.pappt04.menzans.repository.GeofenceRepository
@@ -97,29 +95,25 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
                 val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
 
                 if (alldiff > GeofenceConstants.EATING_SPEED_THRESHOLD && correctmeal!= null) {
-                    if (context != null) {
-                        automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
-                        notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
+                    automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
+                    notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
 
-                        if(userId.isNotEmpty()) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                geofenceRepository.sendExitEvent(
-                                    timeExited,
-                                    findEngMeal(correctmeal.name)
-                                )
-                            }
+                    if(userId.isNotEmpty()) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            geofenceRepository.sendExitEvent(
+                                timeExited,
+                                findEngMeal(correctmeal.name)
+                            )
                         }
                     }
 
                 } else if (correctmeal!=null) {
-                    if (context != null) {
-                        notificationManager.sendAteMealNotification(
-                            context,
-                            timeEntered,
-                            timeExited,
-                            correctmeal
-                        )
-                    }
+                    notificationManager.sendAteMealNotification(
+                        context,
+                        timeEntered,
+                        timeExited,
+                        correctmeal
+                    )
                 }
             }
 
@@ -180,12 +174,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
  * Returns the meals english name
  */
 fun findEngMeal(type: Uitext): String {
-    var i = 0
-    for (m in MealSample.MealSampleBudget) {
+    for ((i, m) in MealSampleBudget.withIndex()) {
         if (m.name == type) {
             return CalendarData.mealNames[i]
         }
-        i++
     }
     return ""
 }

@@ -37,7 +37,7 @@ val appModule: Module =
         single { RetrofitClient.apiService }
 
         // Repositories
-        single { UserRepository(get(), get(), androidContext()) }
+        single { UserRepository(get(), get()) }
         single { MealRepository(get()) }
         single { CardRepository(get()) }
         single { SettingsRepository(get()) }
@@ -48,7 +48,7 @@ val appModule: Module =
         // ViewModels
         viewModel { MainViewModel(get(), get(), get()) }
         viewModel { DashboardViewModel(get(), get()) }
-        viewModel { StatisticsViewModel(get(), get()) }
+        viewModel { StatisticsViewModel(get()) }
         viewModel { CardViewModel(get()) }
         viewModel { SettingsViewModel(get()) }
     }

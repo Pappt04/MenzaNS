@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -36,12 +35,12 @@ import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.views.common.AutoResizedText
 import com.pappt04.menzans.data.consts.UsefulLinks
 import com.pappt04.menzans.ui.theme.megatitleFont
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenzaTopBar(firstWelcome: MutableState<Boolean>,waitTime: MutableIntState,drawerState: DrawerState,screenTitle: String) {
     val showtopbarpopup= remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     CenterAlignedTopAppBar(colors = topAppBarColors(
         titleContentColor = MaterialTheme.colorScheme.primary,
@@ -93,7 +92,7 @@ fun MenzaTopBar(firstWelcome: MutableState<Boolean>,waitTime: MutableIntState,dr
                     )
                 }
             }
-            TopBarPopup(showtopbarpopup.value,){
+            TopBarPopup(showtopbarpopup.value){
                 showtopbarpopup.value = false
             }
         }
@@ -124,7 +123,7 @@ private fun TopBarPopup(
             onClick = {
 
                 val intent = Intent(Intent.ACTION_SENDTO)
-                intent.data = Uri.parse("mailto:")
+                intent.data = "mailto:".toUri()
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apollo4.labs@gmail.com"))
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Contact from ${UserID.userid}")
                 intent.putExtra(Intent.EXTRA_TEXT, "Hello, please delete my data")
@@ -141,7 +140,7 @@ private fun TopBarPopup(
         },
             onClick = {
                 val intent = Intent(Intent.ACTION_SENDTO)
-                intent.data = Uri.parse("mailto:")
+                intent.data = "mailto:".toUri()
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apollo4.labs@gmail.com"))
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Contact from ${UserID.userid}")
                 intent.putExtra(Intent.EXTRA_TEXT, "")

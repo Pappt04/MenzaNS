@@ -48,7 +48,7 @@ fun AnimatedNumber(
     SideEffect {
         oldCount = number.intValue
     }
-    Row() {
+    Row {
         val countString = number.intValue.toString()
         val oldCountString = oldCount.toString()
 

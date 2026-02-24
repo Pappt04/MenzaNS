@@ -78,7 +78,7 @@ class GraphCardViewModel : androidx.lifecycle.ViewModel() {
 @Composable
 fun LineSizeGraph(linemap: Map<String, Double>) {
     val modelProducer = remember { CartesianChartModelProducer() }
-    val context= LocalContext.current
+    LocalContext.current
 
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {
@@ -169,9 +169,9 @@ fun convertTimeValuetoString(time: Double, vertipost: Axis.Position.Vertical?): 
     var fraction= time-decimal
     fraction=fraction.absoluteValue
 
-    var s= String.format(Locale.ROOT,"%d:%2.2f",decimal,fraction)
+    String.format(Locale.ROOT,"%d:%2.2f",decimal,fraction)
 
-    var f="$decimal:$fraction"
+    "$decimal:$fraction"
 
     return "$decimal:00"
 }

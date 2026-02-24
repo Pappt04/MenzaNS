@@ -34,7 +34,7 @@ fun AnimatedWord(cword: MutableState<Uitext>) {
     SideEffect {
         oldCount = word.value
     }
-    Row() {
+    Row {
         val countString = word.value
         val oldCountString = oldCount
 

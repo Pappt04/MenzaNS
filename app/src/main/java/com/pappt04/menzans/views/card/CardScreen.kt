@@ -308,100 +308,100 @@ fun CardScreen(
                     .padding(10.dp)
             )
         }
-        item {
-            OutlinedCard(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                ),
-                border = BorderStroke(1.dp, Color.Black),
-                modifier = Modifier
-                    .padding(8.dp)
-            ) {
-                Column {
-                    Row {
-                        OutlinedTextField(
-                            value = editbreakfast.intValue.toString(),
-                            onValueChange = {
-                                try {
-                                    editbreakfast.intValue = it.toInt()
-                                } catch (e: Exception) {
-                                    editbreakfast.intValue = 0
-                                }
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.breakfast) + ": ${remainingOnCard[0]}") },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-                        OutlinedTextField(
-                            value = editlunch.intValue.toString(),
-                            onValueChange = {
-                                try {
-                                    editlunch.intValue = it.toInt()
-                                } catch (e: Exception) {
-                                    editlunch.intValue = 0
-                                }
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.lunch) + ": ${remainingOnCard[1]}") },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-                        OutlinedTextField(
-                            value = editdinner.intValue.toString(),
-                            onValueChange = {
-                                try {
-                                    editdinner.intValue = it.toInt()
-                                } catch (e: Exception) {
-                                    editdinner.intValue = 0
-                                }
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            label = { Text(stringResource(R.string.dinner) + ": ${remainingOnCard[2]}") },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-                    }
-                    OutlinedTextField(
-                        value = editbalance.intValue.toString(),
-                        onValueChange = {
-                            try {
-                                editbalance.intValue = it.toInt()
-                            } catch (e: Exception) {
-                                editbalance.intValue=0
-                            }
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        label = { Text(stringResource(R.string.balance) + ": ${remainingOnCard[3]}") },
-                        textStyle = LocalTextStyle.current.copy(
-                            textAlign = TextAlign.Right,
-                            fontSize = 22.sp
-                        ),
-                        prefix = {
-                            Text(
-                                text = "+",
-                                fontSize = 22.sp
-                            )
-                        },
-                        suffix = {
-                            Text(
-                                stringResource(R.string.rsd),
-                                fontSize = 22.sp
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-            }
-        }
+//        item {
+//            OutlinedCard(
+//                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+//                ),
+//                border = BorderStroke(1.dp, Color.Black),
+//                modifier = Modifier
+//                    .padding(8.dp)
+//            ) {
+//                Column {
+//                    Row {
+//                        OutlinedTextField(
+//                            value = editbreakfast.intValue.toString(),
+//                            onValueChange = {
+//                                try {
+//                                    editbreakfast.intValue = it.toInt()
+//                                } catch (e: Exception) {
+//                                    editbreakfast.intValue = 0
+//                                }
+//                            },
+//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//                            label = { Text(stringResource(R.string.breakfast) + ": ${remainingOnCard[0]}") },
+//                            modifier = Modifier
+//                                .padding(4.dp)
+//                                .fillMaxWidth()
+//                                .weight(1f)
+//                        )
+//                        OutlinedTextField(
+//                            value = editlunch.intValue.toString(),
+//                            onValueChange = {
+//                                try {
+//                                    editlunch.intValue = it.toInt()
+//                                } catch (e: Exception) {
+//                                    editlunch.intValue = 0
+//                                }
+//                            },
+//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//                            label = { Text(stringResource(R.string.lunch) + ": ${remainingOnCard[1]}") },
+//                            modifier = Modifier
+//                                .padding(4.dp)
+//                                .fillMaxWidth()
+//                                .weight(1f)
+//                        )
+//                        OutlinedTextField(
+//                            value = editdinner.intValue.toString(),
+//                            onValueChange = {
+//                                try {
+//                                    editdinner.intValue = it.toInt()
+//                                } catch (e: Exception) {
+//                                    editdinner.intValue = 0
+//                                }
+//                            },
+//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//                            label = { Text(stringResource(R.string.dinner) + ": ${remainingOnCard[2]}") },
+//                            modifier = Modifier
+//                                .padding(4.dp)
+//                                .fillMaxWidth()
+//                                .weight(1f)
+//                        )
+//                    }
+//                    OutlinedTextField(
+//                        value = editbalance.intValue.toString(),
+//                        onValueChange = {
+//                            try {
+//                                editbalance.intValue = it.toInt()
+//                            } catch (e: Exception) {
+//                                editbalance.intValue=0
+//                            }
+//                        },
+//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//                        label = { Text(stringResource(R.string.balance) + ": ${remainingOnCard[3]}") },
+//                        textStyle = LocalTextStyle.current.copy(
+//                            textAlign = TextAlign.Right,
+//                            fontSize = 22.sp
+//                        ),
+//                        prefix = {
+//                            Text(
+//                                text = "+",
+//                                fontSize = 22.sp
+//                            )
+//                        },
+//                        suffix = {
+//                            Text(
+//                                stringResource(R.string.rsd),
+//                                fontSize = 22.sp
+//                            )
+//                        },
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                    )
+//                }
+//            }
+//        }
         item {
             Row(
                 modifier = Modifier

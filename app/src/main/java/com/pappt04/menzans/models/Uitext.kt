@@ -3,7 +3,7 @@ package com.pappt04.menzans.models
 import android.content.Context
 import androidx.annotation.StringRes
 
-sealed class Uitext() {
+sealed class Uitext {
     data class DynamicString(
         val value: String
     ) : Uitext()

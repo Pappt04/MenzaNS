@@ -16,11 +16,9 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.local.FileContainer
 
 @Composable
 fun PriceSwitcher(onBudget: MutableState<Boolean>, onChanged: () -> Unit) {
-    val context= LocalContext.current
     Row(
         modifier = Modifier
             .padding(10.dp)

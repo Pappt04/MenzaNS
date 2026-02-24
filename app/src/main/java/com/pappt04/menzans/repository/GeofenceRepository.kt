@@ -6,16 +6,17 @@ import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.service.MenzaApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.core.content.edit
 
 class GeofenceRepository(
     private val apiService: MenzaApiService,
     private val userRepository: UserRepository,
-    private val context: Context
+    context: Context
 ) {
     private val prefs = context.getSharedPreferences("geofence_prefs", Context.MODE_PRIVATE)
 
     fun saveEnterTime(time: String) {
-        prefs.edit().putString("enter_time", time).apply()
+        prefs.edit { putString("enter_time", time) }
     }
 
     fun getEnterTime(): String {

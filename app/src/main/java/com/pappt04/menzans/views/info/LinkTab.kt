@@ -38,10 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.glance.LocalContext
-import androidx.glance.appwidget.lazy.LazyColumn
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.UsefulLinks
+import androidx.core.net.toUri
 
 
 @Composable
@@ -151,7 +150,7 @@ fun RotatingIcon(expanded: Boolean) {
 }
 
 fun openUrl(context: Context, link: String) {
-    var uri = Uri.parse(link)
+    val uri = link.toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri)
 
     context.startActivity(intent)

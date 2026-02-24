@@ -3,7 +3,6 @@ package com.pappt04.menzans.views.navigation
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -13,7 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.consts.NavigationConstants
 import com.pappt04.menzans.viewmodels.MainViewModel
 
 @Composable
@@ -23,18 +21,10 @@ fun MainNavigationDrawer(
     firstWelcome: MutableState<Boolean>,
     savedMeals: SnapshotStateList<Int>,
 ) {
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    val context = LocalContext.current
-
     val waittime = remember { mutableIntStateOf(999) }
-
     val navController = rememberNavController()
-
     var selectedItemIndex = remember { mutableIntStateOf(0) }
-
 
     val screenTitle = when (selectedItemIndex.intValue) {
         0 -> stringResource(R.string.app_name)
@@ -43,8 +33,6 @@ fun MainNavigationDrawer(
         3 -> stringResource(R.string.card)
         else -> stringResource(R.string.settings)
     }
-
-
 
     /*
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {

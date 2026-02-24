@@ -88,7 +88,7 @@ fun MealCard(meal: MealData, remaining: MutableIntState,icon: ImageVector, onCli
 @Composable
 fun PreviewMealCard() {
     MenzaNSTheme {
-        val counter = remember { mutableIntStateOf(500) }
+        remember { mutableIntStateOf(500) }
         val remaining = remember { mutableIntStateOf(5) }
         MealCard(MealSampleBudget[0], remaining, Icons.Default.Coffee ) {}
     }

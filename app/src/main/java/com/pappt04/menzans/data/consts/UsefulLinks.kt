@@ -2,7 +2,6 @@ package com.pappt04.menzans.data.consts
 
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.Uitext
-import com.pappt04.menzans.data.consts.AppConfig
 
 object UsefulLinks {
 

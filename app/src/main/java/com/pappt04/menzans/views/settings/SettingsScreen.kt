@@ -34,13 +34,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.local.FileContainer
@@ -77,7 +73,7 @@ fun SettingsScreen(
             .fillMaxHeight()
     ) {
         item {
-            DisclaimerCard(context)
+            DisclaimerCard()
         }
         item {
             HorizontalDivider(modifier = Modifier.padding(10.dp))
@@ -89,7 +85,6 @@ fun SettingsScreen(
             SettingSwitch(
                 darkTheme,
                 stringResource(R.string.use_dark_theme),
-                FileContainer.FileDarkThemeEnabled
             ) {
                 mainViewModel.updateDarkTheme(darkTheme.value)
             }
@@ -98,7 +93,6 @@ fun SettingsScreen(
             SettingSwitch(
                 materialyoutheme,
                 stringResource(R.string.use_materialyou_theme),
-                FileContainer.FileMaterialYouEnabled
             ) {
                 mainViewModel.updateMaterialYou(materialyoutheme.value)
             }
@@ -115,7 +109,7 @@ fun SettingsScreen(
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         items(permissionsNeeded) { permission ->
-            var i: Int = 0
+            var i= 0
             for (p in permissionsNeeded) {
                 if (p == permission) {
                     break
@@ -153,7 +147,7 @@ fun PermissionSwitch(context: Context, permissionName: Uitext, permissionType: S
             .padding(8.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            Row() {
+            Row {
                 Text(
                     stringResource(R.string.request_permission, permissionType.split(".").last()),
                     fontWeight = FontWeight.SemiBold,
@@ -191,7 +185,7 @@ fun PermissionSwitch(context: Context, permissionName: Uitext, permissionType: S
 
 
 @Composable
-fun DisclaimerCard(context: Context) {
+fun DisclaimerCard() {
     Card(
         modifier = Modifier
             .padding(8.dp)

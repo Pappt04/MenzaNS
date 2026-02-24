@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.views.common.AnimatedNumber
-import com.pappt04.menzans.data.local.FileContainer
 
 @Composable
 fun BalanceCard(balance: MutableIntState)

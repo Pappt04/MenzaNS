@@ -50,11 +50,11 @@ fun MenzaScaffold(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val context = LocalContext.current
+    LocalContext.current
 
     val bottomController = rememberNavController()
 
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
 
     Scaffold(
         topBar = {
