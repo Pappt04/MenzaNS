@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MenuViewModel(
-    private val menuRepository: MenuRepository
+    private val menuRepository: MenuRepository,
 ) : ViewModel() {
-
     private val _menu = MutableStateFlow<DayMenu?>(null)
     val menu: StateFlow<DayMenu?> = _menu.asStateFlow()
 

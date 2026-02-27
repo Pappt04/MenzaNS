@@ -1,17 +1,17 @@
 package com.pappt04.menzans.repository
 
 import android.content.Context
+import androidx.core.content.edit
 import com.pappt04.menzans.models.EnterEventString
 import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.service.MenzaApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import androidx.core.content.edit
 
 class GeofenceRepository(
     private val apiService: MenzaApiService,
     private val userRepository: UserRepository,
-    context: Context
+    context: Context,
 ) {
     private val prefs = context.getSharedPreferences("geofence_prefs", Context.MODE_PRIVATE)
 
@@ -19,11 +19,12 @@ class GeofenceRepository(
         prefs.edit { putString("enter_time", time) }
     }
 
-    fun getEnterTime(): String {
-        return prefs.getString("enter_time", "") ?: ""
-    }
+    fun getEnterTime(): String = prefs.getString("enter_time", "") ?: ""
 
-    suspend fun sendEnterEvent(date: String, time: String) {
+    suspend fun sendEnterEvent(
+        date: String,
+        time: String,
+    ) {
         val userId = userRepository.getUserId()
         if (userId.isEmpty() || date.isEmpty() || time.isEmpty()) return
 
@@ -36,7 +37,10 @@ class GeofenceRepository(
         }
     }
 
-    suspend fun sendExitEvent(time: String, token: String) {
+    suspend fun sendExitEvent(
+        time: String,
+        token: String,
+    ) {
         val userId = userRepository.getUserId()
         if (userId.isEmpty() || time.isEmpty() || token.isEmpty()) return
 

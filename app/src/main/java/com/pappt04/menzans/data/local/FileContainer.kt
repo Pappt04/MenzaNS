@@ -6,8 +6,8 @@ object FileContainer {
     val FileGeoFenceEntered = "geofenceentered"
     val FileDarkThemeEnabled = "darkthemeenabled"
     val FileMaterialYouEnabled = "materialyouenabled"
-    val FileDataSharingEnabled= "datasharingenabled"
-    val FileMealPricing="mealpricing"
-    val FileUserID ="userid"
-    val FileTokenLimit="tokenlimit"
+    val FileDataSharingEnabled = "datasharingenabled"
+    val FileMealPricing = "mealpricing"
+    val FileUserID = "userid"
+    val FileTokenLimit = "tokenlimit"
 }

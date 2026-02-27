@@ -5,7 +5,7 @@ import com.pappt04.menzans.models.MealPreferences
 import kotlinx.coroutines.flow.Flow
 
 class MealRepository(
-    private val mealDataStoreManager: MealDataStoreManager
+    private val mealDataStoreManager: MealDataStoreManager,
 ) {
     fun getMealCounts(): Flow<MealPreferences> = mealDataStoreManager.getFromDataStore()
 

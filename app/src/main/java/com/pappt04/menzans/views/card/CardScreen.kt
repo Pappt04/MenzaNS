@@ -52,7 +52,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,7 +69,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -101,7 +99,7 @@ fun CardScreen(
     var name by remember { mutableStateOf(cardprefs.name) }
     var index by remember { mutableStateOf(cardprefs.index) }
     var cardnumber by remember { mutableStateOf(cardprefs.cardnumber) }
-    var ISICcardnumber by remember { mutableStateOf(cardprefs.isicnumber) }
+    var isicCardNumber by remember { mutableStateOf(cardprefs.isicnumber) }
     var universityandfaculty by remember { mutableStateOf(cardprefs.faculty) }
 
     val dateofBirth = remember { mutableStateOf(cardprefs.dateofbirth) }
@@ -109,11 +107,11 @@ fun CardScreen(
     val showBirthDialog = remember { mutableStateOf(false) }
 
     val cardIssued = remember { mutableStateOf(cardprefs.issued) }
-    val IssuedState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+    val issuedState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showIssuedDialog = remember { mutableStateOf(false) }
 
     val cardValid = remember { mutableStateOf(cardprefs.validuntil) }
-    val ValidState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+    val validState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showValidDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -123,7 +121,7 @@ fun CardScreen(
         name = cardprefs.name
         index = cardprefs.index
         cardnumber = cardprefs.cardnumber
-        ISICcardnumber = cardprefs.isicnumber
+        isicCardNumber = cardprefs.isicnumber
         universityandfaculty = cardprefs.faculty
         dateofBirth.value = cardprefs.dateofbirth
         cardIssued.value = cardprefs.issued
@@ -207,8 +205,8 @@ fun CardScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    value = ISICcardnumber,
-                    onValueChange = { ISICcardnumber = it },
+                    value = isicCardNumber,
+                    onValueChange = { isicCardNumber = it },
                     label = { Text(stringResource(R.string.isic_card_number)) },
                     leadingIcon = { Icon(Icons.Default.Badge, contentDescription = null) },
                     singleLine = true,
@@ -271,7 +269,7 @@ fun CardScreen(
                         appendLine("Datum Izdavanja: ${cardIssued.value}")
                         appendLine("Važi do: ${cardValid.value}")
                         appendLine("Broj kartice: $cardnumber")
-                        appendLine("ISIC broj kartice: $ISICcardnumber")
+                        appendLine("ISIC broj kartice: $isicCardNumber")
                     }
                     val shareIntent = Intent.createChooser(
                         Intent(Intent.ACTION_SEND).apply {
@@ -288,7 +286,7 @@ fun CardScreen(
                         name = saved.name
                         index = saved.index
                         cardnumber = saved.cardnumber
-                        ISICcardnumber = saved.isicnumber
+                        isicCardNumber = saved.isicnumber
                         universityandfaculty = saved.faculty
                         dateofBirth.value = saved.dateofbirth
                         cardIssued.value = saved.issued
@@ -307,7 +305,7 @@ fun CardScreen(
                                 validuntil = cardValid.value,
                                 index = index,
                                 cardnumber = cardnumber,
-                                isicnumber = ISICcardnumber,
+                                isicnumber = isicCardNumber,
                             )
                         )
                         snackbar.showSnackbar(
@@ -323,9 +321,9 @@ fun CardScreen(
     if (showBirthDialog.value)
         DateofBirthPicker(dateofBirth, showBirthDialog, birthDialogState)
     if (showIssuedDialog.value)
-        IssuedPicker(cardIssued, showIssuedDialog, IssuedState)
+        IssuedPicker(cardIssued, showIssuedDialog, issuedState)
     if (showValidDialog.value)
-        ValidPicker(cardValid, showValidDialog, ValidState)
+        ValidPicker(cardValid, showValidDialog, validState)
 }
 
 // ────────────────────────────────────────────────────
@@ -784,8 +782,6 @@ fun Long.convertMillisToDate(): String {
     val sdf = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
     return sdf.format(calendar.time)
 }
-
-fun indexToLetter(index: Int): String = ('A' + index).toString()
 
 // ────────────────────────────────────────────────────
 // Preview

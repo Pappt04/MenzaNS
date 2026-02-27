@@ -15,9 +15,10 @@ import com.google.android.gms.location.LocationServices
 import com.pappt04.menzans.data.consts.GeofenceConstants.REQUEST_CODE
 import kotlinx.coroutines.tasks.await
 
-class GeofenceManager(context: Context) {
-
-    private val TAG = "GeofenceManager"
+class GeofenceManager(
+    context: Context,
+) {
+    private val tag = "GeofenceManager"
     private val client = LocationServices.getGeofencingClient(context)
     private val geofenceList = mutableMapOf<String, Geofence>()
 
@@ -31,7 +32,7 @@ class GeofenceManager(context: Context) {
                 PendingIntent.FLAG_CANCEL_CURRENT
             } else {
                 PendingIntent.FLAG_MUTABLE
-            }
+            },
         )
     }
 
@@ -52,25 +53,28 @@ class GeofenceManager(context: Context) {
     fun registerGeofence() {
         client.addGeofences(createGeofencingRequest(), geofencingPendingIntent).run {
             addOnSuccessListener {
-                Log.d(TAG, "registerGeofence: SUCCESS")
+                Log.d(tag, "registerGeofence: SUCCESS")
             }
             addOnFailureListener { exception ->
-                Log.d(TAG, "registerGeofence: Failure\n$exception")
+                Log.d(tag, "registerGeofence: Failure\n$exception")
             }
         }
     }
 
-    suspend fun deregisterGeofence() = kotlin.runCatching {
-        client.removeGeofences(geofencingPendingIntent).await()
-        geofenceList.clear()
-    }
+    suspend fun deregisterGeofence() =
+        kotlin.runCatching {
+            client.removeGeofences(geofencingPendingIntent).await()
+            geofenceList.clear()
+        }
 
     private fun createGeofencingRequest(): GeofencingRequest {
-        Log.d(TAG,"Trying to register ${geofenceList["Menza"]}")
-        return GeofencingRequest.Builder().apply {
-            setInitialTrigger(GEOFENCE_TRANSITION_ENTER)
-            addGeofences(geofenceList.values.toList())
-        }.build()
+        Log.d(tag, "Trying to register ${geofenceList["Menza"]}")
+        return GeofencingRequest
+            .Builder()
+            .apply {
+                setInitialTrigger(GEOFENCE_TRANSITION_ENTER)
+                addGeofences(geofenceList.values.toList())
+            }.build()
     }
 
     private fun createGeofence(
@@ -78,14 +82,14 @@ class GeofenceManager(context: Context) {
         location: Location,
         radiusInMeters: Float,
         expirationTimeInMillis: Long,
-    ): Geofence {
-        return Geofence.Builder()
+    ): Geofence =
+        Geofence
+            .Builder()
             .setRequestId(key)
             .setCircularRegion(location.latitude, location.longitude, radiusInMeters)
             .setExpirationDuration(expirationTimeInMillis)
             .setLoiteringDelay(300000)
             .setTransitionTypes(GEOFENCE_TRANSITION_ENTER or GEOFENCE_TRANSITION_EXIT)
             .build()
-    }
-
 }
+

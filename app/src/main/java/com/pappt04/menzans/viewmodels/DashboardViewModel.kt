@@ -14,7 +14,6 @@ class DashboardViewModel(
     private val mealRepository: MealRepository,
     private val waitTimeRepository: WaitTimeRepository,
 ) : ViewModel() {
-
     private val _graphState = MutableStateFlow<UiState>(UiState.Empty)
     val graphState: StateFlow<UiState> = _graphState.asStateFlow()
 

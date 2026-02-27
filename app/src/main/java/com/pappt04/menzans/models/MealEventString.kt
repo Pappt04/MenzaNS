@@ -5,5 +5,5 @@ data class MealEventString(
     var date: String,
     var entered: String,
     var exited: String,
-    var token: String
+    var token: String,
 )

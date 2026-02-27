@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class UserRepository(
     private val settingsDataStoreManager: SettingsDataStoreManager,
-    private val apiService: MenzaApiService
+    private val apiService: MenzaApiService,
 ) {
     private val _userId = MutableStateFlow("")
 
@@ -22,9 +22,10 @@ class UserRepository(
 
         if (id.isEmpty()) {
             try {
-                val response = withContext(Dispatchers.IO) {
-                    apiService.registerUser()
-                }
+                val response =
+                    withContext(Dispatchers.IO) {
+                        apiService.registerUser()
+                    }
                 if (response.isSuccessful) {
                     id = response.body()?.userid ?: ""
                 }

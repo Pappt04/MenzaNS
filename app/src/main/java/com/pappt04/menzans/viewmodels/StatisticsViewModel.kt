@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class StatisticsViewModel(
-    private val statisticsRepository: StatisticsRepository
+    private val statisticsRepository: StatisticsRepository,
 ) : ViewModel() {
-
     private val _statistics = MutableStateFlow<List<EatingStatisticsData>>(emptyList())
     val statistics: StateFlow<List<EatingStatisticsData>> = _statistics.asStateFlow()
 
@@ -23,14 +22,20 @@ class StatisticsViewModel(
         }
     }
 
-    fun addMealEvent(mealData: EatingStatisticsData, month: String) {
+    fun addMealEvent(
+        mealData: EatingStatisticsData,
+        month: String,
+    ) {
         viewModelScope.launch {
             statisticsRepository.addMealEvent(mealData)
             loadStatistics(month)
         }
     }
 
-    fun removeMealEvent(data: EatingStatisticsData, month: String) {
+    fun removeMealEvent(
+        data: EatingStatisticsData,
+        month: String,
+    ) {
         viewModelScope.launch {
             statisticsRepository.removeMealEvent(data)
             loadStatistics(month)

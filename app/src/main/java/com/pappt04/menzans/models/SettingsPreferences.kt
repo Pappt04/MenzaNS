@@ -7,4 +7,5 @@ data class SettingsPreferences(
     var materialyoutheme: Boolean = false,
     var budget: Boolean = false,
     var tokenwarning: Int = 2,
+    var firstWelcome: Boolean = true,
 )

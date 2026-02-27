@@ -11,15 +11,16 @@ object GeofenceConstants {
     const val EATING_SPEED_THRESHOLD = 15
     const val DWELL_THRESHOLD = 5
 
-    val LANDMARKS = arrayOf(
-        LandmarkDataObject(
-            "Menza",
-            Location("").apply {
-                latitude = 45.245989
-                longitude = 19.849117
-            },
-            25f,
-            Geofence.NEVER_EXPIRE
-        ),
-    )
+    val LANDMARKS =
+        arrayOf(
+            LandmarkDataObject(
+                "Menza",
+                Location("").apply {
+                    latitude = 45.245989
+                    longitude = 19.849117
+                },
+                25f,
+                Geofence.NEVER_EXPIRE,
+            ),
+        )
 }

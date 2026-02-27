@@ -12,12 +12,12 @@ abstract class MenzaDatabase : RoomDatabase() {
     abstract fun mealEventDao(): MealEventDao
 
     companion object {
-        fun create(context: Context): MenzaDatabase {
-            return Room.databaseBuilder(
-                context.applicationContext,
-                MenzaDatabase::class.java,
-                "menza_database"
-            ).build()
-        }
+        fun create(context: Context): MenzaDatabase =
+            Room
+                .databaseBuilder(
+                    context.applicationContext,
+                    MenzaDatabase::class.java,
+                    "menza_database",
+                ).build()
     }
 }

@@ -4,5 +4,5 @@ data class DayMenu(
     val day: String,
     val breakfast: List<String>,
     val lunch: List<String>,
-    val dinner: List<String>
+    val dinner: List<String>,
 )

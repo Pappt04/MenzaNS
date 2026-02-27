@@ -29,7 +29,6 @@ class MainViewModel(
     private val settingsRepository: SettingsRepository,
     private val mealRepository: MealRepository,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
@@ -41,20 +40,23 @@ class MainViewModel(
             userRepository.loadOrRegisterUser()
             val userId = userRepository.getUserId()
 
-            _uiState.value = _uiState.value.copy(
-                darkTheme = settings.darktheme,
-                materialYouTheme = settings.materialyoutheme,
-                onBudgetPricing = settings.budget,
-                tokenWarning = settings.tokenwarning,
-                userId = userId,
-                savedMeals = listOf(
-                    mealPrefs.breakfast,
-                    mealPrefs.lunch,
-                    mealPrefs.dinner,
-                    mealPrefs.balance,
-                ),
-                isLoaded = true,
-            )
+            _uiState.value =
+                _uiState.value.copy(
+                    darkTheme = settings.darktheme,
+                    materialYouTheme = settings.materialyoutheme,
+                    onBudgetPricing = settings.budget,
+                    tokenWarning = settings.tokenwarning,
+                    userId = userId,
+                    isFirstWelcome = settings.firstWelcome,
+                    savedMeals =
+                        listOf(
+                            mealPrefs.breakfast,
+                            mealPrefs.lunch,
+                            mealPrefs.dinner,
+                            mealPrefs.balance,
+                        ),
+                    isLoaded = true,
+                )
         }
     }
 
@@ -80,20 +82,23 @@ class MainViewModel(
 
     fun setFirstWelcomeComplete() {
         _uiState.value = _uiState.value.copy(isFirstWelcome = false)
+        persistSettings()
     }
 
     fun updateMealCounts(mealPrefs: MealPreferences) {
         viewModelScope.launch {
             mealRepository.saveMealCounts(mealPrefs)
         }
-        _uiState.value = _uiState.value.copy(
-            savedMeals = listOf(
-                mealPrefs.breakfast,
-                mealPrefs.lunch,
-                mealPrefs.dinner,
-                mealPrefs.balance,
+        _uiState.value =
+            _uiState.value.copy(
+                savedMeals =
+                    listOf(
+                        mealPrefs.breakfast,
+                        mealPrefs.lunch,
+                        mealPrefs.dinner,
+                        mealPrefs.balance,
+                    ),
             )
-        )
     }
 
     private fun persistSettings() {
@@ -106,7 +111,8 @@ class MainViewModel(
                     materialyoutheme = state.materialYouTheme,
                     budget = state.onBudgetPricing,
                     tokenwarning = state.tokenWarning,
-                )
+                    firstWelcome = state.isFirstWelcome,
+                ),
             )
         }
     }

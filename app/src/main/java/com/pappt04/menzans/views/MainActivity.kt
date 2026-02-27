@@ -29,7 +29,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 var UserID: com.pappt04.menzans.models.UserIDString = com.pappt04.menzans.models.UserIDString("")
 
 class MainActivity : AppCompatActivity() {
-
     private val NOTIFICATION_PERMISSION_CODE = 1004
     private val ALL_LOCATION_PERMISSIONS = 1010
 
@@ -44,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         val splashStartTime = SystemClock.elapsedRealtime()
         splashScreen.setKeepOnScreenCondition {
             !mainViewModel.uiState.value.isLoaded ||
-                    SystemClock.elapsedRealtime() - splashStartTime < 500L
+              SystemClock.elapsedRealtime() - splashStartTime < 500L
         }
 
         setContent {
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                             geofence.key,
                             geofence.location,
                             geofence.radiusInMeters,
-                            geofence.expirationTimeInMillis
+                            geofence.expirationTimeInMillis,
                         )
                     }
                     geofenceManager.registerGeofence()
@@ -79,11 +78,7 @@ class MainActivity : AppCompatActivity() {
                 if (state.isLoaded) {
                     val onBudgetPricing = remember(state.onBudgetPricing) { mutableStateOf(state.onBudgetPricing) }
 
-                    val firstWelcome = remember { mutableStateOf(true) }
-                    val files: Array<String> = context.fileList()
-                    if (CardHolderFileName in files) {
-                        firstWelcome.value = false
-                    }
+                    val firstWelcome = remember(state.isFirstWelcome) { mutableStateOf(state.isFirstWelcome) }
 
                     val savedMeals = remember { SnapshotStateList<Int>() }
                     LaunchedEffect(state.savedMeals) {
@@ -95,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                         mainViewModel,
                         onBudgetPricing,
                         firstWelcome,
-                        savedMeals
+                        savedMeals,
                     )
                 } else {
                     // Splash screen API keeps the system splash visible until isLoaded is true
@@ -115,9 +110,9 @@ class MainActivity : AppCompatActivity() {
             arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             ),
-            ALL_LOCATION_PERMISSIONS
+            ALL_LOCATION_PERMISSIONS,
         )
     }
 
@@ -126,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                NOTIFICATION_PERMISSION_CODE
+                NOTIFICATION_PERMISSION_CODE,
             )
         }
     }

@@ -6,13 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class WaitTimeRepository(
-    private val apiService: MenzaApiService
+    private val apiService: MenzaApiService,
 ) {
-    suspend fun getWaitTime(): Result<WaitTime> {
-        return try {
-            val response = withContext(Dispatchers.IO) {
-                apiService.getWaitTime()
-            }
+    suspend fun getWaitTime(): Result<WaitTime> =
+        try {
+            val response =
+                withContext(Dispatchers.IO) {
+                    apiService.getWaitTime()
+                }
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -21,13 +22,13 @@ class WaitTimeRepository(
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
 
-    suspend fun getLineGraph(): Result<Map<String, Double>> {
-        return try {
-            val response = withContext(Dispatchers.IO) {
-                apiService.getLineGraph()
-            }
+    suspend fun getLineGraph(): Result<Map<String, Double>> =
+        try {
+            val response =
+                withContext(Dispatchers.IO) {
+                    apiService.getLineGraph()
+                }
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -36,5 +37,4 @@ class WaitTimeRepository(
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
 }

@@ -15,30 +15,39 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface MenzaApiService {
-
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/registerUser")
     suspend fun registerUser(): Response<UserIDString>
 
     @Headers("Accept: application/json")
     @POST("$BASE_API_NAME/deleteUser")
-    suspend fun deleteUser(@Body id: UserIDString): Response<Void>
+    suspend fun deleteUser(
+        @Body id: UserIDString,
+    ): Response<Void>
 
     @Headers("Accept: application/json")
     @POST("$BASE_API_NAME/enterMenza")
-    suspend fun enterMenza(@Body ee: EnterEventString): Response<Void>
+    suspend fun enterMenza(
+        @Body ee: EnterEventString,
+    ): Response<Void>
 
     @Headers("Accept: application/json")
     @POST("$BASE_API_NAME/exitMenza")
-    suspend fun exitMenza(@Body ee: ExitEventString): Response<Void>
+    suspend fun exitMenza(
+        @Body ee: ExitEventString,
+    ): Response<Void>
 
     @Headers("Content-Type: application/json")
     @POST("$BASE_API_NAME/addmeal")
-    suspend fun addMeal(@Body meal: MealEventString): Response<Void>
+    suspend fun addMeal(
+        @Body meal: MealEventString,
+    ): Response<Void>
 
     @Headers("Accept: application/json")
     @PUT("$BASE_API_NAME/removemeal")
-    suspend fun removeMeal(@Body meal: MealEventString): Response<Void>
+    suspend fun removeMeal(
+        @Body meal: MealEventString,
+    ): Response<Void>
 
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/waittime")

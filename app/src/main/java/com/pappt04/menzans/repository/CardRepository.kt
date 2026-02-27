@@ -5,7 +5,7 @@ import com.pappt04.menzans.models.CardPreferences
 import kotlinx.coroutines.flow.Flow
 
 class CardRepository(
-    private val cardDataStoreManager: CardDataStoreManager
+    private val cardDataStoreManager: CardDataStoreManager,
 ) {
     fun getCardInfo(): Flow<CardPreferences> = cardDataStoreManager.getFromDataStore()
 

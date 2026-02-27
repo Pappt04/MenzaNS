@@ -16,36 +16,37 @@ import com.pappt04.menzans.models.NavigationItem
 import com.pappt04.menzans.models.Uitext
 
 object NavigationConstants {
-    val navItems = listOf(
-        NavigationItem(
-            title = Uitext.StringResource(R.string.dashboard),
-            selectedIcon = Icons.Filled.AccountCircle,
-            unselectedIcon = Icons.Outlined.AccountCircle,
-            route = "DashboardScreen"
-        ),
-        NavigationItem(
-            title = Uitext.StringResource(R.string.statistics),
-            selectedIcon = Icons.Default.LocationOn,
-            unselectedIcon = Icons.Outlined.LocationOn,
-            route = "StatisticsScreen"
-        ),
-        NavigationItem(
-            title = Uitext.StringResource(R.string.info),
-            selectedIcon = Icons.Filled.Info,
-            unselectedIcon = Icons.Outlined.Info,
-            route = "InfoScreen"
-        ),
-        NavigationItem(
-            title = Uitext.StringResource(R.string.card),
-            selectedIcon = Icons.Filled.CreditCard,
-            unselectedIcon = Icons.Outlined.CreditCard,
-            route = "CardScreen"
-        ),
-        NavigationItem(
-            title = Uitext.StringResource(R.string.settings),
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings,
-            route = "SettingsScreen"
+    val navItems =
+        listOf(
+            NavigationItem(
+                title = Uitext.StringResource(R.string.dashboard),
+                selectedIcon = Icons.Filled.AccountCircle,
+                unselectedIcon = Icons.Outlined.AccountCircle,
+                route = "DashboardScreen",
+            ),
+            NavigationItem(
+                title = Uitext.StringResource(R.string.statistics),
+                selectedIcon = Icons.Default.LocationOn,
+                unselectedIcon = Icons.Outlined.LocationOn,
+                route = "StatisticsScreen",
+            ),
+            NavigationItem(
+                title = Uitext.StringResource(R.string.info),
+                selectedIcon = Icons.Filled.Info,
+                unselectedIcon = Icons.Outlined.Info,
+                route = "InfoScreen",
+            ),
+            NavigationItem(
+                title = Uitext.StringResource(R.string.card),
+                selectedIcon = Icons.Filled.CreditCard,
+                unselectedIcon = Icons.Outlined.CreditCard,
+                route = "CardScreen",
+            ),
+            NavigationItem(
+                title = Uitext.StringResource(R.string.settings),
+                selectedIcon = Icons.Filled.Settings,
+                unselectedIcon = Icons.Outlined.Settings,
+                route = "SettingsScreen",
+            ),
         )
-    )
 }

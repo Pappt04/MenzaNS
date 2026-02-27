@@ -6,13 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MenuRepository(
-    private val apiService: MenzaApiService
+    private val apiService: MenzaApiService,
 ) {
-    suspend fun getTodayMenu(): Result<DayMenu> {
-        return try {
-            val response = withContext(Dispatchers.IO) {
-                apiService.getTodayMenu()
-            }
+    suspend fun getTodayMenu(): Result<DayMenu> =
+        try {
+            val response =
+                withContext(Dispatchers.IO) {
+                    apiService.getTodayMenu()
+                }
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
@@ -21,5 +22,4 @@ class MenuRepository(
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
 }

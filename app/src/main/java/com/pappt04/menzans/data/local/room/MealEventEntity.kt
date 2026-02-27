@@ -10,5 +10,5 @@ data class MealEventEntity(
     val date: LocalDate,
     val timeEntered: String,
     val timeExited: String,
-    val mealType: String
+    val mealType: String,
 )

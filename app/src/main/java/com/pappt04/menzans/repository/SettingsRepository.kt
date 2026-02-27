@@ -5,7 +5,7 @@ import com.pappt04.menzans.models.SettingsPreferences
 import kotlinx.coroutines.flow.Flow
 
 class SettingsRepository(
-    private val settingsDataStoreManager: SettingsDataStoreManager
+    private val settingsDataStoreManager: SettingsDataStoreManager,
 ) {
     fun getSettings(): Flow<SettingsPreferences> = settingsDataStoreManager.getFromDataStore()
 

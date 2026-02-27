@@ -6,5 +6,5 @@ data class MealData(
     var start_hour: Int,
     var start_minute: Int,
     var end_hour: Int,
-    var end_minute: Int
+    var end_minute: Int,
 )

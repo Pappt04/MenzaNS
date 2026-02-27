@@ -20,16 +20,17 @@ import java.util.Date
 class StatisticsRepository(
     private val apiService: MenzaApiService,
     private val userRepository: UserRepository,
-    private val mealEventDao: MealEventDao
+    private val mealEventDao: MealEventDao,
 ) {
     suspend fun getStatisticsForMonth(month: String): List<EatingStatisticsData> {
         val monthEnum = Month.valueOf(month.uppercase())
         val currentDate = LocalDate.now()
-        val year = if (currentDate.monthValue >= monthEnum.value) {
-            currentDate.year
-        } else {
-            currentDate.year - 1
-        }
+        val year =
+            if (currentDate.monthValue >= monthEnum.value) {
+                currentDate.year
+            } else {
+                currentDate.year - 1
+            }
         val yearMonth = YearMonth.of(year, monthEnum)
         val startDate = yearMonth.atDay(1)
         val endDate = yearMonth.atEndOfMonth()
@@ -66,35 +67,33 @@ class StatisticsRepository(
         mealEventDao.insert(toEntity(mealData))
     }
 
-    private fun toEntity(data: EatingStatisticsData): MealEventEntity {
-        return MealEventEntity(
+    private fun toEntity(data: EatingStatisticsData): MealEventEntity =
+        MealEventEntity(
             date = data.date,
             timeEntered = data.timeentered,
             timeExited = data.timeexited,
-            mealType = findEngMeal(data.tokentype)
+            mealType = findEngMeal(data.tokentype),
         )
-    }
 
-    private fun toModel(entity: MealEventEntity): EatingStatisticsData {
-        return EatingStatisticsData(
+    private fun toModel(entity: MealEventEntity): EatingStatisticsData =
+        EatingStatisticsData(
             date = entity.date,
             timeentered = entity.timeEntered,
             timeexited = entity.timeExited,
-            tokentype = Uitext.StringResource(CalendarData.mealNameToRes(entity.mealType))
+            tokentype = Uitext.StringResource(CalendarData.mealNameToRes(entity.mealType)),
         )
-    }
 
-    private fun buildMealEventString(data: EatingStatisticsData): MealEventString {
-        return MealEventString(
+    private fun buildMealEventString(data: EatingStatisticsData): MealEventString =
+        MealEventString(
             userid = userRepository.getUserId(),
-            date = dateFormat.format(
-                Date.from(
-                    data.date.atStartOfDay(ZoneId.systemDefault()).toInstant()
-                )
-            ),
+            date =
+                dateFormat.format(
+                    Date.from(
+                        data.date.atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                    ),
+                ),
             entered = data.timeentered,
             exited = data.timeexited,
-            token = findEngMeal(data.tokentype)
+            token = findEngMeal(data.tokentype),
         )
-    }
 }

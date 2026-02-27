@@ -10,15 +10,15 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 import com.pappt04.menzans.data.consts.CalendarData
-import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.data.consts.CalendarData.dateFormat
+import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.data.consts.GeofenceConstants
-import com.pappt04.menzans.models.EatingStatisticsData
-import com.pappt04.menzans.models.MealData
-import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
+import com.pappt04.menzans.models.EatingStatisticsData
+import com.pappt04.menzans.models.MealData
+import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
 import com.pappt04.menzans.repository.GeofenceRepository
@@ -35,55 +35,61 @@ import java.time.LocalDate
 import java.util.Date
 import kotlin.math.abs
 
-
-class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
-    private val TAG = "GeofenceBroadcastReceiver"
+class GeofenceBroadcastReceiver :
+    BroadcastReceiver(),
+    KoinComponent {
+    private val tag = "GeofenceBroadcastReceiver"
 
     private val geofenceRepository: GeofenceRepository by inject()
     private val mealRepository: MealRepository by inject()
     private val statisticsRepository: StatisticsRepository by inject()
     private val userRepository: UserRepository by inject()
 
-    override fun onReceive(context: Context?, intent: Intent?) {
-        Log.i(TAG, "Activated")
-        val notificationManager = context?.let {
-            ContextCompat.getSystemService(
-                it,
-                NotificationManager::class.java
-            )
-        } as NotificationManager
+    override fun onReceive(
+        context: Context?,
+        intent: Intent?,
+    ) {
+        Log.i(tag, "Activated")
+        val notificationManager =
+            context?.let {
+                ContextCompat.getSystemService(
+                    it,
+                    NotificationManager::class.java,
+                )
+            } as NotificationManager
 
         val geofencingEvent = intent?.let { GeofencingEvent.fromIntent(it) } ?: return
 
         if (geofencingEvent.hasError()) {
             val errorMassage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
-            Log.e(TAG, errorMassage)
+            Log.e(tag, errorMassage)
             return
         }
 
-        val alertString = "Geofence Alert :" +
+        val alertString =
+            "Geofence Alert :" +
                 " Trigger ${geofencingEvent.triggeringGeofences}" +
                 " Transition ${geofencingEvent.geofenceTransition}"
-        Log.d(TAG, alertString)
+        Log.d(tag, alertString)
 
         val userId = userRepository.getUserId()
 
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                Log.i(TAG,"GEOFENCE ENTERED")
+                Log.i(tag, "GEOFENCE ENTERED")
                 val currentTime = timeFormat.format(Date())
                 geofenceRepository.saveEnterTime(currentTime)
 
                 CoroutineScope(Dispatchers.IO).launch {
                     geofenceRepository.sendEnterEvent(
                         dateFormat.format(Date()),
-                        currentTime
+                        currentTime,
                     )
                 }
             }
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                Log.i(TAG,"GEOFENCE EXITED")
+                Log.i(tag, "GEOFENCE EXITED")
                 val timeExited = timeFormat.format(Date())
                 val timeEntered = geofenceRepository.getEnterTime()
 
@@ -94,25 +100,24 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
                 val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
 
-                if (alldiff > GeofenceConstants.EATING_SPEED_THRESHOLD && correctmeal!= null) {
+                if (alldiff > GeofenceConstants.EATING_SPEED_THRESHOLD && correctmeal != null) {
                     automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
                     notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
 
-                    if(userId.isNotEmpty()) {
+                    if (userId.isNotEmpty()) {
                         CoroutineScope(Dispatchers.IO).launch {
                             geofenceRepository.sendExitEvent(
                                 timeExited,
-                                findEngMeal(correctmeal.name)
+                                findEngMeal(correctmeal.name),
                             )
                         }
                     }
-
-                } else if (correctmeal!=null) {
+                } else if (correctmeal != null) {
                     notificationManager.sendAteMealNotification(
                         context,
                         timeEntered,
                         timeExited,
-                        correctmeal
+                        correctmeal,
                     )
                 }
             }
@@ -122,7 +127,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
                 CoroutineScope(Dispatchers.IO).launch {
                     geofenceRepository.sendEnterEvent(
                         dateFormat.format(Date()),
-                        currentTime
+                        currentTime,
                     )
                 }
             }
@@ -133,36 +138,39 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
         context: Context,
         timeEntered: String,
         timeExited: String,
-        mealdata: MealData?
+        mealdata: MealData?,
     ) {
-        if(mealdata!= null) {
+        if (mealdata != null) {
             val mealIndex = findMealIndex(mealdata)
 
-            val statisticsMeal = EatingStatisticsData(
-                LocalDate.now(),
-                timeEntered,
-                timeExited,
-                mealdata.name
-            )
+            val statisticsMeal =
+                EatingStatisticsData(
+                    LocalDate.now(),
+                    timeEntered,
+                    timeExited,
+                    mealdata.name,
+                )
 
             CoroutineScope(Dispatchers.IO).launch {
                 statisticsRepository.appendMealEvent(statisticsMeal)
 
                 val mealPrefs = mealRepository.getMealCounts().first()
-                val currentMeals = when (mealIndex) {
-                    0 -> mealPrefs.breakfast
-                    1 -> mealPrefs.lunch
-                    2 -> mealPrefs.dinner
-                    else -> 0
-                }
+                val currentMeals =
+                    when (mealIndex) {
+                        0 -> mealPrefs.breakfast
+                        1 -> mealPrefs.lunch
+                        2 -> mealPrefs.dinner
+                        else -> 0
+                    }
 
                 if (currentMeals > 0) {
                     val newMeals = currentMeals - 1
-                    val newPrefs = mealPrefs.copy(
-                        breakfast = if (mealIndex == 0) newMeals else mealPrefs.breakfast,
-                        lunch = if (mealIndex == 1) newMeals else mealPrefs.lunch,
-                        dinner = if (mealIndex == 2) newMeals else mealPrefs.dinner
-                    )
+                    val newPrefs =
+                        mealPrefs.copy(
+                            breakfast = if (mealIndex == 0) newMeals else mealPrefs.breakfast,
+                            lunch = if (mealIndex == 1) newMeals else mealPrefs.lunch,
+                            dinner = if (mealIndex == 2) newMeals else mealPrefs.dinner,
+                        )
                     mealRepository.saveMealCounts(newPrefs)
                 }
             }
@@ -184,19 +192,23 @@ fun findEngMeal(type: Uitext): String {
 
 fun calculateCorrectMeal(
     timeEntered: String,
-    timeExited: String
+    timeExited: String,
 ): MealData? {
     val enteredsplit = timeEntered.split(":").toTypedArray()
     val exitedsplit = timeExited.split(":").toTypedArray()
 
     for (mealdata in MealSampleBudget) {
-        if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt()))
+        if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt())) {
             return mealdata
+        }
     }
     return null
 }
 
-fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<String>): Int {
+fun calculateTimeDifference(
+    enteredsplit: Array<String>,
+    exitedsplit: Array<String>,
+): Int {
     val enteredMinutes = enteredsplit[0].toInt() * 60 + enteredsplit[1].toInt()
     val exitedMinutes = exitedsplit[0].toInt() * 60 + exitedsplit[1].toInt()
 
@@ -204,21 +216,22 @@ fun calculateTimeDifference(enteredsplit: Array<String>, exitedsplit: Array<Stri
 }
 
 fun findMealIndex(mealdata: MealData): Int {
-    var found=false
-    var mealIndex=0
-    for(m in MealSampleBudget) {
-        if(mealdata == m) {
-            found=true
+    var found = false
+    var mealIndex = 0
+    for (m in MealSampleBudget) {
+        if (mealdata == m) {
+            found = true
             break
         }
         mealIndex++
     }
 
-    if(!found) {
-        mealIndex=0
-        for(m in MealSampleSelfFinancing) {
-            if(mealdata == m)
+    if (!found) {
+        mealIndex = 0
+        for (m in MealSampleSelfFinancing) {
+            if (mealdata == m) {
                 break
+            }
             mealIndex++
         }
     }
