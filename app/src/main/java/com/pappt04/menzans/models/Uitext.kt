@@ -9,7 +9,7 @@ sealed class Uitext {
     ) : Uitext()
 
     data class StringResource(
-        @StringRes val id: Int,
+        @param:StringRes val id: Int,
     ) : Uitext()
 
     fun asString(context: Context): String =

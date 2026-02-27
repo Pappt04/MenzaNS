@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,14 +35,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.views.common.AnimatedNumber
-import com.pappt04.menzans.service.MinuteTicker
-import com.pappt04.menzans.service.getWaitTime
+import com.pappt04.menzans.repository.WaitTimeRepository
+import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 
 @Composable
 fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
-    val context = LocalContext.current
     val trajectory = remember { mutableIntStateOf(0) }
     val precision = remember { mutableStateOf(0.00) }
+    val waitTimeRepository: WaitTimeRepository = koinInject()
 
     val bscolor = when(trajectory.intValue)
     {
@@ -57,14 +58,16 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
         else -> Icons.Filled.Remove
     }
 
-    MinuteTicker {
-        Log.d("WAIT_TIME", "Refresh request sent")
-        getWaitTime(context) { wt ->
-            if (wt != null) {
+    // Auto-refresh every 60 seconds using LaunchedEffect
+    LaunchedEffect(Unit) {
+        while (true) {
+            Log.d("WAIT_TIME", "Auto-refresh request sent")
+            delay(60_000L) // 60 seconds
+            val result = waitTimeRepository.getWaitTime()
+            result.onSuccess { wt ->
                 val temp = waittime.intValue
                 waittime.intValue = wt.waittime.toInt()
-
-                precision.value=wt.precision.toDouble()
+                precision.value = wt.precision.toDouble()
 
                 if (temp == 999) {
                     trajectory.intValue = wt.trajectory.toInt()
@@ -90,24 +93,8 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
             .fillMaxHeight(0.3f)
             .padding(8.dp)
             .clickable {
-                Log.d("WAIT_TIME", "Refresh request sent")
-                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
-                getWaitTime(context) { wt ->
-                    if (wt != null) {
-                        val temp = waittime.intValue
-                        waittime.intValue = wt.waittime.toInt()
-
-                        if (temp == 999) {
-                            trajectory.intValue = wt.trajectory.toInt()
-                        } else if (temp < waittime.intValue) {
-                            trajectory.intValue = 1
-                        } else if (temp > waittime.intValue) {
-                            trajectory.intValue = -1
-                        } else {
-                            trajectory.intValue = 0
-                        }
-                    }
-                }
+                Log.d("WAIT_TIME", "Manual refresh request sent")
+                onFetch() // Manual refresh via callback
             },
     ) {
 

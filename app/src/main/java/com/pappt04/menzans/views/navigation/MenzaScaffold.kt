@@ -24,7 +24,6 @@ import com.pappt04.menzans.views.card.CardScreen
 import com.pappt04.menzans.views.info.InfoScreen
 import com.pappt04.menzans.views.common.AnimatedAppearance
 import com.pappt04.menzans.views.dashboard.DashboardScreen
-import com.pappt04.menzans.views.dashboard.GraphCardViewModel
 import com.pappt04.menzans.views.settings.SettingsScreen
 import com.pappt04.menzans.views.statistics.StatisticsScreen
 import com.pappt04.menzans.views.welcome.WelcomeScreen
@@ -46,8 +45,6 @@ fun MenzaScaffold(
     savedMeals: SnapshotStateList<Int>,
     waittime: MutableIntState,
 ) {
-    val gcvm = remember { GraphCardViewModel() }
-
     val snackbarHostState = remember { SnackbarHostState() }
 
     LocalContext.current
@@ -87,15 +84,14 @@ fun MenzaScaffold(
                             delay = 5.milliseconds,
                             enter = slideInVertically { it }) {
                             DashboardScreen(
-                                when (onBudgetPricing.value) {
+                                meals = when (onBudgetPricing.value) {
                                     true -> MealSampleBudget
                                     else -> MealSampleSelfFinancing
                                 },
-                                savedMeals,
-                                gcvm,
-                                waittime,
-                                innerpadding,
-                                snackbarHostState
+                                remainingOnCard = savedMeals,
+                                waitime = waittime,
+                                padding = innerpadding,
+                                snackbar = snackbarHostState
                             )
                         }
                     }

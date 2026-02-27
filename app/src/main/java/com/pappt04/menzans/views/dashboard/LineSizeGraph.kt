@@ -6,12 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import com.pappt04.menzans.R
-import com.pappt04.menzans.service.getLineGraph
+import com.pappt04.menzans.models.UiState
 import com.pappt04.menzans.views.statistics.rememberMarker
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -45,40 +43,10 @@ import java.time.LocalTime
 import java.util.Locale
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
-import kotlin.time.Duration.Companion.milliseconds
-
-
-sealed class UiState {
-    object Empty : UiState()
-    object Loading : UiState()
-    data class Success(val data: Map<String, Double>) : UiState()
-    data class Error(val message: String) : UiState()
-}
-
-class GraphCardViewModel : androidx.lifecycle.ViewModel() {
-
-    private val _uiState = MutableStateFlow<UiState>(UiState.Empty)
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
-    fun fetchData() {
-        viewModelScope.launch {
-            _uiState.value = UiState.Loading // Set loading state
-            delay(2000.milliseconds)
-            try {
-                getLineGraph { d ->
-                    if (d != null) _uiState.value = UiState.Success(d)
-                }
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "An error occurred") // Set error state
-            }
-        }
-    }
-}
 
 @Composable
 fun LineSizeGraph(linemap: Map<String, Double>) {
     val modelProducer = remember { CartesianChartModelProducer() }
-    LocalContext.current
 
     LaunchedEffect(Unit) {
         modelProducer.runTransaction {

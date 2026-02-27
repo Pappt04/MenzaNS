@@ -13,7 +13,6 @@ import com.pappt04.menzans.data.consts.CalendarData
 import com.pappt04.menzans.data.consts.CalendarData.dateFormat
 import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.data.consts.GeofenceConstants
-import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.models.EatingStatisticsData

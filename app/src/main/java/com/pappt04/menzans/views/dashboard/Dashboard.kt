@@ -47,19 +47,22 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.models.Uitext
+import com.pappt04.menzans.models.UiState
 import com.pappt04.menzans.data.consts.MealSample.mealIcons
 import com.pappt04.menzans.data.local.datastore.MealDataStoreManager
 import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import com.pappt04.menzans.viewmodels.DashboardViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun DashboardScreen(
     meals: List<MealData>,
     remainingOnCard: SnapshotStateList<Int>,
-    viewModel: GraphCardViewModel,
+    viewModel: DashboardViewModel = koinViewModel(),
     waitime: MutableIntState,
     padding: PaddingValues,
     snackbar: SnackbarHostState,
@@ -67,7 +70,7 @@ fun DashboardScreen(
 ) {
 
 
-    val graphcardState by viewModel.uiState.collectAsState()
+    val graphcardState by viewModel.graphState.collectAsState()
 
     val context = LocalContext.current
     val statisticsRepository: StatisticsRepository = koinInject()
@@ -172,7 +175,7 @@ fun DashboardScreen(
             }
             item {
                 WaitTimeCard(waitime) {
-                    //viewModel.fetchData()
+                    //viewModel.fetchGraphData()
                 }
             }
             item {
@@ -181,7 +184,7 @@ fun DashboardScreen(
             item {
                 when (graphcardState) {
                     is UiState.Loading -> {
-                        viewModel.fetchData()
+                        viewModel.fetchGraphData()
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                                 .fillMaxWidth()
@@ -206,7 +209,7 @@ fun DashboardScreen(
                     }
 
                     is UiState.Empty -> {
-                        viewModel.fetchData()
+                        viewModel.fetchGraphData()
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                                 .fillMaxWidth()
@@ -268,12 +271,11 @@ fun PreviewScaffold() {
                 }
             ) { innerPadding ->
                 DashboardScreen(
-                    meals,
-                    remainingOnCard,
-                    GraphCardViewModel(),
-                    wt,
-                    innerPadding,
-                    snack
+                    meals = meals,
+                    remainingOnCard = remainingOnCard,
+                    waitime = wt,
+                    padding = innerPadding,
+                    snackbar = snack
                 )
             }
         }
