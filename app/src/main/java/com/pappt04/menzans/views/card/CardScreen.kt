@@ -1,7 +1,6 @@
 package com.pappt04.menzans.views.card
 
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,15 +43,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,9 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -70,82 +66,93 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.local.datastore.CardDataStoreManager
 import com.pappt04.menzans.models.CardPreferences
-import com.pappt04.menzans.ui.theme.MenzaNSTheme
-import kotlinx.coroutines.flow.first
+import com.pappt04.menzans.viewmodels.CardViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardScreen(
     remainingOnCard: SnapshotStateList<Int>,
+    tokenWarningLimit: Int,
     snackbar: SnackbarHostState,
-    maindrawerpadding: PaddingValues
+    maindrawerpadding: PaddingValues,
+    viewModel: CardViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    var cardprefs = remember { CardPreferences() }
     val scope = rememberCoroutineScope()
+    val cardInfo by viewModel.cardInfo.collectAsState()
 
-    var surname by remember { mutableStateOf(cardprefs.surname) }
-    var name by remember { mutableStateOf(cardprefs.name) }
-    var index by remember { mutableStateOf(cardprefs.index) }
-    var cardnumber by remember { mutableStateOf(cardprefs.cardnumber) }
-    var isicCardNumber by remember { mutableStateOf(cardprefs.isicnumber) }
-    var universityandfaculty by remember { mutableStateOf(cardprefs.faculty) }
+    var surname by remember { mutableStateOf(cardInfo.surname) }
+    var name by remember { mutableStateOf(cardInfo.name) }
+    var index by remember { mutableStateOf(cardInfo.index) }
+    var cardnumber by remember { mutableStateOf(cardInfo.cardnumber) }
+    var isicCardNumber by remember { mutableStateOf(cardInfo.isicnumber) }
+    var faculty by remember { mutableStateOf(cardInfo.faculty) }
 
-    val dateofBirth = remember { mutableStateOf(cardprefs.dateofbirth) }
+    val dateofBirth = remember { mutableStateOf(cardInfo.dateofbirth) }
     val birthDialogState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showBirthDialog = remember { mutableStateOf(false) }
 
-    val cardIssued = remember { mutableStateOf(cardprefs.issued) }
+    val cardIssued = remember { mutableStateOf(cardInfo.issued) }
     val issuedState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showIssuedDialog = remember { mutableStateOf(false) }
 
-    val cardValid = remember { mutableStateOf(cardprefs.validuntil) }
+    val cardValid = remember { mutableStateOf(cardInfo.validuntil) }
     val validState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showValidDialog = remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        val prfs = CardDataStoreManager(context)
-        cardprefs = prfs.getFromDataStore().first()
-        surname = cardprefs.surname
-        name = cardprefs.name
-        index = cardprefs.index
-        cardnumber = cardprefs.cardnumber
-        isicCardNumber = cardprefs.isicnumber
-        universityandfaculty = cardprefs.faculty
-        dateofBirth.value = cardprefs.dateofbirth
-        cardIssued.value = cardprefs.issued
-        cardValid.value = cardprefs.validuntil
+    // Sync local form state whenever the ViewModel emits (initial load or after discard)
+    LaunchedEffect(cardInfo) {
+        surname = cardInfo.surname
+        name = cardInfo.name
+        index = cardInfo.index
+        cardnumber = cardInfo.cardnumber
+        isicCardNumber = cardInfo.isicnumber
+        faculty = cardInfo.faculty
+        dateofBirth.value = cardInfo.dateofbirth
+        cardIssued.value = cardInfo.issued
+        cardValid.value = cardInfo.validuntil
     }
 
     LazyColumn(
         modifier = Modifier.padding(maindrawerpadding),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
-        // Visual card preview
         item {
             StudentCardPreview(
                 name = name,
                 surname = surname,
-                faculty = universityandfaculty,
+                faculty = faculty,
                 index = index,
-                validUntil = cardValid.value
+                validUntil = cardValid.value,
+                onShare = {
+                    val intent = viewModel.shareCard(CardPreferences(
+                        surname = surname,
+                        name = name,
+                        index = index,
+                        cardnumber = cardnumber,
+                        isicnumber = isicCardNumber,
+                        faculty = faculty,
+                        dateofbirth = dateofBirth.value,
+                        issued = cardIssued.value,
+                        validuntil = cardValid.value,
+                    ))
+                    startActivity(context, intent, null)
+                }
             )
         }
 
         // Token summary
         item {
-            TokenSummaryRow(remainingOnCard)
+            TokenSummaryRow(remainingOnCard, tokenWarningLimit)
         }
 
         // Personal info section
@@ -175,8 +182,8 @@ fun CardScreen(
                 }
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
-                    value = universityandfaculty,
-                    onValueChange = { universityandfaculty = it },
+                    value = faculty,
+                    onValueChange = { faculty = it },
                     label = { Text(stringResource(R.string.studies_at)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -249,7 +256,6 @@ fun CardScreen(
                     label = stringResource(R.string.valid_until),
                     value = cardValid.value,
                     onClick = { showValidDialog.value = true },
-                    validityStatus = cardValid.value.validityStatus()
                 )
             }
         }
@@ -258,60 +264,31 @@ fun CardScreen(
         item {
             Spacer(Modifier.height(16.dp))
             ActionButtons(
-                onShare = {
-                    val str = buildString {
-                        appendLine("Prezime: $surname")
-                        appendLine("Ime: $name")
-                        appendLine("Univerzitet: Univerzitet u Novom Sadu")
-                        appendLine("Fakultet: $universityandfaculty")
-                        appendLine("Indeks: $index")
-                        appendLine("Datum rođenja: ${dateofBirth.value}")
-                        appendLine("Datum Izdavanja: ${cardIssued.value}")
-                        appendLine("Važi do: ${cardValid.value}")
-                        appendLine("Broj kartice: $cardnumber")
-                        appendLine("ISIC broj kartice: $isicCardNumber")
-                    }
-                    val shareIntent = Intent.createChooser(
-                        Intent(Intent.ACTION_SEND).apply {
-                            putExtra(Intent.EXTRA_TEXT, str)
-                            type = "text/plain"
-                        }, null
-                    )
-                    startActivity(context, shareIntent, null)
-                },
                 onDiscard = {
-                    scope.launch {
-                        val saved = CardDataStoreManager(context).getFromDataStore().first()
-                        surname = saved.surname
-                        name = saved.name
-                        index = saved.index
-                        cardnumber = saved.cardnumber
-                        isicCardNumber = saved.isicnumber
-                        universityandfaculty = saved.faculty
-                        dateofBirth.value = saved.dateofbirth
-                        cardIssued.value = saved.issued
-                        cardValid.value = saved.validuntil
-                    }
+                    surname = cardInfo.surname
+                    name = cardInfo.name
+                    index = cardInfo.index
+                    cardnumber = cardInfo.cardnumber
+                    isicCardNumber = cardInfo.isicnumber
+                    faculty = cardInfo.faculty
+                    dateofBirth.value = cardInfo.dateofbirth
+                    cardIssued.value = cardInfo.issued
+                    cardValid.value = cardInfo.validuntil
                 },
                 onSave = {
+                    viewModel.saveCardInfo(CardPreferences(
+                        surname = surname,
+                        name = name,
+                        faculty = faculty,
+                        dateofbirth = dateofBirth.value,
+                        issued = cardIssued.value,
+                        validuntil = cardValid.value,
+                        index = index,
+                        cardnumber = cardnumber,
+                        isicnumber = isicCardNumber,
+                    ))
                     scope.launch {
-                        CardDataStoreManager(context).saveToDataStore(
-                            CardPreferences(
-                                surname = surname,
-                                name = name,
-                                faculty = universityandfaculty,
-                                dateofbirth = dateofBirth.value,
-                                issued = cardIssued.value,
-                                validuntil = cardValid.value,
-                                index = index,
-                                cardnumber = cardnumber,
-                                isicnumber = isicCardNumber,
-                            )
-                        )
-                        snackbar.showSnackbar(
-                            message = "Sačuvano",
-                            duration = SnackbarDuration.Short
-                        )
+                        snackbar.showSnackbar("Sačuvano", duration = SnackbarDuration.Short)
                     }
                 }
             )
@@ -330,50 +307,18 @@ fun CardScreen(
 // Visual card preview
 // ────────────────────────────────────────────────────
 
-private enum class ValidityStatus { VALID, EXPIRING_SOON, EXPIRED, UNKNOWN }
-
-private fun String.validityStatus(): ValidityStatus {
-    if (isBlank()) return ValidityStatus.UNKNOWN
-    return try {
-        val sdf = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
-        val date = sdf.parse(this) ?: return ValidityStatus.UNKNOWN
-        val now = Date()
-        val daysLeft = (date.time - now.time) / (1000 * 60 * 60 * 24)
-        when {
-            daysLeft < 0 -> ValidityStatus.EXPIRED
-            daysLeft < 30 -> ValidityStatus.EXPIRING_SOON
-            else -> ValidityStatus.VALID
-        }
-    } catch (_: Exception) {
-        ValidityStatus.UNKNOWN
-    }
-}
-
 @Composable
 private fun StudentCardPreview(
     name: String,
     surname: String,
     faculty: String,
     index: String,
-    validUntil: String
+    validUntil: String,
+    onShare: () -> Unit
 ) {
     val primary = MaterialTheme.colorScheme.primary
     val primaryContainer = MaterialTheme.colorScheme.primaryContainer
     val onPrimary = MaterialTheme.colorScheme.onPrimary
-
-    val status = validUntil.validityStatus()
-    val statusColor = when (status) {
-        ValidityStatus.VALID -> Color(0xFF4CAF50)
-        ValidityStatus.EXPIRING_SOON -> Color(0xFFFFC107)
-        ValidityStatus.EXPIRED -> MaterialTheme.colorScheme.error
-        ValidityStatus.UNKNOWN -> MaterialTheme.colorScheme.outline
-    }
-    val statusLabel = when (status) {
-        ValidityStatus.VALID -> "Aktivna"
-        ValidityStatus.EXPIRING_SOON -> "Uskoro ističe"
-        ValidityStatus.EXPIRED -> "Istekla"
-        ValidityStatus.UNKNOWN -> "—"
-    }
 
     ElevatedCard(
         shape = RoundedCornerShape(20.dp),
@@ -449,32 +394,26 @@ private fun StudentCardPreview(
                 }
             }
 
-            // Bottom row: validity
-            Row(
-                modifier = Modifier.align(Alignment.BottomStart),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (validUntil.isNotBlank()) {
-                    Text(
-                        text = "Važi do: $validUntil",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = onPrimary.copy(alpha = 0.8f)
-                    )
-                }
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = statusColor.copy(alpha = 0.2f)
-                ) {
-                    Text(
-                        text = statusLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = statusColor,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                    )
-                }
+            // Bottom-start: validity text
+            if (validUntil.isNotBlank()) {
+                Text(
+                    text = "Važi do: $validUntil",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = onPrimary.copy(alpha = 0.8f),
+                    modifier = Modifier.align(Alignment.BottomStart)
+                )
             }
+
+            // Bottom-end: share button
+            Icon(
+                imageVector = Icons.Default.Share,
+                contentDescription = stringResource(R.string.share),
+                tint = onPrimary.copy(alpha = 0.8f),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .clickable { onShare() }
+                    .size(20.dp)
+            )
         }
     }
 }
@@ -484,7 +423,7 @@ private fun StudentCardPreview(
 // ────────────────────────────────────────────────────
 
 @Composable
-private fun TokenSummaryRow(remainingOnCard: SnapshotStateList<Int>) {
+private fun TokenSummaryRow(remainingOnCard: SnapshotStateList<Int>, warningLimit: Int) {
     val meals = listOf(
         Triple(stringResource(R.string.breakfast), remainingOnCard[0], Icons.Default.Coffee),
         Triple(stringResource(R.string.lunch), remainingOnCard[1], Icons.Filled.Restaurant),
@@ -497,14 +436,14 @@ private fun TokenSummaryRow(remainingOnCard: SnapshotStateList<Int>) {
     ) {
         items(meals.size) { i ->
             val (label, count, icon) = meals[i]
-            TokenChip(label = label, count = count, icon = icon)
+            TokenChip(label, count, warningLimit, icon)
         }
     }
 }
 
 @Composable
-private fun TokenChip(label: String, count: Int, icon: ImageVector) {
-    val low = count <= 2
+private fun TokenChip(label: String, count: Int, warningLimit: Int, icon: ImageVector) {
+    val low = count <= warningLimit
     Card(
         colors = CardDefaults.cardColors(
             containerColor = if (low) MaterialTheme.colorScheme.errorContainer
@@ -578,56 +517,20 @@ private fun DateFieldRow(
     label: String,
     value: String,
     onClick: () -> Unit,
-    validityStatus: ValidityStatus? = null
 ) {
-    val statusColor = when (validityStatus) {
-        ValidityStatus.VALID -> Color(0xFF4CAF50)
-        ValidityStatus.EXPIRING_SOON -> Color(0xFFFFC107)
-        ValidityStatus.EXPIRED -> MaterialTheme.colorScheme.error
-        else -> null
-    }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            label = { Text(label) },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.CalendarMonth,
-                    contentDescription = null,
-                    tint = statusColor ?: MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            },
-            enabled = false,
-            readOnly = true,
-            modifier = Modifier
-                .weight(1f)
-                .clickable { onClick() }
-        )
-        if (statusColor != null && value.isNotBlank()) {
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = statusColor.copy(alpha = 0.12f)
-            ) {
-                Box(
-                    modifier = Modifier.size(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(10.dp)
-                            .clip(RoundedCornerShape(50))
-                            .background(statusColor)
-                    )
-                }
-            }
-        }
-    }
+    OutlinedTextField(
+        value = value,
+        onValueChange = {},
+        label = { Text(label) },
+        leadingIcon = {
+            Icon(Icons.Default.CalendarMonth, contentDescription = null)
+        },
+        enabled = false,
+        readOnly = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+    )
 }
 
 // ────────────────────────────────────────────────────
@@ -636,7 +539,6 @@ private fun DateFieldRow(
 
 @Composable
 private fun ActionButtons(
-    onShare: () -> Unit,
     onDiscard: () -> Unit,
     onSave: () -> Unit
 ) {
@@ -652,28 +554,11 @@ private fun ActionButtons(
         ) {
             Text(stringResource(R.string.save))
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        FilledTonalButton(
+            onClick = onDiscard,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            FilledTonalButton(
-                onClick = onDiscard,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(stringResource(R.string.discard))
-            }
-            FilledTonalButton(
-                onClick = onShare,
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    Icons.Default.Share,
-                    contentDescription = stringResource(R.string.share),
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.share))
-            }
+            Text(stringResource(R.string.discard))
         }
     }
 }
@@ -783,20 +668,3 @@ fun Long.convertMillisToDate(): String {
     return sdf.format(calendar.time)
 }
 
-// ────────────────────────────────────────────────────
-// Preview
-// ────────────────────────────────────────────────────
-
-@Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Composable
-fun PreviewEditScreen() {
-    MenzaNSTheme {
-        val remainingOnCard = remember { mutableStateListOf(10, 2, 5, 0) }
-        CardScreen(remainingOnCard, remember { SnackbarHostState() }, PaddingValues(0.dp))
-    }
-}

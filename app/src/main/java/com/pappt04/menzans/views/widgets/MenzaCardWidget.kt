@@ -105,8 +105,8 @@ object WaitTimeWidget : GlanceAppWidget() {
             val response = api.getWaitTime()
             if (response.isSuccessful) {
                 response.body()?.let {
-                    minutes = it.waittime.toIntOrNull() ?: -1
-                    lineLength = it.linelength
+                    minutes = it.waittime?.toIntOrNull() ?: -1
+                    lineLength = it.linelength ?: ""
                 }
             }
         } catch (_: Exception) { }

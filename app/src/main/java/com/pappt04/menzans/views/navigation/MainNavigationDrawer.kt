@@ -24,7 +24,7 @@ fun MainNavigationDrawer(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val waittime = remember { mutableIntStateOf(999) }
     val navController = rememberNavController()
-    var selectedItemIndex = remember { mutableIntStateOf(0) }
+    val selectedItemIndex = remember { mutableIntStateOf(0) }
 
     val screenTitle = when (selectedItemIndex.intValue) {
         0 -> stringResource(R.string.app_name)
@@ -33,57 +33,6 @@ fun MainNavigationDrawer(
         3 -> stringResource(R.string.card)
         else -> stringResource(R.string.settings)
     }
-
-    /*
-    ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
-        ModalDrawerSheet(
-            modifier = Modifier.fillMaxWidth(0.7f)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 64.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = stringResource(id = R.string.app_name), fontSize = 40.sp)
-            }
-
-            //TODO CREATE A BETTER DESIGN FOR THIS CARD IN THIS STATE IT IS UNUSABLE
-            //MenzaCard(cardData)
-            HorizontalDivider(modifier = Modifier.padding(4.dp))
-            NavigationConstants.navItems.forEachIndexed { index, item ->
-                NavigationDrawerItem(
-                    selected = selectedItemIndex.intValue == index,
-                    label = { Text(text = item.title.asString(context)) },
-                    onClick = {
-                        selectedItemIndex.intValue = index
-                        scope.launch {
-                            drawerState.close()
-
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = if (index == selectedItemIndex.intValue) {
-                                item.selectedIcon
-                            } else item.unselectedIcon, contentDescription = item.route
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-            }
-        }
-    }) {
-         MenzaScaffold(firstWelcome,drawerState,screenTitle,selectedItemIndex,navController,onBudgetPricing,savedMeals,waittime,darkTheme,materialtheme)
-    }*/
     MenzaScaffold(
         mainViewModel,
         firstWelcome,

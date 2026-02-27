@@ -66,11 +66,11 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
             val result = waitTimeRepository.getWaitTime()
             result.onSuccess { wt ->
                 val temp = waittime.intValue
-                waittime.intValue = wt.waittime.toInt()
-                precision.value = wt.precision.toDouble()
+                waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
+                precision.value = wt.precision?.toDoubleOrNull() ?: 0.0
 
                 if (temp == 999) {
-                    trajectory.intValue = wt.trajectory.toInt()
+                    trajectory.intValue = wt.trajectory?.toIntOrNull() ?: 0
                 } else if (temp < waittime.intValue) {
                     trajectory.intValue = 1
                 } else if (temp > waittime.intValue) {
