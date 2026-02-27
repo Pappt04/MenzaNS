@@ -1,6 +1,7 @@
 package com.pappt04.menzans.service
 
 import com.pappt04.menzans.data.consts.AppConfig.BASE_API_NAME
+import com.pappt04.menzans.models.DayMenu
 import com.pappt04.menzans.models.EnterEventString
 import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.models.MealEventString
@@ -46,4 +47,8 @@ interface MenzaApiService {
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/lineGraph")
     suspend fun getLineGraph(): Response<Map<String, Double>>
+
+    @Headers("Accept: application/json")
+    @GET("appapi/menu/today")
+    suspend fun getTodayMenu(): Response<DayMenu>
 }

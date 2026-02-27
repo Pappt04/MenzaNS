@@ -7,6 +7,7 @@ import com.pappt04.menzans.data.local.room.MenzaDatabase
 import com.pappt04.menzans.repository.CardRepository
 import com.pappt04.menzans.repository.GeofenceRepository
 import com.pappt04.menzans.repository.MealRepository
+import com.pappt04.menzans.repository.MenuRepository
 import com.pappt04.menzans.repository.SettingsRepository
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.repository.UserRepository
@@ -15,6 +16,7 @@ import com.pappt04.menzans.service.RetrofitClient
 import com.pappt04.menzans.viewmodels.CardViewModel
 import com.pappt04.menzans.viewmodels.DashboardViewModel
 import com.pappt04.menzans.viewmodels.MainViewModel
+import com.pappt04.menzans.viewmodels.MenuViewModel
 import com.pappt04.menzans.viewmodels.SettingsViewModel
 import com.pappt04.menzans.viewmodels.StatisticsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -42,6 +44,7 @@ val appModule: Module =
         single { CardRepository(get()) }
         single { SettingsRepository(get()) }
         single { WaitTimeRepository(get()) }
+        single { MenuRepository(get()) }
         single { StatisticsRepository(get(), get(), get()) }
         single { GeofenceRepository(get(), get(), androidContext()) }
 
@@ -51,4 +54,5 @@ val appModule: Module =
         viewModel { StatisticsViewModel(get()) }
         viewModel { CardViewModel(get()) }
         viewModel { SettingsViewModel(get()) }
+        viewModel { MenuViewModel(get()) }
     }

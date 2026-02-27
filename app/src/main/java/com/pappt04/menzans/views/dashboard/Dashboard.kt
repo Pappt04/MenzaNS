@@ -176,6 +176,9 @@ fun DashboardScreen(
                 }
             }
             item {
+                TodayMenuCard()
+            }
+            item {
                 when (graphcardState) {
                     is UiState.Loading -> {
                         viewModel.fetchData()

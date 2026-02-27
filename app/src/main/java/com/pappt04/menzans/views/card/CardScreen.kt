@@ -1,41 +1,50 @@
 package com.pappt04.menzans.views.card
 
-
 import android.content.Intent
 import android.content.res.Configuration
-import com.pappt04.menzans.views.MainActivity
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Coffee
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -52,26 +61,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.local.datastore.CardDataStoreManager
 import com.pappt04.menzans.models.CardPreferences
-import com.pappt04.menzans.data.local.datastore.MealDataStoreManager
-import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,22 +93,18 @@ fun CardScreen(
     snackbar: SnackbarHostState,
     maindrawerpadding: PaddingValues
 ) {
-
     val context = LocalContext.current
-
     var cardprefs = remember { CardPreferences() }
-
     val scope = rememberCoroutineScope()
 
     var surname by remember { mutableStateOf(cardprefs.surname) }
     var name by remember { mutableStateOf(cardprefs.name) }
     var index by remember { mutableStateOf(cardprefs.index) }
     var cardnumber by remember { mutableStateOf(cardprefs.cardnumber) }
-
     var ISICcardnumber by remember { mutableStateOf(cardprefs.isicnumber) }
     var universityandfaculty by remember { mutableStateOf(cardprefs.faculty) }
 
-    var dateofBirth = remember { mutableStateOf(cardprefs.dateofbirth) }
+    val dateofBirth = remember { mutableStateOf(cardprefs.dateofbirth) }
     val birthDialogState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showBirthDialog = remember { mutableStateOf(false) }
 
@@ -111,367 +119,570 @@ fun CardScreen(
     LaunchedEffect(Unit) {
         val prfs = CardDataStoreManager(context)
         cardprefs = prfs.getFromDataStore().first()
-
         surname = cardprefs.surname
         name = cardprefs.name
         index = cardprefs.index
         cardnumber = cardprefs.cardnumber
         ISICcardnumber = cardprefs.isicnumber
         universityandfaculty = cardprefs.faculty
-
         dateofBirth.value = cardprefs.dateofbirth
         cardIssued.value = cardprefs.issued
         cardValid.value = cardprefs.validuntil
     }
 
-
-    val editbreakfast = remember { mutableIntStateOf(remainingOnCard[0]) }
-    val editlunch = remember { mutableIntStateOf(remainingOnCard[1]) }
-    val editdinner = remember { mutableIntStateOf(remainingOnCard[2]) }
-    val editbalance = remember { mutableIntStateOf(remainingOnCard[3]) }
-
     LazyColumn(
-        modifier = Modifier
-            .padding(maindrawerpadding)
+        modifier = Modifier.padding(maindrawerpadding),
+        contentPadding = PaddingValues(bottom = 24.dp)
     ) {
+        // Visual card preview
         item {
-            OutlinedCard(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                ),
-                border = BorderStroke(1.dp, Color.Black),
-                modifier = Modifier
-                    .padding(4.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(20.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .border(1.dp, Color.Black)
-                    )
-                    {
-                        Image(
-                            painter = painterResource(id = R.drawable.isic_logo),
-                            contentDescription = stringResource(R.string.international_student_identity_card_logo_description),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .padding(4.dp)
-                                .weight(1f)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.eyca_logo),
-                            contentDescription = stringResource(R.string.logo_off_european_youth_card_description),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .padding(4.dp)
-                                .weight(1f)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.coat_of_arms_of_serbia_small),
-                            contentDescription = stringResource(R.string.coat_of_arms_of_serbia_description),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .padding(4.dp)
-                                .weight(1f)
-                        )
-                    }
-                    Row {
-                        OutlinedTextField(
-                            value = surname,
-                            onValueChange = { surname = it },
-                            label = { Text(stringResource(R.string.surname)) },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = { name = it },
-                            label = { Text(stringResource(R.string.name)) },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-                    }
-                    OutlinedTextField(
-                        value = universityandfaculty,
-                        onValueChange = { universityandfaculty = it },
-                        label = { Text(text = stringResource(R.string.studies_at)) },
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth()
-                    )
-                    Row {
-                        OutlinedTextField(
-                            value = dateofBirth.value,
-                            onValueChange = { print("Clicked") },
-                            label = { Text(text = stringResource(R.string.date_of_birth)) },
-                            enabled = false,
-                            readOnly = true,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clickable { showBirthDialog.value = !showBirthDialog.value }
-                                .weight(1f),
-                        )
-                        if (showBirthDialog.value)
-                            DateofBirthPicker(dateofBirth, showBirthDialog, birthDialogState)
-
-                        OutlinedTextField(
-                            value = cardIssued.value,
-                            onValueChange = { print("Clicked") },
-                            label = { Text(text = stringResource(R.string.issued_date)) },
-                            enabled = false,
-                            readOnly = true,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clickable { showIssuedDialog.value = !showIssuedDialog.value }
-                                .weight(1f),
-                        )
-                        if (showIssuedDialog.value)
-                            IssuedPicker(cardIssued, showIssuedDialog, IssuedState)
-
-                        OutlinedTextField(
-                            value = cardValid.value,
-                            onValueChange = { print("Clicked") },
-                            label = { Text(text = stringResource(R.string.valid_until)) },
-                            enabled = false,
-                            readOnly = true,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clickable { showValidDialog.value = !showValidDialog.value }
-                                .weight(1f),
-                        )
-                        if (showValidDialog.value)
-                            ValidPicker(cardValid, showValidDialog, ValidState)
-                    }
-                    OutlinedTextField(
-                        value = index,
-                        onValueChange = { index = it },
-                        label = { Text(text = stringResource(R.string.index)) },
-                        modifier = Modifier
-                            .padding(4.dp)
-                    )
-                    OutlinedTextField(
-                        value = cardnumber,
-                        onValueChange = { cardnumber = it },
-                        label = { Text(text = stringResource(R.string.card_number)) },
-                        modifier = Modifier
-                            .padding(4.dp)
-                    )
-                    OutlinedTextField(
-                        value = ISICcardnumber,
-                        onValueChange = { ISICcardnumber = it },
-                        label = { Text(text = stringResource(R.string.isic_card_number)) },
-                        modifier = Modifier
-                            .padding(4.dp)
-                    )
-                    IconButton(onClick =
-                        {
-                            val str= "Prezime: $surname\n" +
-                                     "Ime: $name\n" +
-                                     "Univerzitet: Univerzitet u Novom Sadu" +
-                                     "Fakultet: $universityandfaculty\n" +
-                                     "Indeks: $index\n" +
-                                     "Datum rođenja: $dateofBirth\n" +
-                                     "Datum Izdavanja: $cardIssued\n" +
-                                     "Važi do: $cardValid\n" +
-                                     "Broj kartice: $cardnumber\n" +
-                                     "ISIC broj kartice: $ISICcardnumber\n"
-
-                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                                putExtra(Intent.EXTRA_TEXT, str)
-                                type = "text/plain"
-                            }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-
-                            startActivity(context, shareIntent, null)
-                        },
-                        modifier = Modifier.align(Alignment.End)
-                    ) {
-                        Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
-                    }
-                }
-            }
-        }
-        item {
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
+            StudentCardPreview(
+                name = name,
+                surname = surname,
+                faculty = universityandfaculty,
+                index = index,
+                validUntil = cardValid.value
             )
         }
-//        item {
-//            OutlinedCard(
-//                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-//                colors = CardDefaults.cardColors(
-//                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-//                ),
-//                border = BorderStroke(1.dp, Color.Black),
-//                modifier = Modifier
-//                    .padding(8.dp)
-//            ) {
-//                Column {
-//                    Row {
-//                        OutlinedTextField(
-//                            value = editbreakfast.intValue.toString(),
-//                            onValueChange = {
-//                                try {
-//                                    editbreakfast.intValue = it.toInt()
-//                                } catch (e: Exception) {
-//                                    editbreakfast.intValue = 0
-//                                }
-//                            },
-//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                            label = { Text(stringResource(R.string.breakfast) + ": ${remainingOnCard[0]}") },
-//                            modifier = Modifier
-//                                .padding(4.dp)
-//                                .fillMaxWidth()
-//                                .weight(1f)
-//                        )
-//                        OutlinedTextField(
-//                            value = editlunch.intValue.toString(),
-//                            onValueChange = {
-//                                try {
-//                                    editlunch.intValue = it.toInt()
-//                                } catch (e: Exception) {
-//                                    editlunch.intValue = 0
-//                                }
-//                            },
-//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                            label = { Text(stringResource(R.string.lunch) + ": ${remainingOnCard[1]}") },
-//                            modifier = Modifier
-//                                .padding(4.dp)
-//                                .fillMaxWidth()
-//                                .weight(1f)
-//                        )
-//                        OutlinedTextField(
-//                            value = editdinner.intValue.toString(),
-//                            onValueChange = {
-//                                try {
-//                                    editdinner.intValue = it.toInt()
-//                                } catch (e: Exception) {
-//                                    editdinner.intValue = 0
-//                                }
-//                            },
-//                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                            label = { Text(stringResource(R.string.dinner) + ": ${remainingOnCard[2]}") },
-//                            modifier = Modifier
-//                                .padding(4.dp)
-//                                .fillMaxWidth()
-//                                .weight(1f)
-//                        )
-//                    }
-//                    OutlinedTextField(
-//                        value = editbalance.intValue.toString(),
-//                        onValueChange = {
-//                            try {
-//                                editbalance.intValue = it.toInt()
-//                            } catch (e: Exception) {
-//                                editbalance.intValue=0
-//                            }
-//                        },
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                        label = { Text(stringResource(R.string.balance) + ": ${remainingOnCard[3]}") },
-//                        textStyle = LocalTextStyle.current.copy(
-//                            textAlign = TextAlign.Right,
-//                            fontSize = 22.sp
-//                        ),
-//                        prefix = {
-//                            Text(
-//                                text = "+",
-//                                fontSize = 22.sp
-//                            )
-//                        },
-//                        suffix = {
-//                            Text(
-//                                stringResource(R.string.rsd),
-//                                fontSize = 22.sp
-//                            )
-//                        },
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                    )
-//                }
-//            }
-//        }
+
+        // Token summary
         item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            TokenSummaryRow(remainingOnCard)
+        }
+
+        // Personal info section
+        item {
+            SectionHeader(
+                icon = Icons.Default.School,
+                title = stringResource(R.string.studies_at)
+            )
+        }
+        item {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = surname,
+                        onValueChange = { surname = it },
+                        label = { Text(stringResource(R.string.surname)) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text(stringResource(R.string.name)) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = universityandfaculty,
+                    onValueChange = { universityandfaculty = it },
+                    label = { Text(stringResource(R.string.studies_at)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        // Card numbers section
+        item {
+            SectionHeader(
+                icon = Icons.Default.CreditCard,
+                title = stringResource(R.string.card_number)
+            )
+        }
+        item {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Button(
-                    onClick = {
-                        context.startActivity(
-                            Intent(
-                                context,
-                                MainActivity::class.java
+                OutlinedTextField(
+                    value = cardnumber,
+                    onValueChange = { cardnumber = it },
+                    label = { Text(stringResource(R.string.card_number)) },
+                    leadingIcon = { Icon(Icons.Default.CreditCard, contentDescription = null) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = ISICcardnumber,
+                    onValueChange = { ISICcardnumber = it },
+                    label = { Text(stringResource(R.string.isic_card_number)) },
+                    leadingIcon = { Icon(Icons.Default.Badge, contentDescription = null) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = index,
+                    onValueChange = { index = it },
+                    label = { Text(stringResource(R.string.index)) },
+                    leadingIcon = { Icon(Icons.Default.School, contentDescription = null) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        // Dates section
+        item {
+            SectionHeader(
+                icon = Icons.Default.CalendarMonth,
+                title = stringResource(R.string.date_of_birth)
+            )
+        }
+        item {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                DateFieldRow(
+                    label = stringResource(R.string.date_of_birth),
+                    value = dateofBirth.value,
+                    onClick = { showBirthDialog.value = true }
+                )
+                DateFieldRow(
+                    label = stringResource(R.string.issued_date),
+                    value = cardIssued.value,
+                    onClick = { showIssuedDialog.value = true }
+                )
+                DateFieldRow(
+                    label = stringResource(R.string.valid_until),
+                    value = cardValid.value,
+                    onClick = { showValidDialog.value = true },
+                    validityStatus = cardValid.value.validityStatus()
+                )
+            }
+        }
+
+        // Action buttons
+        item {
+            Spacer(Modifier.height(16.dp))
+            ActionButtons(
+                onShare = {
+                    val str = buildString {
+                        appendLine("Prezime: $surname")
+                        appendLine("Ime: $name")
+                        appendLine("Univerzitet: Univerzitet u Novom Sadu")
+                        appendLine("Fakultet: $universityandfaculty")
+                        appendLine("Indeks: $index")
+                        appendLine("Datum rođenja: ${dateofBirth.value}")
+                        appendLine("Datum Izdavanja: ${cardIssued.value}")
+                        appendLine("Važi do: ${cardValid.value}")
+                        appendLine("Broj kartice: $cardnumber")
+                        appendLine("ISIC broj kartice: $ISICcardnumber")
+                    }
+                    val shareIntent = Intent.createChooser(
+                        Intent(Intent.ACTION_SEND).apply {
+                            putExtra(Intent.EXTRA_TEXT, str)
+                            type = "text/plain"
+                        }, null
+                    )
+                    startActivity(context, shareIntent, null)
+                },
+                onDiscard = {
+                    scope.launch {
+                        val saved = CardDataStoreManager(context).getFromDataStore().first()
+                        surname = saved.surname
+                        name = saved.name
+                        index = saved.index
+                        cardnumber = saved.cardnumber
+                        ISICcardnumber = saved.isicnumber
+                        universityandfaculty = saved.faculty
+                        dateofBirth.value = saved.dateofbirth
+                        cardIssued.value = saved.issued
+                        cardValid.value = saved.validuntil
+                    }
+                },
+                onSave = {
+                    scope.launch {
+                        CardDataStoreManager(context).saveToDataStore(
+                            CardPreferences(
+                                surname = surname,
+                                name = name,
+                                faculty = universityandfaculty,
+                                dateofbirth = dateofBirth.value,
+                                issued = cardIssued.value,
+                                validuntil = cardValid.value,
+                                index = index,
+                                cardnumber = cardnumber,
+                                isicnumber = ISICcardnumber,
                             )
                         )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.5f)
-                        .padding(10.dp)
-                ) {
-                    Text(stringResource(R.string.discard))
+                        snackbar.showSnackbar(
+                            message = "Sačuvano",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
                 }
-                Button(
-                    onClick = {
-                        scope.launch {
-                            val cman = CardDataStoreManager(context)
-                            cman.saveToDataStore(
-                                CardPreferences(
-                                    surname = surname,
-                                    name = name,
-                                    faculty = universityandfaculty,
-                                    dateofbirth = dateofBirth.value,
-                                    issued = cardIssued.value,
-                                    validuntil = cardValid.value,
-                                    index = index,
-                                    cardnumber = cardnumber,
-                                    isicnumber = ISICcardnumber,
-                                )
-                            )
+            )
+        }
+    }
 
-                            val mman = MealDataStoreManager(context)
-                            mman.saveToDataStore(
-                                MealPreferences(
-                                    breakfast = editbreakfast.intValue,
-                                    lunch = editlunch.intValue,
-                                    dinner = editdinner.intValue,
-                                    balance = editbalance.intValue
-                                )
-                            )
-                            snackbar.showSnackbar(
-                                message = "Saved",
-                                duration = SnackbarDuration.Short
-                            )
+    if (showBirthDialog.value)
+        DateofBirthPicker(dateofBirth, showBirthDialog, birthDialogState)
+    if (showIssuedDialog.value)
+        IssuedPicker(cardIssued, showIssuedDialog, IssuedState)
+    if (showValidDialog.value)
+        ValidPicker(cardValid, showValidDialog, ValidState)
+}
 
-                        }
+// ────────────────────────────────────────────────────
+// Visual card preview
+// ────────────────────────────────────────────────────
 
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.5f)
-                        .padding(10.dp)
+private enum class ValidityStatus { VALID, EXPIRING_SOON, EXPIRED, UNKNOWN }
+
+private fun String.validityStatus(): ValidityStatus {
+    if (isBlank()) return ValidityStatus.UNKNOWN
+    return try {
+        val sdf = SimpleDateFormat("yyyy MMM dd", Locale.ENGLISH)
+        val date = sdf.parse(this) ?: return ValidityStatus.UNKNOWN
+        val now = Date()
+        val daysLeft = (date.time - now.time) / (1000 * 60 * 60 * 24)
+        when {
+            daysLeft < 0 -> ValidityStatus.EXPIRED
+            daysLeft < 30 -> ValidityStatus.EXPIRING_SOON
+            else -> ValidityStatus.VALID
+        }
+    } catch (_: Exception) {
+        ValidityStatus.UNKNOWN
+    }
+}
+
+@Composable
+private fun StudentCardPreview(
+    name: String,
+    surname: String,
+    faculty: String,
+    index: String,
+    validUntil: String
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    val primaryContainer = MaterialTheme.colorScheme.primaryContainer
+    val onPrimary = MaterialTheme.colorScheme.onPrimary
+
+    val status = validUntil.validityStatus()
+    val statusColor = when (status) {
+        ValidityStatus.VALID -> Color(0xFF4CAF50)
+        ValidityStatus.EXPIRING_SOON -> Color(0xFFFFC107)
+        ValidityStatus.EXPIRED -> MaterialTheme.colorScheme.error
+        ValidityStatus.UNKNOWN -> MaterialTheme.colorScheme.outline
+    }
+    val statusLabel = when (status) {
+        ValidityStatus.VALID -> "Aktivna"
+        ValidityStatus.EXPIRING_SOON -> "Uskoro ističe"
+        ValidityStatus.EXPIRED -> "Istekla"
+        ValidityStatus.UNKNOWN -> "—"
+    }
+
+    ElevatedCard(
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .height(180.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(primary, primaryContainer)
+                    )
+                )
+                .padding(20.dp)
+        ) {
+            // Logos top-right
+            Row(
+                modifier = Modifier.align(Alignment.TopEnd),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.isic_logo),
+                    contentDescription = stringResource(R.string.international_student_identity_card_logo_description),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.height(28.dp).width(52.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.eyca_logo),
+                    contentDescription = stringResource(R.string.logo_off_european_youth_card_description),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.height(28.dp).width(36.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.coat_of_arms_of_serbia_small),
+                    contentDescription = stringResource(R.string.coat_of_arms_of_serbia_description),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.height(28.dp).width(22.dp)
+                )
+            }
+
+            // Name + faculty
+            Column(modifier = Modifier.align(Alignment.CenterStart)) {
+                Text(
+                    text = if (surname.isBlank() && name.isBlank()) "Ime Prezime"
+                           else "$surname $name".trim(),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = onPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (faculty.isNotBlank()) {
+                    Text(
+                        text = faculty,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = onPrimary.copy(alpha = 0.8f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                if (index.isNotBlank()) {
+                    Text(
+                        text = index,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = onPrimary.copy(alpha = 0.7f)
+                    )
+                }
+            }
+
+            // Bottom row: validity
+            Row(
+                modifier = Modifier.align(Alignment.BottomStart),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (validUntil.isNotBlank()) {
+                    Text(
+                        text = "Važi do: $validUntil",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = onPrimary.copy(alpha = 0.8f)
+                    )
+                }
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = statusColor.copy(alpha = 0.2f)
                 ) {
-                    Text(stringResource(R.string.save))
+                    Text(
+                        text = statusLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = statusColor,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    )
                 }
             }
         }
     }
-
 }
+
+// ────────────────────────────────────────────────────
+// Token summary (read-only)
+// ────────────────────────────────────────────────────
+
+@Composable
+private fun TokenSummaryRow(remainingOnCard: SnapshotStateList<Int>) {
+    val meals = listOf(
+        Triple(stringResource(R.string.breakfast), remainingOnCard[0], Icons.Default.Coffee),
+        Triple(stringResource(R.string.lunch), remainingOnCard[1], Icons.Filled.Restaurant),
+        Triple(stringResource(R.string.dinner), remainingOnCard[2], Icons.Outlined.Fastfood),
+    )
+
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(meals.size) { i ->
+            val (label, count, icon) = meals[i]
+            TokenChip(label = label, count = count, icon = icon)
+        }
+    }
+}
+
+@Composable
+private fun TokenChip(label: String, count: Int, icon: ImageVector) {
+    val low = count <= 2
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (low) MaterialTheme.colorScheme.errorContainer
+                             else MaterialTheme.colorScheme.secondaryContainer
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = if (low) MaterialTheme.colorScheme.error
+                       else MaterialTheme.colorScheme.secondary
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = if (low) MaterialTheme.colorScheme.onErrorContainer
+                        else MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Text(
+                text = count.toString(),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = if (low) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────
+// Section header
+// ────────────────────────────────────────────────────
+
+@Composable
+private fun SectionHeader(icon: ImageVector, title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+// ────────────────────────────────────────────────────
+// Date field row
+// ────────────────────────────────────────────────────
+
+@Composable
+private fun DateFieldRow(
+    label: String,
+    value: String,
+    onClick: () -> Unit,
+    validityStatus: ValidityStatus? = null
+) {
+    val statusColor = when (validityStatus) {
+        ValidityStatus.VALID -> Color(0xFF4CAF50)
+        ValidityStatus.EXPIRING_SOON -> Color(0xFFFFC107)
+        ValidityStatus.EXPIRED -> MaterialTheme.colorScheme.error
+        else -> null
+    }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {},
+            label = { Text(label) },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.CalendarMonth,
+                    contentDescription = null,
+                    tint = statusColor ?: MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            enabled = false,
+            readOnly = true,
+            modifier = Modifier
+                .weight(1f)
+                .clickable { onClick() }
+        )
+        if (statusColor != null && value.isNotBlank()) {
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = statusColor.copy(alpha = 0.12f)
+            ) {
+                Box(
+                    modifier = Modifier.size(40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(statusColor)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────
+// Action buttons
+// ────────────────────────────────────────────────────
+
+@Composable
+private fun ActionButtons(
+    onShare: () -> Unit,
+    onDiscard: () -> Unit,
+    onSave: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Button(
+            onClick = onSave,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.save))
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilledTonalButton(
+                onClick = onDiscard,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(stringResource(R.string.discard))
+            }
+            FilledTonalButton(
+                onClick = onShare,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    Icons.Default.Share,
+                    contentDescription = stringResource(R.string.share),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.share))
+            }
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────
+// Date picker dialogs (unchanged logic, shared styling)
+// ────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -480,108 +691,16 @@ fun DateofBirthPicker(
     showBirthDialog: MutableState<Boolean>,
     birthDialogState: DatePickerState
 ) {
-    DatePickerDialog(
-        colors = DatePickerDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
-        onDismissRequest = {
-            // Action when the dialog is dismissed without selecting a date
+    MenzaDatePickerDialog(
+        onDismiss = { showBirthDialog.value = false },
+        onConfirm = {
+            dateofBirth.value = birthDialogState.selectedDateMillis?.convertMillisToDate() ?: ""
             showBirthDialog.value = false
-        },
-        confirmButton = {
-            // Confirm button with custom action and styling
-            TextButton(
-                onClick = {
-                    // Action to set the selected date and close the dialog
-                    showBirthDialog.value = false
-                    dateofBirth.value =
-                        birthDialogState.selectedDateMillis?.convertMillisToDate() ?: ""
-                }
-            ) {
-                Text(stringResource(R.string.ok))
-            }
-        },
-        dismissButton = {
-            // Dismiss button to close the dialog without selecting a date
-            TextButton(
-                onClick = {
-                    showBirthDialog.value = false
-                }
-            ) {
-                Text(stringResource(R.string.discard))
-            }
         }
     ) {
-        // The actual DatePicker component within the dialog
-        DatePicker(
-            state = birthDialogState,
-            colors = DatePickerDefaults.colors(
-                selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedDayContentColor = MaterialTheme.colorScheme.primary,
-                selectedYearContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                selectedYearContentColor = MaterialTheme.colorScheme.secondary,
-                todayContentColor = MaterialTheme.colorScheme.tertiary,
-                todayDateBorderColor = MaterialTheme.colorScheme.tertiaryContainer
-            )
-        )
+        DatePicker(state = birthDialogState, colors = menzaDatePickerColors())
     }
 }
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ValidPicker(
-    cardValid: MutableState<String>,
-    showValidDialog: MutableState<Boolean>,
-    validState: DatePickerState
-) {
-    DatePickerDialog(
-        colors = DatePickerDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
-        onDismissRequest = {
-            // Action when the dialog is dismissed without selecting a date
-            showValidDialog.value = false
-        },
-        confirmButton = {
-            // Confirm button with custom action and styling
-            TextButton(
-                onClick = {
-                    // Action to set the selected date and close the dialog
-                    showValidDialog.value = false
-                    cardValid.value =
-                        validState.selectedDateMillis?.convertMillisToDate() ?: ""
-                }
-            ) {
-                Text(stringResource(R.string.ok))
-            }
-        },
-        dismissButton = {
-            // Dismiss button to close the dialog without selecting a date
-            TextButton(
-                onClick = {
-                    showValidDialog.value = false
-                }
-            ) {
-                Text(stringResource(R.string.discard))
-            }
-        }
-    ) {
-        // The actual DatePicker component within the dialog
-        DatePicker(
-            state = validState,
-            colors = DatePickerDefaults.colors(
-                selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedDayContentColor = MaterialTheme.colorScheme.primary,
-                selectedYearContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                selectedYearContentColor = MaterialTheme.colorScheme.secondary,
-                todayContentColor = MaterialTheme.colorScheme.tertiary,
-                todayDateBorderColor = MaterialTheme.colorScheme.tertiaryContainer
-            )
-        )
-    }
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -590,58 +709,74 @@ fun IssuedPicker(
     showIssuedDialog: MutableState<Boolean>,
     issuedState: DatePickerState
 ) {
-    DatePickerDialog(
-        colors = DatePickerDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
-        onDismissRequest = {
-            // Action when the dialog is dismissed without selecting a date
+    MenzaDatePickerDialog(
+        onDismiss = { showIssuedDialog.value = false },
+        onConfirm = {
+            cardIssued.value = issuedState.selectedDateMillis?.convertMillisToDate() ?: ""
             showIssuedDialog.value = false
-        },
-        confirmButton = {
-            // Confirm button with custom action and styling
-            TextButton(
-                onClick = {
-                    // Action to set the selected date and close the dialog
-                    showIssuedDialog.value = false
-                    cardIssued.value =
-                        issuedState.selectedDateMillis?.convertMillisToDate() ?: ""
-                }
-            ) {
-                Text(stringResource(R.string.ok))
-            }
-        },
-        dismissButton = {
-            // Dismiss button to close the dialog without selecting a date
-            TextButton(
-                onClick = {
-                    showIssuedDialog.value = false
-                }
-            ) {
-                Text(stringResource(R.string.discard))
-            }
         }
     ) {
-        // The actual DatePicker component within the dialog
-        DatePicker(
-            state = issuedState,
-            colors = DatePickerDefaults.colors(
-                selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedDayContentColor = MaterialTheme.colorScheme.primary,
-                selectedYearContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                selectedYearContentColor = MaterialTheme.colorScheme.secondary,
-                todayContentColor = MaterialTheme.colorScheme.tertiary,
-                todayDateBorderColor = MaterialTheme.colorScheme.tertiaryContainer
-            )
-        )
+        DatePicker(state = issuedState, colors = menzaDatePickerColors())
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ValidPicker(
+    cardValid: MutableState<String>,
+    showValidDialog: MutableState<Boolean>,
+    validState: DatePickerState
+) {
+    MenzaDatePickerDialog(
+        onDismiss = { showValidDialog.value = false },
+        onConfirm = {
+            cardValid.value = validState.selectedDateMillis?.convertMillisToDate() ?: ""
+            showValidDialog.value = false
+        }
+    ) {
+        DatePicker(state = validState, colors = menzaDatePickerColors())
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MenzaDatePickerDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    DatePickerDialog(
+        colors = DatePickerDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onConfirm) { Text(stringResource(R.string.ok)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.discard)) }
+        }
+    ) { content() }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun menzaDatePickerColors() = DatePickerDefaults.colors(
+    selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
+    selectedDayContentColor = MaterialTheme.colorScheme.primary,
+    selectedYearContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+    selectedYearContentColor = MaterialTheme.colorScheme.secondary,
+    todayContentColor = MaterialTheme.colorScheme.tertiary,
+    todayDateBorderColor = MaterialTheme.colorScheme.tertiaryContainer
+)
+
+// ────────────────────────────────────────────────────
+// Utilities
+// ────────────────────────────────────────────────────
+
 fun Long.convertMillisToDate(): String {
-    // Create a calendar instance in the default time zone
     val calendar = Calendar.getInstance().apply {
         timeInMillis = this@convertMillisToDate
-        // Adjust for the time zone offset to get the correct local date
         val zoneOffset = get(Calendar.ZONE_OFFSET)
         val dstOffset = get(Calendar.DST_OFFSET)
         add(Calendar.MILLISECOND, -(zoneOffset + dstOffset))
@@ -650,9 +785,11 @@ fun Long.convertMillisToDate(): String {
     return sdf.format(calendar.time)
 }
 
-fun indexToLetter(index: Int): String {
-    return ('A' + index).toString()
-}
+fun indexToLetter(index: Int): String = ('A' + index).toString()
+
+// ────────────────────────────────────────────────────
+// Preview
+// ────────────────────────────────────────────────────
 
 @Preview(name = "Light Mode")
 @Preview(
@@ -662,12 +799,8 @@ fun indexToLetter(index: Int): String {
 )
 @Composable
 fun PreviewEditScreen() {
-    val snack = remember { SnackbarHostState() }
-
     MenzaNSTheme {
-        val remainingOnCard = remember { mutableStateListOf(10, 20, 30, 40, 50, 60, 70, 80, 90) }
-        MaterialTheme {
-            CardScreen(remainingOnCard, snack, PaddingValues(0.dp))
-        }
+        val remainingOnCard = remember { mutableStateListOf(10, 2, 5, 0) }
+        CardScreen(remainingOnCard, remember { SnackbarHostState() }, PaddingValues(0.dp))
     }
 }

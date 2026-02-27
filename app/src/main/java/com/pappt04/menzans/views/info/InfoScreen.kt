@@ -21,12 +21,12 @@ import com.pappt04.menzans.views.common.AnimatedAppearance
 fun InfoScreen(innerpadding: PaddingValues) {
     val context = LocalContext.current
 
-    val tab = remember { mutableIntStateOf(1) }
+    val tab = remember { mutableIntStateOf(0) }
 
     LazyColumn(modifier = Modifier.padding(innerpadding)) {
-//        item{
-//            TabPickerButton(tab)
-//        }
+        item {
+            TabPickerButton(tab)
+        }
         when (tab.intValue) {
             0 -> item{
                 AnimatedAppearance(
