@@ -41,7 +41,6 @@ import org.koin.compose.koinInject
 fun WaitTimeCard(refreshTrigger: Int = 0) {
     val waittime = remember { mutableIntStateOf(999) }
     val trajectory = remember { mutableIntStateOf(0) }
-    val precision = remember { mutableStateOf(0.00) }
     val waitTimeRepository: WaitTimeRepository = koinInject()
 
     val bscolor = when (trajectory.intValue) {
@@ -61,7 +60,6 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
         result.onSuccess { wt ->
             val temp = waittime.intValue
             waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
-            precision.value = wt.density?.toDoubleOrNull() ?: 0.0
             trajectory.intValue = when {
                 temp == 999 -> wt.trajectory?.toIntOrNull() ?: 0
                 temp < waittime.intValue -> 1
@@ -147,10 +145,6 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
                         tint = bscolor
                     )
                 }
-                Text(
-                    stringResource(R.string.precision, precision.value + 10),
-                    modifier = Modifier.align(Alignment.End)
-                )
             }
         }
     }

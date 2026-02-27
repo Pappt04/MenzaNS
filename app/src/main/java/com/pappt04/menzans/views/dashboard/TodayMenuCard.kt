@@ -13,11 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,48 +31,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.models.DayMenu
+import com.pappt04.menzans.models.MealPeriod
+import com.pappt04.menzans.models.currentOrNextPeriod
+import com.pappt04.menzans.models.isActive
+import com.pappt04.menzans.models.itemsFrom
 import com.pappt04.menzans.viewmodels.MenuViewModel
 import org.koin.androidx.compose.koinViewModel
-import java.util.Calendar
-
-private enum class MealPeriod(
-    val label: String,
-    val icon: ImageVector,
-    val startH: Int,
-    val startM: Int,
-    val endH: Int,
-    val endM: Int
-) {
-    BREAKFAST("Doručak", Icons.Default.Coffee, 7, 0, 9, 30),
-    LUNCH("Ručak", Icons.Filled.Restaurant, 11, 0, 15, 0),
-    DINNER("Večera", Icons.Outlined.Fastfood, 17, 0, 20, 30);
-
-    fun minuteStart() = startH * 60 + startM
-    fun minuteEnd() = endH * 60 + endM
-}
-
-private fun currentOrNextPeriod(): MealPeriod {
-    val cal = Calendar.getInstance()
-    val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-    // Return active period if within its window, otherwise the next upcoming one
-    return MealPeriod.entries.firstOrNull { now < it.minuteEnd() } ?: MealPeriod.BREAKFAST
-}
-
-private fun MealPeriod.itemsFrom(menu: DayMenu): List<String> = when (this) {
-    MealPeriod.BREAKFAST -> menu.breakfast
-    MealPeriod.LUNCH -> menu.lunch
-    MealPeriod.DINNER -> menu.dinner
-}
-
-private fun MealPeriod.isActive(): Boolean {
-    val cal = Calendar.getInstance()
-    val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-    return now in minuteStart() until minuteEnd()
-}
 
 @Composable
 fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
@@ -130,7 +94,7 @@ private fun MenuCardContent(menu: DayMenu) {
     val items = period.itemsFrom(menu)
     val active = remember { period.isActive() }
 
-    var expanded by remember { mutableStateOf(true) }
+    var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(12.dp)) {
         // Header row
@@ -149,19 +113,20 @@ private fun MenuCardContent(menu: DayMenu) {
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (active) period.label else "Sledeće: ${period.label}",
+                    text = if (active) period.label else "Sledeći: ${period.label}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = if (active) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                /*
                 if (menu.day.isNotBlank()) {
                     Text(
                         text = menu.day,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
+                }*/
             }
             Icon(
                 imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,

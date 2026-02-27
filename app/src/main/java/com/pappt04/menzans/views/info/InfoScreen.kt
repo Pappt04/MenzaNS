@@ -24,47 +24,36 @@ fun InfoScreen(innerpadding: PaddingValues) {
     val tab = remember { mutableIntStateOf(0) }
 
     LazyColumn(modifier = Modifier.padding(innerpadding)) {
-        item {
+        /*item {
             TabPickerButton(tab)
         }
         when (tab.intValue) {
             0 -> item{
-                AnimatedAppearance(
-                    enter = slideInHorizontally()
-                ) {
-                    MenuTab()
-                }
+                MenuTab()
             }
             else -> item{
-//                AnimatedAppearance(
-//                    enter = slideInHorizontally(initialOffsetX = {it/2})
-//                ) {
-//
-//                    LinkTab(context)
-//                }
                 LinkTab(context)
             }
+        }*/
+        item {
+            MenuTab()
         }
     }
-
-
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Dark Mode",
 )
 @Composable
 fun InfoScreenPreview() {
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("Statistics Screen Preview") })
-        }
+        },
     ) { innerPadding ->
         InfoScreen(innerPadding)
     }

@@ -160,7 +160,7 @@ fun DashboardScreen(
             item {
                 TodayMenuCard()
             }
-            item {
+            /*item {
                 when (graphcardState) {
                     is UiState.Loading -> {
                         viewModel.fetchGraphData()
@@ -187,7 +187,7 @@ fun DashboardScreen(
                         ) { CircularProgressIndicator() }
                     }
                 }
-            }
+            }*/
         }
 
         if (showBalanceDialog) {

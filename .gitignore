@@ -37,3 +37,4 @@ local.properties
 /gradlew
 /gradlew.bat
 /kls_database.db
+.editorconfig
