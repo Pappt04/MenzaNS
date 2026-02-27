@@ -2,7 +2,7 @@ package com.pappt04.menzans.repository
 
 import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
 import com.pappt04.menzans.models.SettingsPreferences
-import com.pappt04.menzans.models.UserIDString
+import com.pappt04.menzans.models.UserResponse
 import com.pappt04.menzans.service.MenzaApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +27,7 @@ class UserRepository(
                         apiService.registerUser()
                     }
                 if (response.isSuccessful) {
-                    id = response.body()?.userid ?: ""
+                    id = response.body()?.userID ?: ""
                 }
             } catch (_: Exception) {
             }
@@ -46,7 +46,7 @@ class UserRepository(
 
         try {
             withContext(Dispatchers.IO) {
-                apiService.deleteUser(UserIDString(id))
+                apiService.deleteUser(id)
             }
         } catch (_: Exception) {
         }

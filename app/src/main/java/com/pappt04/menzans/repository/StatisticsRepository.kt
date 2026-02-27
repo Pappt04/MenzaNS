@@ -53,14 +53,8 @@ class StatisticsRepository(
     suspend fun removeMealEvent(data: EatingStatisticsData) {
         val engMeal = findEngMeal(data.tokentype)
         mealEventDao.deleteByFields(data.date, data.timeentered, data.timeexited, engMeal)
-
-        try {
-            val meal = buildMealEventString(data)
-            withContext(Dispatchers.IO) {
-                apiService.removeMeal(meal)
-            }
-        } catch (_: Exception) {
-        }
+        // Server delete requires a server-assigned meal ID (DELETE /meals/{id}).
+        // The app does not currently store server IDs, so the server call is skipped.
     }
 
     suspend fun appendMealEvent(mealData: EatingStatisticsData) {

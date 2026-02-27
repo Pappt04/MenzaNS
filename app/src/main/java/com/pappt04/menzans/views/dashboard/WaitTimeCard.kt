@@ -38,7 +38,7 @@ import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 @Composable
-fun WaitTimeCard() {
+fun WaitTimeCard(refreshTrigger: Int = 0) {
     val waittime = remember { mutableIntStateOf(999) }
     val trajectory = remember { mutableIntStateOf(0) }
     val precision = remember { mutableStateOf(0.00) }
@@ -56,26 +56,28 @@ fun WaitTimeCard() {
         else -> Icons.Filled.Remove
     }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            Log.d("WAIT_TIME", "Auto-refresh request sent")
-            delay(60_000L)
-            val result = waitTimeRepository.getWaitTime()
-            result.onSuccess { wt ->
-                val temp = waittime.intValue
-                waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
-                precision.value = wt.precision?.toDoubleOrNull() ?: 0.0
-
-                if (temp == 999) {
-                    trajectory.intValue = wt.trajectory?.toIntOrNull() ?: 0
-                } else if (temp < waittime.intValue) {
-                    trajectory.intValue = 1
-                } else if (temp > waittime.intValue) {
-                    trajectory.intValue = -1
-                } else {
-                    trajectory.intValue = 0
-                }
+    suspend fun fetch() {
+        val result = waitTimeRepository.getWaitTime()
+        result.onSuccess { wt ->
+            val temp = waittime.intValue
+            waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
+            precision.value = wt.density?.toDoubleOrNull() ?: 0.0
+            trajectory.intValue = when {
+                temp == 999 -> wt.trajectory?.toIntOrNull() ?: 0
+                temp < waittime.intValue -> 1
+                temp > waittime.intValue -> -1
+                else -> 0
             }
+        }
+    }
+
+    LaunchedEffect(refreshTrigger) {
+        Log.d("WAIT_TIME", "Fetch triggered (trigger=$refreshTrigger)")
+        fetch()
+        while (true) {
+            delay(60_000L)
+            Log.d("WAIT_TIME", "Auto-refresh request sent")
+            fetch()
         }
     }
 

@@ -18,10 +18,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,10 +43,12 @@ import com.pappt04.menzans.models.UiState
 import com.pappt04.menzans.data.consts.MealSample.mealIcons
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.viewmodels.DashboardViewModel
+import com.pappt04.menzans.viewmodels.MenuViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     padding: PaddingValues,
@@ -55,6 +59,10 @@ fun DashboardScreen(
     val meals by viewModel.meals.collectAsState()
     val savedMealCounts by viewModel.mealCounts.collectAsState()
     val graphcardState by viewModel.graphState.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val refreshTick by viewModel.refreshTick.collectAsState()
+
+    val menuViewModel: MenuViewModel = koinViewModel()
 
     val context = LocalContext.current
     val statisticsRepository: StatisticsRepository = koinInject()
@@ -71,7 +79,12 @@ fun DashboardScreen(
     val scope = rememberCoroutineScope()
     val selectedCard = remember { mutableIntStateOf(99) }
 
-    Box(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            viewModel.refresh()
+            menuViewModel.fetchTodayMenu()
+        },
         modifier = Modifier
             .fillMaxWidth(1f)
             .padding(padding)
@@ -142,7 +155,7 @@ fun DashboardScreen(
                 BalanceCard(balance)
             }
             item {
-                WaitTimeCard()
+                WaitTimeCard(refreshTrigger = refreshTick)
             }
             item {
                 TodayMenuCard()

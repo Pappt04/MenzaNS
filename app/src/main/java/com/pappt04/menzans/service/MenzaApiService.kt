@@ -5,48 +5,49 @@ import com.pappt04.menzans.models.DayMenu
 import com.pappt04.menzans.models.EnterEventString
 import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.models.MealEventString
-import com.pappt04.menzans.models.UserIDString
+import com.pappt04.menzans.models.UserResponse
 import com.pappt04.menzans.models.WaitTime
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface MenzaApiService {
     @Headers("Accept: application/json")
-    @GET("$BASE_API_NAME/registerUser")
-    suspend fun registerUser(): Response<UserIDString>
+    @GET("$BASE_API_NAME/newuserid")
+    suspend fun registerUser(): Response<UserResponse>
 
     @Headers("Accept: application/json")
-    @POST("$BASE_API_NAME/deleteUser")
+    @DELETE("$BASE_API_NAME/users/{id}")
     suspend fun deleteUser(
-        @Body id: UserIDString,
+        @Path("id") id: String,
     ): Response<Void>
 
     @Headers("Accept: application/json")
-    @POST("$BASE_API_NAME/enterMenza")
+    @POST("$BASE_API_NAME/enter")
     suspend fun enterMenza(
         @Body ee: EnterEventString,
     ): Response<Void>
 
     @Headers("Accept: application/json")
-    @POST("$BASE_API_NAME/exitMenza")
+    @POST("$BASE_API_NAME/exit")
     suspend fun exitMenza(
         @Body ee: ExitEventString,
     ): Response<Void>
 
     @Headers("Content-Type: application/json")
-    @POST("$BASE_API_NAME/addmeal")
+    @POST("$BASE_API_NAME/meals")
     suspend fun addMeal(
         @Body meal: MealEventString,
     ): Response<Void>
 
     @Headers("Accept: application/json")
-    @PUT("$BASE_API_NAME/removemeal")
+    @DELETE("$BASE_API_NAME/meals/{id}")
     suspend fun removeMeal(
-        @Body meal: MealEventString,
+        @Path("id") id: Long,
     ): Response<Void>
 
     @Headers("Accept: application/json")
@@ -54,10 +55,10 @@ interface MenzaApiService {
     suspend fun getWaitTime(): Response<WaitTime>
 
     @Headers("Accept: application/json")
-    @GET("$BASE_API_NAME/lineGraph")
+    @GET("$BASE_API_NAME/linegraph")
     suspend fun getLineGraph(): Response<Map<String, Double>>
 
     @Headers("Accept: application/json")
-    @GET("appapi/menu/today")
+    @GET("$BASE_API_NAME/menu/today")
     suspend fun getTodayMenu(): Response<DayMenu>
 }

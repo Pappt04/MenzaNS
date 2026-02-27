@@ -34,6 +34,12 @@ class DashboardViewModel(
     private val _graphState = MutableStateFlow<UiState>(UiState.Empty)
     val graphState: StateFlow<UiState> = _graphState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+    private val _refreshTick = MutableStateFlow(0)
+    val refreshTick: StateFlow<Int> = _refreshTick.asStateFlow()
+
     fun saveMealCounts(prefs: MealPreferences) {
         viewModelScope.launch { mealRepository.saveMealCounts(prefs) }
     }
@@ -47,6 +53,20 @@ class DashboardViewModel(
             } else {
                 _graphState.value = UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
             }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            _refreshTick.value++
+            val result = waitTimeRepository.getLineGraph()
+            _graphState.value = if (result.isSuccess) {
+                UiState.Success(result.getOrNull() ?: emptyMap())
+            } else {
+                UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+            }
+            _isRefreshing.value = false
         }
     }
 }
