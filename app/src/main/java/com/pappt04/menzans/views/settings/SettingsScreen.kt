@@ -24,7 +24,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -39,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.R
-import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.PermissionData
 import com.pappt04.menzans.data.consts.PermissionData.permissionsNeeded

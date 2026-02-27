@@ -1,7 +1,6 @@
 package com.pappt04.menzans.views.navigation
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
