@@ -55,7 +55,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -80,8 +79,6 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardScreen(
-    remainingOnCard: SnapshotStateList<Int>,
-    tokenWarningLimit: Int,
     snackbar: SnackbarHostState,
     maindrawerpadding: PaddingValues,
     viewModel: CardViewModel = koinViewModel(),
@@ -89,6 +86,8 @@ fun CardScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val cardInfo by viewModel.cardInfo.collectAsState()
+    val mealCounts by viewModel.mealCounts.collectAsState()
+    val tokenWarningLimit by viewModel.tokenWarningLimit.collectAsState()
 
     var surname by remember { mutableStateOf(cardInfo.surname) }
     var name by remember { mutableStateOf(cardInfo.name) }
@@ -152,7 +151,10 @@ fun CardScreen(
 
         // Token summary
         item {
-            TokenSummaryRow(remainingOnCard, tokenWarningLimit)
+            TokenSummaryRow(
+                mealCounts = mealCounts,
+                warningLimit = tokenWarningLimit,
+            )
         }
 
         // Personal info section
@@ -423,11 +425,11 @@ private fun StudentCardPreview(
 // ────────────────────────────────────────────────────
 
 @Composable
-private fun TokenSummaryRow(remainingOnCard: SnapshotStateList<Int>, warningLimit: Int) {
+private fun TokenSummaryRow(mealCounts: com.pappt04.menzans.models.MealPreferences, warningLimit: Int) {
     val meals = listOf(
-        Triple(stringResource(R.string.breakfast), remainingOnCard[0], Icons.Default.Coffee),
-        Triple(stringResource(R.string.lunch), remainingOnCard[1], Icons.Filled.Restaurant),
-        Triple(stringResource(R.string.dinner), remainingOnCard[2], Icons.Outlined.Fastfood),
+        Triple(stringResource(R.string.breakfast), mealCounts.breakfast, Icons.Default.Coffee),
+        Triple(stringResource(R.string.lunch), mealCounts.lunch, Icons.Filled.Restaurant),
+        Triple(stringResource(R.string.dinner), mealCounts.dinner, Icons.Outlined.Fastfood),
     )
 
     LazyRow(

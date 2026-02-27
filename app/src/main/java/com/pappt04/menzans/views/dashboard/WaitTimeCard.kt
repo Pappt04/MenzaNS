@@ -1,7 +1,6 @@
 package com.pappt04.menzans.views.dashboard
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,13 +38,13 @@ import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 @Composable
-fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
+fun WaitTimeCard() {
+    val waittime = remember { mutableIntStateOf(999) }
     val trajectory = remember { mutableIntStateOf(0) }
     val precision = remember { mutableStateOf(0.00) }
     val waitTimeRepository: WaitTimeRepository = koinInject()
 
-    val bscolor = when(trajectory.intValue)
-    {
+    val bscolor = when (trajectory.intValue) {
         -1 -> Color.Green
         1 -> Color.Red
         else -> Color.Gray
@@ -58,11 +56,10 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
         else -> Icons.Filled.Remove
     }
 
-    // Auto-refresh every 60 seconds using LaunchedEffect
     LaunchedEffect(Unit) {
         while (true) {
             Log.d("WAIT_TIME", "Auto-refresh request sent")
-            delay(60_000L) // 60 seconds
+            delay(60_000L)
             val result = waitTimeRepository.getWaitTime()
             result.onSuccess { wt ->
                 val temp = waittime.intValue
@@ -83,21 +80,19 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
     }
 
     Card(
-        colors = CardColors(MaterialTheme.colorScheme.tertiaryContainer,
+        colors = CardColors(
+            MaterialTheme.colorScheme.tertiaryContainer,
             CardDefaults.cardColors().contentColor,
             CardDefaults.cardColors().disabledContainerColor,
-            CardDefaults.cardColors().disabledContentColor),
+            CardDefaults.cardColors().disabledContentColor
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.3f)
             .padding(8.dp)
-            .clickable {
-                Log.d("WAIT_TIME", "Manual refresh request sent")
-                onFetch() // Manual refresh via callback
-            },
+            .clickable { Log.d("WAIT_TIME", "Manual refresh request sent") },
     ) {
-
         Column {
             Column(
                 modifier = Modifier.padding(8.dp),
@@ -113,9 +108,7 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
                         .padding(6.dp)
                 )
                 Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-
-
-                    if(waittime.intValue != 999) {
+                    if (waittime.intValue != 999) {
                         Text(
                             text = "~",
                             fontStyle = FontStyle.Italic,
@@ -124,15 +117,14 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
                             style = MaterialTheme.typography.titleLarge,
                         )
                         AnimatedNumber(
-                            waittime, fontStyle = FontStyle.Italic,
+                            waittime,
+                            fontStyle = FontStyle.Italic,
                             textAlign = TextAlign.Center,
                             fontSize = 42.sp,
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(2.dp)
                         )
-                    }
-                    else
-                    {
+                    } else {
                         Text(
                             text = "?",
                             fontStyle = FontStyle.Italic,
@@ -141,24 +133,23 @@ fun WaitTimeCard(waittime: MutableIntState, onFetch:() -> Unit) {
                             style = MaterialTheme.typography.titleLarge,
                         )
                     }
-
                     Text(
                         text = " min",
                         fontSize = 40.sp,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(2.dp)
                     )
-                        Icon(
-                            imageVector = arrowIcon,
-                            contentDescription = if (trajectory.intValue == -1) "Downward Trend" else "Upward Trend",
-                            tint = bscolor
-                        )
-
+                    Icon(
+                        imageVector = arrowIcon,
+                        contentDescription = if (trajectory.intValue == -1) "Downward Trend" else "Upward Trend",
+                        tint = bscolor
+                    )
                 }
-                Text(stringResource(R.string.precision, precision.value+10), modifier = Modifier.align(Alignment.End))
+                Text(
+                    stringResource(R.string.precision, precision.value + 10),
+                    modifier = Modifier.align(Alignment.End)
+                )
             }
         }
-
     }
-
 }

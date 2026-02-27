@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,13 +29,12 @@ import java.util.Locale
 
 
 @Composable
-fun PredictedSpendingChart(selectedMonth: String, onBudget: MutableState<Boolean>, data: List<EatingStatisticsData>) {
+fun PredictedSpendingChart(selectedMonth: String, onBudget: Boolean, data: List<EatingStatisticsData>) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
-
-    LaunchedEffect(data, selectedMonth, onBudget.value) {
+    LaunchedEffect(data, selectedMonth, onBudget) {
         val daysInMonth = Month.valueOf(selectedMonth.uppercase(Locale.ROOT)).maxLength()
-        val spending = getSpentMoney(onBudget.value, selectedMonth, data)
+        val spending = getSpentMoney(onBudget, selectedMonth, data)
         modelProducer.runTransaction {
             lineSeries {
                 series((1..daysInMonth).toList(), spending)

@@ -50,9 +50,9 @@ val appModule: Module =
 
         // ViewModels
         viewModel { MainViewModel(get(), get(), get()) }
-        viewModel { DashboardViewModel(get(), get()) }
-        viewModel { StatisticsViewModel(get()) }
-        viewModel { CardViewModel(get()) }
+        viewModel { DashboardViewModel(get(), get(), get()) }
+        viewModel { StatisticsViewModel(get(), get()) }
+        viewModel { CardViewModel(get(), get(), get()) }
         viewModel { SettingsViewModel(get()) }
         viewModel { MenuViewModel(get()) }
     }

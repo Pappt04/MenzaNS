@@ -11,9 +11,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.pappt04.menzans.views.navigation.MainNavigationDrawer
@@ -75,22 +72,7 @@ class MainActivity : AppCompatActivity() {
                 createChannel(context)
 
                 if (state.isLoaded) {
-                    val onBudgetPricing = remember(state.onBudgetPricing) { mutableStateOf(state.onBudgetPricing) }
-
-                    val firstWelcome = remember(state.isFirstWelcome) { mutableStateOf(state.isFirstWelcome) }
-
-                    val savedMeals = remember { SnapshotStateList<Int>() }
-                    LaunchedEffect(state.savedMeals) {
-                        savedMeals.clear()
-                        savedMeals.addAll(state.savedMeals)
-                    }
-
-                    MainNavigationDrawer(
-                        mainViewModel,
-                        onBudgetPricing,
-                        firstWelcome,
-                        savedMeals,
-                    )
+                    MainNavigationDrawer(mainViewModel)
                 } else {
                     // Splash screen API keeps the system splash visible until isLoaded is true
                 }

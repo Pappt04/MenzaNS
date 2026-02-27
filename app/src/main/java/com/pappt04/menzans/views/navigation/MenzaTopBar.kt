@@ -18,8 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,16 +35,23 @@ import com.pappt04.menzans.views.common.AutoResizedText
 import com.pappt04.menzans.data.consts.UsefulLinks
 import com.pappt04.menzans.ui.theme.megatitleFont
 import androidx.core.net.toUri
+import com.pappt04.menzans.repository.WaitTimeRepository
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenzaTopBar(firstWelcome: MutableState<Boolean>,waitTime: MutableIntState,drawerState: DrawerState,screenTitle: String) {
-    val showtopbarpopup= remember { mutableStateOf(false) }
+fun MenzaTopBar(isFirstWelcome: Boolean, drawerState: DrawerState, screenTitle: String) {
+    val showtopbarpopup = remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val waitTimeRepository: WaitTimeRepository = koinInject()
+    val waitTime = remember { mutableIntStateOf(999) }
+    val scope = rememberCoroutineScope()
+
     CenterAlignedTopAppBar(colors = topAppBarColors(
         titleContentColor = MaterialTheme.colorScheme.primary,
     ), title = {
-        if (!firstWelcome.value) {
+        if (!isFirstWelcome) {
             Text(
                 screenTitle,
                 softWrap = false,
@@ -57,15 +63,18 @@ fun MenzaTopBar(firstWelcome: MutableState<Boolean>,waitTime: MutableIntState,dr
             )
         }
     }, navigationIcon = {
-        IconButton(onClick =
-        {
-            val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_TEXT, "Hej! Video sam da ${waitTime.intValue} minuta treba čekati na menzu.")
-                type = "text/plain"
+        IconButton(onClick = {
+            scope.launch {
+                waitTimeRepository.getWaitTime().onSuccess { wt ->
+                    waitTime.intValue = wt.waittime?.toIntOrNull() ?: waitTime.intValue
+                }
+                val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_TEXT, "Hej! Video sam da ${waitTime.intValue} minuta treba čekati na menzu.")
+                    type = "text/plain"
+                }
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(context, shareIntent, null)
             }
-            val shareIntent = Intent.createChooser(sendIntent, null)
-
-            startActivity(context, shareIntent, null)
         }) {
             Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
         }

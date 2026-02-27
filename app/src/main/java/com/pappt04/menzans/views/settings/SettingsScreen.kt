@@ -51,20 +51,19 @@ import kotlin.math.roundToInt
 fun SettingsScreen(
     innerpadding: PaddingValues,
     mainViewModel: MainViewModel,
-    onBudget: MutableState<Boolean>
 ) {
-
     val context = LocalContext.current
 
     val state by mainViewModel.uiState.collectAsState()
     val darkTheme = remember { mutableStateOf(state.darkTheme) }
     val materialyoutheme = remember { mutableStateOf(state.materialYouTheme) }
     val tokenwarning = remember { mutableFloatStateOf(state.tokenWarning.toFloat()) }
+    val onBudget = remember { mutableStateOf(state.onBudgetPricing) }
 
-    // Keep local state in sync when ViewModel state changes
     LaunchedEffect(state.darkTheme) { darkTheme.value = state.darkTheme }
     LaunchedEffect(state.materialYouTheme) { materialyoutheme.value = state.materialYouTheme }
     LaunchedEffect(state.tokenWarning) { tokenwarning.floatValue = state.tokenWarning.toFloat() }
+    LaunchedEffect(state.onBudgetPricing) { onBudget.value = state.onBudgetPricing }
 
     LazyColumn(
         modifier = Modifier
