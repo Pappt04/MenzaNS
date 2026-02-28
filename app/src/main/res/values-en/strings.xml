@@ -6,6 +6,7 @@
     <string name="confirm">Confirm</string>
     <string name="discard">Discard</string>
     <string name="save">Save</string>
+    <string name="share">Share</string>
     <string name="international_student_identity_card_logo_description">International Student Identity card logo</string>
     <string name="logo_off_european_youth_card_description">Logo off European Youth Card</string>
     <string name="coat_of_arms_of_serbia_description">Coat of arms of Serbia</string>
@@ -89,7 +90,7 @@
     <string name="time_of_exit">Time of exit</string>
     <string name="wait_time">Estimated Wait Time</string>
     <string name="no_data">No data</string>
-    <string name="explanation_COARSE_LOCATION">We use aproximate location to tell if you are likely to go to the canteen to eat</string>
+    <string name="explanation_COARSE_LOCATION">We use approximate location to tell if you are likely to go to the canteen to eat</string>
     <string name="explanation_FINE_LOCATION">We use precise location to tell if you are at the canteen or not</string>
     <string name="explanation_BACKGROUND_LOCATION">We sometimes monitor the background location! We capture system events when you are at the canteen so you do not have to manually log your meals. We capture the time when you enter and exit the canteen and send a notification to other users and the server</string>
     <string name="explanation_NOTIFICATION_ACCESS">We need notification access so we can send useful reminders</string>
@@ -119,4 +120,21 @@
     <string name="background_location">Background location</string>
     <string name="notification">Notification</string>
     <string name="permission">permission</string>
+    <string name="onboarding_tagline">Your all-in-one canteen companion for UNS students</string>
+    <string name="onboarding_token_title">Track Your Tokens</string>
+    <string name="onboarding_token_body">See your Breakfast, Lunch, and Dinner token balance at a glance. Get notified before you run out.</string>
+    <string name="onboarding_waittime_title">Live Wait Times</string>
+    <string name="onboarding_waittime_body">Check real-time queue estimates contributed by fellow students before you even leave your dorm.</string>
+    <string name="onboarding_location_title">Smart Meal Detection</string>
+    <string name="onboarding_location_body">MenzaNS uses your location to automatically log canteen visits — no manual input needed.</string>
+    <string name="onboarding_stats_title">Monthly Insights</string>
+    <string name="onboarding_stats_body">Track your eating habits, visualize spending trends, and see how many tokens are left for the rest of the month.</string>
+    <string name="onboarding_permissions_title">One Last Step</string>
+    <string name="onboarding_permissions_body">MenzaNS needs a few permissions to deliver the full experience. You can always manage them later in Settings.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding_grant_all">Grant Permissions</string>
+    <string name="onboarding_skip">Skip for now</string>
+    <string name="onboarding_skip_setup">Skip setup</string>
+    <string name="onboarding_required_for_full">Required for full functionality</string>
 </resources>

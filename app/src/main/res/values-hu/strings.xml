@@ -7,6 +7,7 @@
     <string name="confirm">Elfogad</string>
     <string name="discard">Elfelejt</string>
     <string name="save">Elment</string>
+    <string name="share">Megoszt</string>
     <string name="international_student_identity_card_logo_description">Nemzetközi diák igazolványi kártya</string>
     <string name="logo_off_european_youth_card_description">Európai Fiatalok Szövetségének logója</string>
     <string name="coat_of_arms_of_serbia_description">Szerbia címere</string>
@@ -119,4 +120,12 @@
     <string name="background_location">Háttéri helymeghatározás</string>
     <string name="notification">Értesítés</string>
     <string name="permission">engedélyt</string>
+    <string name="onboarding_tagline">A te minden az egyben menza alkalmazás újvidéki egyetemistáknak</string>
+    <string name="onboarding_token_title">Kövesd a zsetonjaidat</string>
+    <string name="onboarding_token_body">Lásd a reggeli, ebéd és vacsora zsetonjaidat azonnal. Értesítve leszel mielőtt elfogynának</string>
+    <string name="onboarding_waittime_title">Élő várakozási idők</string>
+    <string name="onboarding_waittime_body">Nézd meg a valós idejő sornak a hosszát mielőtt elhagynád a kollégiumot</string>
+    <string name="onboarding_location_title">Okos zseton követés</string>
+    <string name="onboarding_location_body">MenzaNS helymeghatározást alkalmaz a zsetonok automatikus követéséhez. Nincs szükség neked megjegyzeni őket.</string>
+    <string name="onboarding_stats_title">Havi statisztikák</string>
 </resources>

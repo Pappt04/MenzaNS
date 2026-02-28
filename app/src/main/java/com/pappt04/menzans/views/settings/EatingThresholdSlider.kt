@@ -51,7 +51,7 @@ fun EatingThresholdSlider(
                 modifier = Modifier.weight(4f),
             )
             AutoResizedText(
-                "${sliderpos.value.roundToInt()} min",
+                "${sliderpos.floatValue.roundToInt()} min",
                 style =
                     MaterialTheme.typography.titleLarge.merge(
                         TextStyle(
@@ -72,8 +72,8 @@ fun EatingThresholdSlider(
         }
         Slider(
             modifier = Modifier.semantics { contentDescription = "Eating speed threshold in minutes" },
-            value = sliderpos.value,
-            onValueChange = { sliderpos.value = it },
+            value = sliderpos.floatValue,
+            onValueChange = { sliderpos.floatValue = it },
             valueRange = 5f..30f,
             onValueChangeFinished = {
                 onChanged()
