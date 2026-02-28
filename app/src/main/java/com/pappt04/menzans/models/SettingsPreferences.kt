@@ -8,4 +8,7 @@ data class SettingsPreferences(
     var budget: Boolean = false,
     var tokenwarning: Int = 2,
     var firstWelcome: Boolean = true,
+    var geofenceEnabled: Boolean = true,
+    var eatingSpeedThreshold: Int = 15,
+    var autoDeduct: Boolean = true,
 )

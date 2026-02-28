@@ -105,6 +105,13 @@
     <string name="developer_contact">Developer Contact</string>
     <string name="google_play">Google Play</string>
     <string name="token_warning">Zseton emlékeztető</string>
+    <string name="settings_section_appearance">Megjelenés</string>
+    <string name="settings_section_price_tokens">Ár és zseton</string>
+    <string name="settings_section_detection">Észlelés</string>
+    <string name="settings_section_permissions">Engedélyek</string>
+    <string name="enable_auto_detection">Automatikus észlelés</string>
+    <string name="eating_speed_threshold">Észlelési küszöb</string>
+    <string name="auto_deduct_token">Zseton automatikus levonása</string>
     <string name="request">Engedély</string>
     <string name="approximate_location">Hozzávetőleges helymeghatározás</string>
     <string name="precise_location">Pontos helymeghatározás</string>

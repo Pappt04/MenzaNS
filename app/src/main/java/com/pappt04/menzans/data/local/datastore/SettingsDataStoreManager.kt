@@ -27,6 +27,9 @@ class SettingsDataStoreManager(
         val TOKEN_WARNING = intPreferencesKey("TOKEN_WARNING")
         val USERID = stringPreferencesKey("USERID")
         val FIRST_WELCOME = booleanPreferencesKey("FIRST_WELCOME")
+        val GEOFENCE_ENABLED = booleanPreferencesKey("GEOFENCE_ENABLED")
+        val EATING_SPEED_THRESHOLD = intPreferencesKey("EATING_SPEED_THRESHOLD")
+        val AUTO_DEDUCT = booleanPreferencesKey("AUTO_DEDUCT")
     }
 
     suspend fun saveToDataStore(settingsData: SettingsPreferences) {
@@ -39,6 +42,9 @@ class SettingsDataStoreManager(
             it[TOKEN_WARNING] = settingsData.tokenwarning
             it[USERID] = settingsData.userID
             it[FIRST_WELCOME] = settingsData.firstWelcome
+            it[GEOFENCE_ENABLED] = settingsData.geofenceEnabled
+            it[EATING_SPEED_THRESHOLD] = settingsData.eatingSpeedThreshold
+            it[AUTO_DEDUCT] = settingsData.autoDeduct
         }
     }
 
@@ -53,6 +59,9 @@ class SettingsDataStoreManager(
                 tokenwarning = it[TOKEN_WARNING] ?: 0,
                 userID = it[USERID] ?: "",
                 firstWelcome = it[FIRST_WELCOME] ?: true,
+                geofenceEnabled = it[GEOFENCE_ENABLED] ?: true,
+                eatingSpeedThreshold = it[EATING_SPEED_THRESHOLD] ?: 15,
+                autoDeduct = it[AUTO_DEDUCT] ?: true,
             )
         }
 

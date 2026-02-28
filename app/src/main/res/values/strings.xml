@@ -110,6 +110,13 @@
     <string name="google_play">Google Play</string>
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">We think you were at Menza for %1$s minutes there is a big chance you ate %2$s</string>
     <string name="token_warning">Token Warning</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_price_tokens">Price &amp; Tokens</string>
+    <string name="settings_section_detection">Detection</string>
+    <string name="settings_section_permissions">Permissions</string>
+    <string name="enable_auto_detection">Auto Detection</string>
+    <string name="eating_speed_threshold">Detection Threshold</string>
+    <string name="auto_deduct_token">Auto Deduct Token</string>
     <string name="request">Request</string>
     <string name="approximate_location">Approximate location</string>
     <string name="precise_location">Precise location</string>

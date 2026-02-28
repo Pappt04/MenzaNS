@@ -105,6 +105,13 @@
     <string name="developer_contact">Developer Contact</string>
     <string name="google_play">Google Play</string>
     <string name="token_warning">Obrok upozorenje</string>
+    <string name="settings_section_appearance">Izgled</string>
+    <string name="settings_section_price_tokens">Cena i tokeni</string>
+    <string name="settings_section_detection">Detekcija</string>
+    <string name="settings_section_permissions">Dozvole</string>
+    <string name="enable_auto_detection">Automatska detekcija</string>
+    <string name="eating_speed_threshold">Prag detekcije</string>
+    <string name="auto_deduct_token">Automatski odbiti token</string>
     <string name="request">Zatražite</string>
     <string name="approximate_location">Približna lokacija</string>
     <string name="precise_location">Precizna lokacija</string>

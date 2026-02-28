@@ -22,6 +22,9 @@ data class MainUiState(
     val userId: String = "",
     val isFirstWelcome: Boolean = true,
     val savedMeals: List<Int> = listOf(0, 0, 0, 0),
+    val geofenceEnabled: Boolean = true,
+    val eatingSpeedThreshold: Int = 15,
+    val autoDeduct: Boolean = true,
 )
 
 class MainViewModel(
@@ -48,6 +51,9 @@ class MainViewModel(
                     tokenWarning = settings.tokenwarning,
                     userId = userId,
                     isFirstWelcome = settings.firstWelcome,
+                    geofenceEnabled = settings.geofenceEnabled,
+                    eatingSpeedThreshold = settings.eatingSpeedThreshold,
+                    autoDeduct = settings.autoDeduct,
                     savedMeals =
                         listOf(
                             mealPrefs.breakfast,
@@ -77,6 +83,21 @@ class MainViewModel(
 
     fun updateTokenWarning(value: Int) {
         _uiState.value = _uiState.value.copy(tokenWarning = value)
+        persistSettings()
+    }
+
+    fun updateGeofenceEnabled(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(geofenceEnabled = enabled)
+        persistSettings()
+    }
+
+    fun updateEatingSpeedThreshold(minutes: Int) {
+        _uiState.value = _uiState.value.copy(eatingSpeedThreshold = minutes)
+        persistSettings()
+    }
+
+    fun updateAutoDeduct(autoDeduct: Boolean) {
+        _uiState.value = _uiState.value.copy(autoDeduct = autoDeduct)
         persistSettings()
     }
 
@@ -112,6 +133,9 @@ class MainViewModel(
                     budget = state.onBudgetPricing,
                     tokenwarning = state.tokenWarning,
                     firstWelcome = state.isFirstWelcome,
+                    geofenceEnabled = state.geofenceEnabled,
+                    eatingSpeedThreshold = state.eatingSpeedThreshold,
+                    autoDeduct = state.autoDeduct,
                 ),
             )
         }

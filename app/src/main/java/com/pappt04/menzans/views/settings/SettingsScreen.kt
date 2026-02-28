@@ -15,6 +15,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.outlined.Security
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,11 +60,17 @@ fun SettingsScreen(
     val materialyoutheme = remember { mutableStateOf(state.materialYouTheme) }
     val tokenwarning = remember { mutableFloatStateOf(state.tokenWarning.toFloat()) }
     val onBudget = remember { mutableStateOf(state.onBudgetPricing) }
+    val geofenceEnabled = remember { mutableStateOf(state.geofenceEnabled) }
+    val eatingSpeedThreshold = remember { mutableFloatStateOf(state.eatingSpeedThreshold.toFloat()) }
+    val autoDeduct = remember { mutableStateOf(state.autoDeduct) }
 
     LaunchedEffect(state.darkTheme) { darkTheme.value = state.darkTheme }
     LaunchedEffect(state.materialYouTheme) { materialyoutheme.value = state.materialYouTheme }
     LaunchedEffect(state.tokenWarning) { tokenwarning.floatValue = state.tokenWarning.toFloat() }
     LaunchedEffect(state.onBudgetPricing) { onBudget.value = state.onBudgetPricing }
+    LaunchedEffect(state.geofenceEnabled) { geofenceEnabled.value = state.geofenceEnabled }
+    LaunchedEffect(state.eatingSpeedThreshold) { eatingSpeedThreshold.floatValue = state.eatingSpeedThreshold.toFloat() }
+    LaunchedEffect(state.autoDeduct) { autoDeduct.value = state.autoDeduct }
 
     LazyColumn(
         modifier =
@@ -69,11 +79,9 @@ fun SettingsScreen(
                 .fillMaxWidth()
                 .fillMaxHeight(),
     ) {
+        // Appearance
         item {
-            DisclaimerCard()
-        }
-        item {
-            HorizontalDivider(modifier = Modifier.padding(10.dp))
+            SectionHeader(Icons.Outlined.Palette, stringResource(R.string.settings_section_appearance))
         }
         item {
             LanguageChanger()
@@ -94,6 +102,11 @@ fun SettingsScreen(
                 mainViewModel.updateMaterialYou(materialyoutheme.value)
             }
         }
+
+        // Price & Tokens
+        item {
+            SectionHeader(Icons.Outlined.Payments, stringResource(R.string.settings_section_price_tokens))
+        }
         item {
             PriceSwitcher(onBudget) {
                 mainViewModel.updateBudgetPricing(onBudget.value)
@@ -104,7 +117,37 @@ fun SettingsScreen(
                 mainViewModel.updateTokenWarning(tokenwarning.floatValue.roundToInt())
             }
         }
-        item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
+
+        // Detection
+        item {
+            SectionHeader(Icons.Outlined.MyLocation, stringResource(R.string.settings_section_detection))
+        }
+        item {
+            SettingSwitch(
+                geofenceEnabled,
+                stringResource(R.string.enable_auto_detection),
+            ) {
+                mainViewModel.updateGeofenceEnabled(geofenceEnabled.value)
+            }
+        }
+        item {
+            EatingThresholdSlider(eatingSpeedThreshold) {
+                mainViewModel.updateEatingSpeedThreshold(eatingSpeedThreshold.floatValue.roundToInt())
+            }
+        }
+        item {
+            SettingSwitch(
+                autoDeduct,
+                stringResource(R.string.auto_deduct_token),
+            ) {
+                mainViewModel.updateAutoDeduct(autoDeduct.value)
+            }
+        }
+
+        // Permissions
+        item {
+            SectionHeader(Icons.Outlined.Security, stringResource(R.string.settings_section_permissions))
+        }
         items(permissionsNeeded) { permission ->
             var i = 0
             for (p in permissionsNeeded) {
@@ -115,6 +158,12 @@ fun SettingsScreen(
                 }
             }
             PermissionSwitch(context, PermissionData.permissionExplanations[i].explanation, permission)
+        }
+
+        // Disclaimer at the bottom
+        item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
+        item {
+            DisclaimerCard()
         }
     }
 }
