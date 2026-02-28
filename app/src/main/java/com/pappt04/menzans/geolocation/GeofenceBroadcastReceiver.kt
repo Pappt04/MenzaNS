@@ -17,11 +17,13 @@ import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.models.MealData
+import com.pappt04.menzans.models.SettingsPreferences
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.notifications.sendAteMealNotification
 import com.pappt04.menzans.notifications.sendAutomaticDeductNotification
 import com.pappt04.menzans.repository.GeofenceRepository
 import com.pappt04.menzans.repository.MealRepository
+import com.pappt04.menzans.repository.SettingsRepository
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +45,7 @@ class GeofenceBroadcastReceiver :
     private val mealRepository: MealRepository by inject()
     private val statisticsRepository: StatisticsRepository by inject()
     private val userRepository: UserRepository by inject()
+    private val settingsRepository: SettingsRepository by inject()
 
     override fun onReceive(
         context: Context?,
@@ -89,35 +92,38 @@ class GeofenceBroadcastReceiver :
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
                 Log.i(tag, "GEOFENCE EXITED")
-                val timeExited = timeFormat.format(Date())
-                val timeEntered = geofenceRepository.getEnterTime()
+                CoroutineScope(Dispatchers.IO).launch {
+                    val settings = settingsRepository.getSettings().first()
+                    val timeExited = timeFormat.format(Date())
+                    val timeEntered = geofenceRepository.getEnterTime()
 
-                val enteredsplit = timeEntered.split(":").toTypedArray()
-                val exitedsplit = timeExited.split(":").toTypedArray()
+                    val enteredsplit = timeEntered.split(":").toTypedArray()
+                    val exitedsplit = timeExited.split(":").toTypedArray()
 
-                val alldiff: Int = calculateTimeDifference(enteredsplit, exitedsplit)
+                    val alldiff: Int = calculateTimeDifference(enteredsplit, exitedsplit)
 
-                val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
+                    val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
 
-                if (alldiff > GeofenceConstants.EATING_SPEED_THRESHOLD && correctmeal != null) {
-                    automaticallyDeductToken(context, timeEntered, timeExited, correctmeal)
-                    notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
+                    if (alldiff > settings.eatingSpeedThreshold && settings.autoDeduct && correctmeal != null) {
+                        automaticallyDeductToken(timeEntered, timeExited, correctmeal)
+                        notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
 
-                    if (userId.isNotEmpty()) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            geofenceRepository.sendExitEvent(
-                                timeExited,
-                                findEngMeal(correctmeal.name),
-                            )
+                        if (userId.isNotEmpty()) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                geofenceRepository.sendExitEvent(
+                                    timeExited,
+                                    findEngMeal(correctmeal.name),
+                                )
+                            }
                         }
+                    } else if (correctmeal != null) {
+                        notificationManager.sendAteMealNotification(
+                            context,
+                            timeEntered,
+                            timeExited,
+                            correctmeal,
+                        )
                     }
-                } else if (correctmeal != null) {
-                    notificationManager.sendAteMealNotification(
-                        context,
-                        timeEntered,
-                        timeExited,
-                        correctmeal,
-                    )
                 }
             }
 
@@ -134,7 +140,6 @@ class GeofenceBroadcastReceiver :
     }
 
     private fun automaticallyDeductToken(
-        context: Context,
         timeEntered: String,
         timeExited: String,
         mealdata: MealData?,

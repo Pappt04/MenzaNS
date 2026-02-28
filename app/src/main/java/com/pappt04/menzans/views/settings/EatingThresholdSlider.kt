@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
+import com.pappt04.menzans.views.common.AutoResizedText
 import kotlin.math.roundToInt
 
 @Composable
@@ -49,7 +50,7 @@ fun EatingThresholdSlider(
                     ),
                 modifier = Modifier.weight(4f),
             )
-            Text(
+            AutoResizedText(
                 "${sliderpos.value.roundToInt()} min",
                 style =
                     MaterialTheme.typography.titleLarge.merge(

@@ -84,6 +84,7 @@
     <string name="dashboard">Tabla</string>
     <string name="add_meal">Dodaj obrok</string>
     <string name="add_meal_to_statistics">Dodaj obrok u statistiku</string>
+    <string name="clear_month_filter">Ukloni filter</string>
     <string name="time_of_enter">Vreme ulaska</string>
     <string name="time_of_exit">Vreme izlaska</string>
     <string name="wait_time">Vreme čekanja</string>

@@ -47,12 +47,14 @@ fun MealCard(
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        ),
-        modifier = Modifier
-            .padding(8.dp)
-            .clickable { onClicked() },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+        modifier =
+            Modifier
+                .padding(8.dp)
+                .clickable { onClicked() },
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -62,9 +64,10 @@ fun MealCard(
                 imageVector = icon,
                 contentDescription = stringResource(R.string.menu_description),
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .size(32.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .size(32.dp),
             )
             Text(
                 text = meal.name.asString(context),

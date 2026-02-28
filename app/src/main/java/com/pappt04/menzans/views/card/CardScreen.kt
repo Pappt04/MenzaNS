@@ -68,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.CardPreferences
+import com.pappt04.menzans.ui.theme.IconSize
 import com.pappt04.menzans.viewmodels.CardViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -427,7 +428,7 @@ private fun StudentCardPreview(
                     Modifier
                         .align(Alignment.BottomEnd)
                         .clickable { onShare() }
-                        .size(20.dp),
+                        .size(IconSize.medium),
             )
         }
     }
@@ -488,7 +489,7 @@ private fun TokenChip(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.size(16.dp),
+                modifier = Modifier.size(IconSize.small),
                 tint =
                     if (low) {
                         MaterialTheme.colorScheme.error
@@ -541,7 +542,7 @@ private fun SectionHeader(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(IconSize.medium),
             tint = MaterialTheme.colorScheme.primary,
         )
         Text(

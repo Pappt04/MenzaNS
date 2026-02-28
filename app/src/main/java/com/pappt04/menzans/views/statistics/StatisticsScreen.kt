@@ -1,6 +1,8 @@
 package com.pappt04.menzans.views.statistics
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,7 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.CalendarData.monthFormat
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.data.consts.CalendarData.monthNames
 import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
@@ -42,13 +47,13 @@ fun StatisticsScreen(
 ) {
     val initialMonth = monthNames[monthFormat.format(Date()).toInt() - 1]
 
-    var selectedMonth by remember { mutableStateOf(initialMonth) }
+    var selectedMonth by remember { mutableStateOf<String?>(null) }
 
     val formattedStatisticsData by viewModel.statistics.collectAsState()
     val onBudget by viewModel.onBudgetPricing.collectAsState()
 
     LaunchedEffect(selectedMonth) {
-        viewModel.loadStatistics(selectedMonth)
+        viewModel.loadStatistics(selectedMonth ?: initialMonth)
     }
 
     LazyColumn(
@@ -59,35 +64,40 @@ fun StatisticsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-            ) {
-                items(monthNames) { month ->
-                    val localizedMonth =
-                        Month.valueOf(month.uppercase()).getDisplayName(
-                            TextStyle.SHORT,
-                            Locale.getDefault(),
-                        )
+            Column {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                ) {
+                    items(monthNames) { month ->
+                        val localizedMonth =
+                            Month.valueOf(month.uppercase()).getDisplayName(
+                                TextStyle.SHORT,
+                                Locale.getDefault(),
+                            )
 
-                    FilterChip(
-                        onClick = {
-                            selectedMonth =
-                                if (selectedMonth == month) {
-                                    initialMonth
-                                } else {
-                                    month
-                                }
-                        },
-                        label = { Text(localizedMonth) },
-                        selected = selectedMonth == month,
-                    )
+                        FilterChip(
+                            onClick = {
+                                selectedMonth = if (selectedMonth == month) null else month
+                            },
+                            label = { Text(localizedMonth) },
+                            selected = selectedMonth == month,
+                        )
+                    }
+                }
+                AnimatedVisibility(visible = selectedMonth != null) {
+                    TextButton(
+                        onClick = { selectedMonth = null },
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                    ) {
+                        Text(stringResource(R.string.clear_month_filter))
+                    }
                 }
             }
         }
 
         item {
-            CalendarMonthView(selectedMonth, formattedStatisticsData, viewModel)
+            CalendarMonthView(selectedMonth ?: initialMonth, formattedStatisticsData, viewModel)
         }
 
         item {
@@ -100,9 +110,10 @@ fun StatisticsScreen(
             {
                 Text(
                     stringResource(R.string.your_monthly_token_usage),
+                    style = MaterialTheme.typography.titleMedium,
                     modifier =
                         Modifier
-                            .padding(2.dp)
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
                             .align(Alignment.CenterHorizontally),
                 )
                 MonthlyMealsChart(formattedStatisticsData)
@@ -118,9 +129,10 @@ fun StatisticsScreen(
             {
                 Text(
                     stringResource(R.string.your_weekly_token_usage),
+                    style = MaterialTheme.typography.titleMedium,
                     modifier =
                         Modifier
-                            .padding(2.dp)
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
                             .align(Alignment.CenterHorizontally),
                 )
                 WeeklyMealChart(formattedStatisticsData)
@@ -136,12 +148,13 @@ fun StatisticsScreen(
             {
                 Text(
                     stringResource(R.string.predicted_spending),
+                    style = MaterialTheme.typography.titleMedium,
                     modifier =
                         Modifier
-                            .padding(2.dp)
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
                             .align(Alignment.CenterHorizontally),
                 )
-                PredictedSpendingChart(selectedMonth, onBudget, formattedStatisticsData)
+                PredictedSpendingChart(selectedMonth ?: initialMonth, onBudget, formattedStatisticsData)
             }
         }
     }

@@ -83,6 +83,7 @@
     <string name="collected_data_from_current_month">Gyűjtött adatok az aktuális hónapból</string>
     <string name="dashboard">Műszerfal</string>
     <string name="add_meal">Adj étkezést hozzá</string>
+    <string name="clear_month_filter">Szűrő törlése</string>
     <string name="wait_time">Várakozási idő</string>
     <string name="no_data">Nincs adat</string>
     <string name="add_meal_to_statistics">Adj étkezést a statistikához</string>

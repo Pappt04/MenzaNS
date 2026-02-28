@@ -87,6 +87,7 @@
     <string name="dashboard">Dashboard</string>
     <string name="add_meal">Add meal</string>
     <string name="add_meal_to_statistics">Add meal to statistics</string>
+    <string name="clear_month_filter">Clear filter</string>
     <string name="time_of_enter">Time of enter</string>
     <string name="time_of_exit">Time of exit</string>
     <string name="wait_time">Estimated Wait Time</string>

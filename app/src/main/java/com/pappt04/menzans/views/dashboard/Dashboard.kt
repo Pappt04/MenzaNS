@@ -44,9 +44,12 @@ import com.pappt04.menzans.data.consts.MealSample.mealIcons
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.viewmodels.DashboardViewModel
 import com.pappt04.menzans.viewmodels.MenuViewModel
+import com.pappt04.menzans.views.dashboard.NO_MEAL_SELECTED
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+
+const val NO_MEAL_SELECTED=-1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +80,7 @@ fun DashboardScreen(
     var showBalanceDialog: Boolean by remember { mutableStateOf(false) }
     val balance = remember(savedMealCounts.balance) { mutableIntStateOf(savedMealCounts.balance) }
     val scope = rememberCoroutineScope()
-    val selectedCard = remember { mutableIntStateOf(99) }
+    val selectedCard = remember { mutableIntStateOf(NO_MEAL_SELECTED) }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -95,9 +98,8 @@ fun DashboardScreen(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
                         .padding(10.dp)
-                        .clickable { selectedCard.intValue = 99 },
+                        .clickable { selectedCard.intValue = NO_MEAL_SELECTED },
                 ) {
                     var i = 0
                     items(meals) { meal ->
@@ -106,7 +108,7 @@ fun DashboardScreen(
                         AnimatedVisibility(selectedCard.intValue != index.intValue) {
                             MealCard(meal, mealValueList[index.intValue], mealIcons[index.intValue]) {
                                 selectedCard.intValue =
-                                    if (selectedCard.intValue == index.intValue) 99 else index.intValue
+                                    if (selectedCard.intValue == index.intValue) NO_MEAL_SELECTED else index.intValue
                             }
                         }
                         i++
@@ -124,7 +126,7 @@ fun DashboardScreen(
                             meals[it],
                             mealValueList[it],
                             balance,
-                            onClicked = { selectedCard.intValue = 99 },
+                            onClicked = { selectedCard.intValue = NO_MEAL_SELECTED },
                             noFunds = {
                                 scope.launch {
                                     snackbar.showSnackbar(
