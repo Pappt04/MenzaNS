@@ -123,7 +123,7 @@ fun MenzaCard(cardData: List<String>) {
                     Modifier
                         .padding(4.dp),
             )
-            Row
+            Row()
             {
                 OutlinedTextField(
                     value = cardData[1] + " " + cardData[0],
@@ -156,7 +156,7 @@ fun MenzaCard(cardData: List<String>) {
                             .weight(1f),
                 )
             }
-            Row
+            Row()
             {
                 OutlinedTextField(
                     value = cardData[3],

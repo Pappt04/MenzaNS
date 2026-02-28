@@ -76,7 +76,7 @@ fun SettingsScreen(
             HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
         item {
-            LanguageChanger(context)
+            LanguageChanger()
         }
         item {
             SettingSwitch(

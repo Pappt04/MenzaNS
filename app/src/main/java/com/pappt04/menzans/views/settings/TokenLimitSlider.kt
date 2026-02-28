@@ -29,7 +29,7 @@ fun TokenLimitSlider(
     LocalContext.current
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Row
+        Row()
         {
             Text(
                 stringResource(R.string.token_warning),
