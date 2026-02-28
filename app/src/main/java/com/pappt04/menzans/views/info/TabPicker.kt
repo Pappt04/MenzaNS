@@ -27,19 +27,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TabPickerButton(
-    globaltab: MutableState<Int>
-) {
+fun TabPickerButton(globaltab: MutableState<Int>) {
     // State to hold the selected tab
-    var selectedTab = remember {
-        when (globaltab.value) {
-            0 -> mutableStateOf("Menu")
-            else -> mutableStateOf("Info")
+    var selectedTab =
+        remember {
+            when (globaltab.value) {
+                0 -> mutableStateOf("Menu")
+                else -> mutableStateOf("Info")
+            }
         }
-    }
 
     // Function to handle tab selection
-    fun selectTab(index: Int, tab: String) {
+    fun selectTab(
+        index: Int,
+        tab: String,
+    ) {
         selectedTab.value = tab
         globaltab.value = index
     }
@@ -49,24 +51,28 @@ fun TabPickerButton(
 
     // Custom colors for the tab selector
     val selectedColor = MaterialTheme.colorScheme.tertiary // Green for selected
-    val unselectedColor = MaterialTheme.colorScheme.tertiaryContainer// Light gray for unselected
-    val textColor = Color.Black //color of the text
+    val unselectedColor = MaterialTheme.colorScheme.tertiaryContainer // Light gray for unselected
+    val textColor = Color.Black // color of the text
 
     OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = unselectedColor,
-        ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = unselectedColor,
+            ),
     ) {
         // Container for the tabs, with a background and rounded corners
         Row(
-            modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth(), // Padding inside the background
+            modifier =
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(),
+            // Padding inside the background
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Absolute.SpaceEvenly
+            horizontalArrangement = Arrangement.Absolute.SpaceEvenly,
         ) {
             // Iterate through the tabs and create a TabItem for each
             tabs.forEachIndexed { i, tab ->
@@ -76,7 +82,7 @@ fun TabPickerButton(
                     onTabSelected = { selectTab(i, tab) },
                     selectedColor = selectedColor,
                     unselectedColor = unselectedColor,
-                    textColor = textColor
+                    textColor = textColor,
                 )
             }
         }
@@ -90,30 +96,33 @@ fun TabItem(
     onTabSelected: () -> Unit,
     selectedColor: Color,
     unselectedColor: Color,
-    textColor: Color
+    textColor: Color,
 ) {
     // Use a Surface for each tab item to get the rounded corners and background color
     Surface(
-        modifier = Modifier
-            .clickable { onTabSelected() } // Make the tab clickable
-            .padding(4.dp), // Padding within each tab item
+        modifier =
+            Modifier
+                .clickable { onTabSelected() } // Make the tab clickable
+                .padding(4.dp),
+        // Padding within each tab item
         color = if (isSelected) selectedColor else unselectedColor, // Background color based on selection
         shape = RoundedCornerShape(16.dp), // Rounded corners for each tab
     ) {
         // Content of the tab item (text)
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
         {
             Text(
                 text = tabName,
-                style = TextStyle(
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = textColor // Text color
-                ),
+                style =
+                    TextStyle(
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = textColor, // Text color
+                    ),
             )
         }
     }
@@ -123,5 +132,5 @@ fun TabItem(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    //TabPickerButton()
+    // TabPickerButton()
 }

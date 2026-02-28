@@ -30,24 +30,30 @@ import com.pappt04.menzans.R
 import com.pappt04.menzans.views.common.AnimatedNumber
 
 @Composable
-fun BalanceCard(balance: MutableIntState)
-{
+fun BalanceCard(balance: MutableIntState) {
     var showBalanceDialog by remember { mutableStateOf(false) }
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.3f)
-            .padding(8.dp)
-            .clickable {
-                showBalanceDialog=true
-            },
-        colors = CardColors(MaterialTheme.colorScheme.primaryContainer,CardDefaults.cardColors().contentColor,CardDefaults.cardColors().disabledContainerColor,CardDefaults.cardColors().disabledContentColor)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .padding(8.dp)
+                .clickable {
+                    showBalanceDialog = true
+                },
+        colors =
+            CardColors(
+                MaterialTheme.colorScheme.primaryContainer,
+                CardDefaults.cardColors().contentColor,
+                CardDefaults.cardColors().disabledContainerColor,
+                CardDefaults.cardColors().disabledContentColor,
+            ),
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 text = stringResource(R.string.balance),
@@ -55,31 +61,34 @@ fun BalanceCard(balance: MutableIntState)
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(6.dp),
             )
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
-                AnimatedNumber(number = balance,fontStyle = FontStyle.Italic,
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                AnimatedNumber(
+                    number = balance,
+                    fontStyle = FontStyle.Italic,
                     textAlign = TextAlign.Center,
                     fontSize = 42.sp,
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
-                    text = " "+stringResource(R.string.rsd),
+                    text = " " + stringResource(R.string.rsd),
                     fontSize = 40.sp,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(2.dp)
+                    modifier = Modifier.padding(2.dp),
                 )
             }
-
         }
         if (showBalanceDialog) {
             BalanceDialog(
                 onDismissRequest = {
                     showBalanceDialog = false
                 },
-                balance, LocalContext.current
+                balance,
+                LocalContext.current,
             )
         }
     }

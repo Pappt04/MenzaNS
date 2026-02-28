@@ -27,8 +27,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.GpsFixed
@@ -72,57 +72,67 @@ private data class FeaturePageData(
     val bodyRes: Int,
 )
 
-private val featurePages = listOf(
-    FeaturePageData(Icons.Filled.CreditCard, R.string.onboarding_token_title, R.string.onboarding_token_body),
-    FeaturePageData(Icons.Filled.AccessTime, R.string.onboarding_waittime_title, R.string.onboarding_waittime_body),
-    FeaturePageData(Icons.Filled.Sensors, R.string.onboarding_location_title, R.string.onboarding_location_body),
-    FeaturePageData(Icons.Filled.BarChart, R.string.onboarding_stats_title, R.string.onboarding_stats_body),
-)
+private val featurePages =
+    listOf(
+        FeaturePageData(Icons.Filled.CreditCard, R.string.onboarding_token_title, R.string.onboarding_token_body),
+        FeaturePageData(Icons.Filled.AccessTime, R.string.onboarding_waittime_title, R.string.onboarding_waittime_body),
+        FeaturePageData(Icons.Filled.Sensors, R.string.onboarding_location_title, R.string.onboarding_location_body),
+        FeaturePageData(Icons.Filled.BarChart, R.string.onboarding_stats_title, R.string.onboarding_stats_body),
+    )
 
-private val featurePageCount = 1 + featurePages.size  // hero + 4 features
-private val totalPageCount = featurePageCount + 1      // + 1 permissions page
+private val featurePageCount = 1 + featurePages.size // hero + 4 features
+private val totalPageCount = featurePageCount + 1 // + 1 permissions page
 
-private fun permissionIcon(permission: String): ImageVector = when (permission) {
-    Manifest.permission.ACCESS_COARSE_LOCATION -> Icons.Filled.LocationSearching
-    Manifest.permission.ACCESS_FINE_LOCATION -> Icons.Filled.GpsFixed
-    Manifest.permission.ACCESS_BACKGROUND_LOCATION -> Icons.Filled.LocationOn
-    else -> Icons.Filled.Notifications
-}
+private fun permissionIcon(permission: String): ImageVector =
+    when (permission) {
+        Manifest.permission.ACCESS_COARSE_LOCATION -> Icons.Filled.LocationSearching
+        Manifest.permission.ACCESS_FINE_LOCATION -> Icons.Filled.GpsFixed
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION -> Icons.Filled.LocationOn
+        else -> Icons.Filled.Notifications
+    }
 
 @Composable
-fun WelcomeScreen(onCompleted: () -> Unit, innerpadding: PaddingValues) {
+fun WelcomeScreen(
+    onCompleted: () -> Unit,
+    innerpadding: PaddingValues,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { totalPageCount })
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
-        val geofenceManager = GeofenceManager(context)
-        for (geofence in GeofenceConstants.LANDMARKS) {
-            geofenceManager.addGeofence(
-                geofence.key,
-                geofence.location,
-                geofence.radiusInMeters,
-                geofence.expirationTimeInMillis
-            )
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { _ ->
+            val geofenceManager = GeofenceManager(context)
+            for (geofence in GeofenceConstants.LANDMARKS) {
+                geofenceManager.addGeofence(
+                    geofence.key,
+                    geofence.location,
+                    geofence.radiusInMeters,
+                    geofence.expirationTimeInMillis,
+                )
+            }
+            geofenceManager.registerGeofence()
+            onCompleted()
         }
-        geofenceManager.registerGeofence()
-        onCompleted()
-    }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerpadding),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(innerpadding),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f),
         ) { page ->
             when {
-                page == 0 -> OnboardingHeroPage()
+                page == 0 -> {
+                    OnboardingHeroPage()
+                }
+
                 page < featurePageCount -> {
                     val feature = featurePages[page - 1]
                     OnboardingFeaturePage(
@@ -131,7 +141,10 @@ fun WelcomeScreen(onCompleted: () -> Unit, innerpadding: PaddingValues) {
                         body = stringResource(feature.bodyRes),
                     )
                 }
-                else -> OnboardingPermissionsPage()
+
+                else -> {
+                    OnboardingPermissionsPage()
+                }
             }
         }
 
@@ -147,15 +160,16 @@ fun WelcomeScreen(onCompleted: () -> Unit, innerpadding: PaddingValues) {
                 onClick = {
                     permissionLauncher.launch(PermissionData.permissionsNeeded.toTypedArray())
                 },
-                modifier = Modifier
-                    .fillMaxWidth(0.85f)
-                    .height(52.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth(0.85f)
+                        .height(52.dp),
             ) {
                 Text(stringResource(R.string.onboarding_grant_all))
             }
             TextButton(
                 onClick = { onCompleted() },
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
             ) {
                 Text(stringResource(R.string.onboarding_skip))
             }
@@ -164,13 +178,17 @@ fun WelcomeScreen(onCompleted: () -> Unit, innerpadding: PaddingValues) {
                 onClick = {
                     scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                 },
-                modifier = Modifier
-                    .fillMaxWidth(0.85f)
-                    .height(52.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth(0.85f)
+                        .height(52.dp),
             ) {
                 Text(
-                    if (isLastFeaturePage) stringResource(R.string.onboarding_get_started)
-                    else stringResource(R.string.onboarding_next)
+                    if (isLastFeaturePage) {
+                        stringResource(R.string.onboarding_get_started)
+                    } else {
+                        stringResource(R.string.onboarding_next)
+                    },
                 )
                 if (!isLastFeaturePage) {
                     Spacer(Modifier.width(8.dp))
@@ -182,7 +200,7 @@ fun WelcomeScreen(onCompleted: () -> Unit, innerpadding: PaddingValues) {
                     onClick = {
                         scope.launch { pagerState.animateScrollToPage(totalPageCount - 1) }
                     },
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 4.dp),
                 ) {
                     Text(stringResource(R.string.onboarding_skip_setup))
                 }
@@ -196,9 +214,10 @@ fun WelcomeScreen(onCompleted: () -> Unit, innerpadding: PaddingValues) {
 @Composable
 private fun OnboardingHeroPage() {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -215,9 +234,10 @@ private fun OnboardingHeroPage() {
                     painter = painterResource(R.drawable.applogo_vector),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .padding(24.dp)
+                            .fillMaxSize(),
                 )
             }
         }
@@ -255,11 +275,16 @@ private fun OnboardingHeroPage() {
 }
 
 @Composable
-private fun OnboardingFeaturePage(icon: ImageVector, title: String, body: String) {
+private fun OnboardingFeaturePage(
+    icon: ImageVector,
+    title: String,
+    body: String,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 40.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -276,9 +301,10 @@ private fun OnboardingFeaturePage(icon: ImageVector, title: String, body: String
                     imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .padding(24.dp)
+                            .fillMaxSize(),
                 )
             }
         }
@@ -319,10 +345,11 @@ private fun OnboardingPermissionsPage() {
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -377,12 +404,17 @@ private fun OnboardingPermissionsPage() {
 }
 
 @Composable
-private fun PermissionRow(icon: ImageVector, name: String, explanation: String) {
+private fun PermissionRow(
+    icon: ImageVector,
+    name: String,
+    explanation: String,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -397,9 +429,10 @@ private fun PermissionRow(icon: ImageVector, name: String, explanation: String) 
                     imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .padding(10.dp)
+                            .fillMaxSize(),
                 )
             }
             Spacer(Modifier.width(16.dp))
@@ -422,7 +455,10 @@ private fun PermissionRow(icon: ImageVector, name: String, explanation: String) 
 }
 
 @Composable
-private fun PageDots(currentPage: Int, totalPages: Int) {
+private fun PageDots(
+    currentPage: Int,
+    totalPages: Int,
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -430,8 +466,12 @@ private fun PageDots(currentPage: Int, totalPages: Int) {
         repeat(totalPages) { index ->
             val isSelected = currentPage == index
             val dotColor by animateColorAsState(
-                targetValue = if (isSelected) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.outlineVariant,
+                targetValue =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.outlineVariant
+                    },
                 animationSpec = tween(300),
                 label = "dot_color_$index",
             )
@@ -441,11 +481,12 @@ private fun PageDots(currentPage: Int, totalPages: Int) {
                 label = "dot_width_$index",
             )
             Box(
-                modifier = Modifier
-                    .height(8.dp)
-                    .width(dotWidth)
-                    .clip(CircleShape)
-                    .background(dotColor),
+                modifier =
+                    Modifier
+                        .height(8.dp)
+                        .width(dotWidth)
+                        .clip(CircleShape)
+                        .background(dotColor),
             )
         }
     }

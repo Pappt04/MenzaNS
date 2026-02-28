@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.CalendarData.monthFormat
 import com.pappt04.menzans.data.consts.CalendarData.monthNames
-import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
+import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.viewmodels.StatisticsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.Month
@@ -52,33 +52,35 @@ fun StatisticsScreen(
     }
 
     LazyColumn(
-        modifier = Modifier
-            .padding(innerpadding)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .padding(innerpadding)
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         item {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp),
             ) {
                 items(monthNames) { month ->
-                    val localizedMonth = Month.valueOf(month.uppercase()).getDisplayName(
-                        TextStyle.SHORT,
-                        Locale.getDefault()
-                    )
+                    val localizedMonth =
+                        Month.valueOf(month.uppercase()).getDisplayName(
+                            TextStyle.SHORT,
+                            Locale.getDefault(),
+                        )
 
                     FilterChip(
                         onClick = {
-                            selectedMonth = if (selectedMonth == month) {
-                                initialMonth
-                            } else {
-                                month
-                            }
+                            selectedMonth =
+                                if (selectedMonth == month) {
+                                    initialMonth
+                                } else {
+                                    month
+                                }
                         },
                         label = { Text(localizedMonth) },
-                        selected = selectedMonth == month
+                        selected = selectedMonth == month,
                     )
                 }
             }
@@ -91,15 +93,17 @@ fun StatisticsScreen(
         item {
             Card(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier = Modifier
-                    .padding(8.dp)
+                modifier =
+                    Modifier
+                        .padding(8.dp),
             )
             {
                 Text(
                     stringResource(R.string.your_monthly_token_usage),
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier =
+                        Modifier
+                            .padding(2.dp)
+                            .align(Alignment.CenterHorizontally),
                 )
                 MonthlyMealsChart(formattedStatisticsData)
             }
@@ -107,15 +111,17 @@ fun StatisticsScreen(
         item {
             Card(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier = Modifier
-                    .padding(8.dp)
+                modifier =
+                    Modifier
+                        .padding(8.dp),
             )
             {
                 Text(
                     stringResource(R.string.your_weekly_token_usage),
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier =
+                        Modifier
+                            .padding(2.dp)
+                            .align(Alignment.CenterHorizontally),
                 )
                 WeeklyMealChart(formattedStatisticsData)
             }
@@ -123,23 +129,23 @@ fun StatisticsScreen(
         item {
             Card(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier = Modifier
-                    .padding(8.dp)
+                modifier =
+                    Modifier
+                        .padding(8.dp),
             )
             {
                 Text(
                     stringResource(R.string.predicted_spending),
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier =
+                        Modifier
+                            .padding(2.dp)
+                            .align(Alignment.CenterHorizontally),
                 )
                 PredictedSpendingChart(selectedMonth, onBudget, formattedStatisticsData)
-
             }
         }
     }
 }
-
 
 private val tokenToIndex by lazy {
     MealSampleBudget.withIndex().associate { (i, meal) -> meal.name to i }
@@ -169,7 +175,7 @@ fun getMealCounts(data: List<EatingStatisticsData>): Triple<Number, Number, Numb
 fun getSpentMoney(
     onBudget: Boolean,
     selectedMonth: String,
-    data: List<EatingStatisticsData>
+    data: List<EatingStatisticsData>,
 ): List<Number> {
     val daysInMonth = Month.valueOf(selectedMonth.uppercase()).maxLength()
     val meals = MealSample.getMeals(onBudget)
@@ -188,5 +194,3 @@ fun getSpentMoney(
     }
     return result
 }
-
-

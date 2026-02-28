@@ -8,13 +8,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.pappt04.menzans.views.common.AutoResizedText
 import com.pappt04.menzans.data.consts.NavigationConstants
+import com.pappt04.menzans.views.common.AutoResizedText
 
 @Composable
-fun MenzaBottomNavigation(
-    navController: NavHostController
-) {
+fun MenzaBottomNavigation(navController: NavHostController) {
     val context = LocalContext.current
 
     val selectedNavigationIndex = remember { mutableIntStateOf(0) }
@@ -29,15 +27,19 @@ fun MenzaBottomNavigation(
                 },
                 icon = {
                     when (selectedNavigationIndex.intValue == index) {
-                        true -> Icon(
-                            imageVector = item.selectedIcon,
-                            contentDescription = item.route
-                        )
+                        true -> {
+                            Icon(
+                                imageVector = item.selectedIcon,
+                                contentDescription = item.route,
+                            )
+                        }
 
-                        else -> Icon(
-                            imageVector = item.unselectedIcon,
-                            contentDescription = item.route
-                        )
+                        else -> {
+                            Icon(
+                                imageVector = item.unselectedIcon,
+                                contentDescription = item.route,
+                            )
+                        }
                     }
                 },
                 label = {

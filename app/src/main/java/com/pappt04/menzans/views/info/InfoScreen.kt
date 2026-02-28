@@ -19,8 +19,6 @@ import com.pappt04.menzans.views.common.AnimatedAppearance
 
 @Composable
 fun InfoScreen(innerpadding: PaddingValues) {
-    val context = LocalContext.current
-
     val tab = remember { mutableIntStateOf(0) }
 
     LazyColumn(modifier = Modifier.padding(innerpadding)) {

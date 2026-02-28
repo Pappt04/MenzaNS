@@ -38,49 +38,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.UsefulLinks
-import androidx.core.net.toUri
-
 
 @Composable
 fun LinkTab(context: Context) {
     Column {
-            FacultyCard(context)
+        FacultyCard(context)
 
-            Card(
-                modifier = Modifier
-                    .padding(10.dp)
-            ) {
-                Column {
-//                    items(DummyData.usefullLinks) { smartlink: DummyData.linkContainer ->
-//                        LinkButton(context, weblink = smartlink)
-//                    }
-                    for (smartlink in UsefulLinks.usefulLinks)
-                        LinkButton(context, weblink = smartlink)
+        Card(
+            modifier =
+                Modifier
+                    .padding(10.dp),
+        ) {
+            Column {
+                for (smartlink in UsefulLinks.usefulLinks) {
+                    LinkButton(context, weblink = smartlink)
                 }
             }
+        }
     }
 }
 
-
 @Composable
-fun LinkButton(context: Context, weblink: UsefulLinks.LinkContainer) {
+fun LinkButton(
+    context: Context,
+    weblink: UsefulLinks.LinkContainer,
+) {
     ElevatedButton(
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
         onClick = {
             openUrl(context, weblink.link)
-        }) {
+        },
+    ) {
         Text(
             text = weblink.name.asString(context),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             fontStyle = FontStyle.Italic,
             fontSize = 16.sp,
-            modifier = Modifier
-                .padding(6.dp)
+            modifier =
+                Modifier
+                    .padding(6.dp),
         )
     }
 }
@@ -92,48 +95,55 @@ fun FacultyCard(context: Context) {
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        modifier = Modifier
-            .padding(8.dp)
-            .clickable { isExpanded = !isExpanded }
+        modifier =
+            Modifier
+                .padding(8.dp)
+                .clickable { isExpanded = !isExpanded },
     )
     {
         Column(
-            modifier = Modifier
-                .padding(10.dp)
+            modifier =
+                Modifier
+                    .padding(10.dp),
         ) {
             Image(
                 painter = painterResource(id = R.drawable.unsimage),
                 contentDescription = stringResource(R.string.university_of_novi_sad),
                 colorFilter = ColorFilter.tint(color = Color.Black),
-                modifier = Modifier
-                    .height(120.dp)
-                    .fillMaxWidth()
-                    .padding(8.dp)
+                modifier =
+                    Modifier
+                        .height(120.dp)
+                        .fillMaxWidth()
+                        .padding(8.dp),
             )
             Text(
                 text = stringResource(R.string.university_of_novi_sad),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
             )
             RotatingIcon(isExpanded)
         }
         AnimatedVisibility(
             isExpanded,
-            modifier = Modifier
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
+            modifier =
+                Modifier
+                    .animateContentSize(
+                        animationSpec =
+                            spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessLow,
+                            ),
+                    ),
         ) {
             Column {
-                for (smartlink in UsefulLinks.allUnsAcRswebsites)
+                for (smartlink in UsefulLinks.allUnsAcRswebsites) {
                     LinkButton(context, weblink = smartlink)
+                }
             }
         }
     }
@@ -145,13 +155,17 @@ fun RotatingIcon(expanded: Boolean) {
     Icon(
         Icons.Filled.ArrowDropDown,
         null,
-        Modifier.rotate(if (expanded) 180f else 0f)
+        Modifier.rotate(if (expanded) 180f else 0f),
     )
 }
 
-fun openUrl(context: Context, link: String) {
+fun openUrl(
+    context: Context,
+    link: String,
+) {
     val uri = link.toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri)
 
     context.startActivity(intent)
 }
+

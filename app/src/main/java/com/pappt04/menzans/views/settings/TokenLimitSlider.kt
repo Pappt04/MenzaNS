@@ -21,44 +21,53 @@ import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
 import kotlin.math.roundToInt
 
-
 @Composable
-fun TokenLimitSlider(sliderpos: MutableFloatState, onChanged: () -> Unit) {
+fun TokenLimitSlider(
+    sliderpos: MutableFloatState,
+    onChanged: () -> Unit,
+) {
     LocalContext.current
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Row()
+        Row
         {
             Text(
                 stringResource(R.string.token_warning),
-                style = MaterialTheme.typography.titleLarge.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
+                style =
+                    MaterialTheme.typography.titleLarge.merge(
+                        TextStyle(
+                            lineHeight = 2.5.em,
+                            platformStyle =
+                                PlatformTextStyle(
+                                    includeFontPadding = false,
+                                ),
+                            lineHeightStyle =
+                                LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Center,
+                                    trim = LineHeightStyle.Trim.None,
+                                ),
                         ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ),
-                modifier = Modifier.weight(4f)
+                    ),
+                modifier = Modifier.weight(4f),
             )
             Text(
                 "${sliderpos.value.roundToInt()}",
-                style = MaterialTheme.typography.titleLarge.merge(
-                    TextStyle(
-                        lineHeight = 2.5.em,
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
+                style =
+                    MaterialTheme.typography.titleLarge.merge(
+                        TextStyle(
+                            lineHeight = 2.5.em,
+                            platformStyle =
+                                PlatformTextStyle(
+                                    includeFontPadding = false,
+                                ),
+                            lineHeightStyle =
+                                LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Center,
+                                    trim = LineHeightStyle.Trim.None,
+                                ),
                         ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Center,
-                            trim = LineHeightStyle.Trim.None
-                        )
-                    )
-                ), modifier = Modifier.weight(1f)
+                    ),
+                modifier = Modifier.weight(1f),
             )
         }
         Slider(
@@ -69,7 +78,8 @@ fun TokenLimitSlider(sliderpos: MutableFloatState, onChanged: () -> Unit) {
             onValueChangeFinished = {
                 onChanged()
             },
-            steps = 9
+            steps = 9,
         )
     }
 }
+

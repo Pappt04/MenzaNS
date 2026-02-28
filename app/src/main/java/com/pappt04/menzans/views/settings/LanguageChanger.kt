@@ -29,7 +29,7 @@ import com.pappt04.menzans.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageChanger(context: Context) {
+fun LanguageChanger() {
     var isExpanded by remember { mutableStateOf(false) }
 
     val localeOptions =
@@ -98,4 +98,3 @@ fun LanguageChanger(context: Context) {
         }
     }
 }
-

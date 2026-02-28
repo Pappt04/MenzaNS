@@ -28,55 +28,64 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import com.pappt04.menzans.R
+import com.pappt04.menzans.data.consts.UsefulLinks
+import com.pappt04.menzans.repository.WaitTimeRepository
+import com.pappt04.menzans.ui.theme.megatitleFont
 import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.views.common.AutoResizedText
-import com.pappt04.menzans.data.consts.UsefulLinks
-import com.pappt04.menzans.ui.theme.megatitleFont
-import androidx.core.net.toUri
-import com.pappt04.menzans.repository.WaitTimeRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenzaTopBar(isFirstWelcome: Boolean, drawerState: DrawerState, screenTitle: String) {
+fun MenzaTopBar(
+    isFirstWelcome: Boolean,
+    drawerState: DrawerState,
+    screenTitle: String,
+) {
     val showtopbarpopup = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val waitTimeRepository: WaitTimeRepository = koinInject()
     val waitTime = remember { mutableIntStateOf(999) }
     val scope = rememberCoroutineScope()
 
-    CenterAlignedTopAppBar(colors = topAppBarColors(
-        titleContentColor = MaterialTheme.colorScheme.primary,
-    ), title = {
-        if (!isFirstWelcome) {
-            Text(
-                screenTitle,
-                softWrap = false,
-                fontSize = 42.sp,
-                fontFamily = megatitleFont,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.basicMarquee()
-            )
-        }
-    }, navigationIcon = {
-        IconButton(onClick = {
-            scope.launch {
-                waitTimeRepository.getWaitTime().onSuccess { wt ->
-                    waitTime.intValue = wt.waittime?.toIntOrNull() ?: waitTime.intValue
-                }
-                val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_TEXT, "Hej! Video sam da ${waitTime.intValue} minuta treba čekati na menzu.")
-                    type = "text/plain"
-                }
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(context, shareIntent, null)
+    CenterAlignedTopAppBar(
+        colors =
+            topAppBarColors(
+                titleContentColor = MaterialTheme.colorScheme.primary,
+            ),
+        title = {
+            if (!isFirstWelcome) {
+                Text(
+                    screenTitle,
+                    softWrap = false,
+                    fontSize = 42.sp,
+                    fontFamily = megatitleFont,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.basicMarquee(),
+                )
             }
-        }) {
-            Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
-        }
+        },
+        navigationIcon = {
+            IconButton(onClick = {
+                scope.launch {
+                    waitTimeRepository.getWaitTime().onSuccess { wt ->
+                        waitTime.intValue = wt.waittime?.toIntOrNull() ?: waitTime.intValue
+                    }
+                    val sendIntent =
+                        Intent(Intent.ACTION_SEND).apply {
+                            putExtra(Intent.EXTRA_TEXT, "Hej! Video sam da ${waitTime.intValue} minuta treba čekati na menzu.")
+                            type = "text/plain"
+                        }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(context, shareIntent, null)
+                }
+            }) {
+                Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+            }
 
 //        IconButton(onClick = {
 //            scope.launch {
@@ -88,35 +97,34 @@ fun MenzaTopBar(isFirstWelcome: Boolean, drawerState: DrawerState, screenTitle: 
 //                contentDescription = stringResource(R.string.menu_description)
 //            )
 //        }
-    },
+        },
         actions = {
-            Box{
+            Box {
                 IconButton(
-                    onClick = { showtopbarpopup.value = !showtopbarpopup.value }
+                    onClick = { showtopbarpopup.value = !showtopbarpopup.value },
                 ) {
                     Icon(
                         Icons.Default.MoreVert,
-                        stringResource(R.string.menu_description)
+                        stringResource(R.string.menu_description),
                     )
                 }
             }
-            TopBarPopup(showtopbarpopup.value){
+            TopBarPopup(showtopbarpopup.value) {
                 showtopbarpopup.value = false
             }
-        }
+        },
     )
 }
-
 
 @Composable
 private fun TopBarPopup(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
 ) {
-    val context= LocalContext.current
-    val urlHandler= LocalUriHandler.current
+    val context = LocalContext.current
+    val urlHandler = LocalUriHandler.current
 
-    DropdownMenu(expanded,onDismissRequest) {
+    DropdownMenu(expanded, onDismissRequest) {
         UsefulLinks.topbarLinks.forEach { item ->
             DropdownMenuItem(text = {
                 AutoResizedText(item.name.asString(context))
@@ -125,11 +133,11 @@ private fun TopBarPopup(
                 onDismissRequest()
             })
         }
-        DropdownMenuItem(text = {
-            AutoResizedText("Delete My Data")
-        },
+        DropdownMenuItem(
+            text = {
+                AutoResizedText("Delete My Data")
+            },
             onClick = {
-
                 val intent = Intent(Intent.ACTION_SENDTO)
                 intent.data = "mailto:".toUri()
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apollo4.labs@gmail.com"))
@@ -139,13 +147,13 @@ private fun TopBarPopup(
                     context.startActivity(intent)
                 } catch (e: Exception) {
                     e.printStackTrace()
-
                 }
-            }
+            },
         )
-        DropdownMenuItem(text = {
-            AutoResizedText("Developer Contact")
-        },
+        DropdownMenuItem(
+            text = {
+                AutoResizedText("Developer Contact")
+            },
             onClick = {
                 val intent = Intent(Intent.ACTION_SENDTO)
                 intent.data = "mailto:".toUri()
@@ -156,10 +164,8 @@ private fun TopBarPopup(
                     context.startActivity(intent)
                 } catch (e: Exception) {
                     e.printStackTrace()
-
                 }
-            }
+            },
         )
-
     }
 }

@@ -35,73 +35,81 @@ import androidx.compose.ui.window.Dialog
 import com.pappt04.menzans.R
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
-
 @Composable
 fun BalanceDialog(
     onDismissRequest: () -> Unit,
     balance: MutableState<Int>,
-    context: Context
+    context: Context,
 ) {
     var mText by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.3f)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.3f)
+                    .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = stringResource(R.string.add_to_balance),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                 )
                 Row {
                     TextField(
                         value = mText,
                         onValueChange = { mText = it },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        textStyle = LocalTextStyle.current.copy(
-                            textAlign = TextAlign.Right,
-                            fontSize = 22.sp
-                        ),
+                        textStyle =
+                            LocalTextStyle.current.copy(
+                                textAlign = TextAlign.Right,
+                                fontSize = 22.sp,
+                            ),
                         prefix = {
-                            Text(text = "+",
-                                fontSize = 22.sp
+                            Text(
+                                text = "+",
+                                fontSize = 22.sp,
                             )
                         },
                         suffix = {
-                            Text(stringResource(R.string.rsd),
-                                fontSize = 22.sp
+                            Text(
+                                stringResource(R.string.rsd),
+                                fontSize = 22.sp,
                             )
                         },
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(0.8f),
                     )
                 }
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     Button(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.your_balance_is_still_rsd, balance.value.toString()),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast
+                                .makeText(
+                                    context,
+                                    context.getString(R.string.your_balance_is_still_rsd, balance.value.toString()),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             onDismissRequest()
                         },
                     ) {
@@ -110,15 +118,17 @@ fun BalanceDialog(
                     Button(onClick = {
                         try {
                             balance.value += mText.toInt()
-                            if (balance.value < 0)
+                            if (balance.value < 0) {
                                 balance.value = 0
+                            }
                         } catch (_: Exception) {
                         }
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.your_balance_is_now_rsd, balance.value.toString()),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast
+                            .makeText(
+                                context,
+                                context.getString(R.string.your_balance_is_now_rsd, balance.value.toString()),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                         onDismissRequest()
                     }) {
                         Text(stringResource(R.string.confirm))
@@ -129,16 +139,15 @@ fun BalanceDialog(
     }
 }
 
-
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Dark Mode",
 )
 @Composable
 fun PreviewBalanceDialog() {
     MenzaNSTheme {
-        //BalanceDialog(onDismissRequest = {}, 1500, LocalContext.current, "breakfast")
+        // BalanceDialog(onDismissRequest = {}, 1500, LocalContext.current, "breakfast")
     }
 }

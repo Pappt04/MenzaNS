@@ -27,9 +27,12 @@ import java.time.LocalDate
 import java.time.Month
 import java.util.Locale
 
-
 @Composable
-fun PredictedSpendingChart(selectedMonth: String, onBudget: Boolean, data: List<EatingStatisticsData>) {
+fun PredictedSpendingChart(
+    selectedMonth: String,
+    onBudget: Boolean,
+    data: List<EatingStatisticsData>,
+) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
     LaunchedEffect(data, selectedMonth, onBudget) {
@@ -46,32 +49,33 @@ fun PredictedSpendingChart(selectedMonth: String, onBudget: Boolean, data: List<
     val marker = rememberMarker()
     CartesianChartHost(
         chart =
-        rememberCartesianChart(
-            rememberLineCartesianLayer(
-                LineCartesianLayer.LineProvider.series(
-                    LineCartesianLayer.rememberLine(
-                        fill = remember { LineCartesianLayer.LineFill.single(fill(c)) },
-                        pointConnector = remember {
-                            LineCartesianLayer.PointConnector.cubic(
-                                curvature = 0f
-                            )
-                        },
-                    )
-                )
+            rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    LineCartesianLayer.LineProvider.series(
+                        LineCartesianLayer.rememberLine(
+                            fill = remember { LineCartesianLayer.LineFill.single(fill(c)) },
+                            pointConnector =
+                                remember {
+                                    LineCartesianLayer.PointConnector.cubic(
+                                        curvature = 0f,
+                                    )
+                                },
+                        ),
+                    ),
+                ),
+                startAxis = VerticalAxis.rememberStart(),
+                bottomAxis =
+                    HorizontalAxis.rememberBottom(
+                        guideline = null,
+                        itemPlacer = remember { HorizontalAxis.ItemPlacer.segmented() },
+                    ),
+                marker = marker,
+                layerPadding =
+                    cartesianLayerPadding(scalableStartPadding = 16.dp, scalableEndPadding = 16.dp),
+                persistentMarkers = rememberExtraLambda(marker) { marker at LocalDate.now().dayOfMonth },
             ),
-            startAxis = VerticalAxis.rememberStart(),
-            bottomAxis =
-            HorizontalAxis.rememberBottom(
-                guideline = null,
-                itemPlacer = remember { HorizontalAxis.ItemPlacer.segmented() },
-            ),
-            marker = marker,
-            layerPadding =
-            cartesianLayerPadding(scalableStartPadding = 16.dp, scalableEndPadding = 16.dp),
-            persistentMarkers = rememberExtraLambda(marker) { marker at LocalDate.now().dayOfMonth },
-        ),
         modelProducer = modelProducer,
         zoomState = rememberVicoZoomState(zoomEnabled = false),
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier.padding(4.dp),
     )
 }

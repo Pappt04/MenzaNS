@@ -18,30 +18,39 @@ import androidx.compose.ui.unit.em
 import com.pappt04.menzans.R
 
 @Composable
-fun PriceSwitcher(onBudget: MutableState<Boolean>, onChanged: () -> Unit) {
+fun PriceSwitcher(
+    onBudget: MutableState<Boolean>,
+    onChanged: () -> Unit,
+) {
     Row(
-        modifier = Modifier
-            .padding(10.dp)
+        modifier =
+            Modifier
+                .padding(10.dp),
     ) {
         Text(
-            text=when(onBudget.value){
-                true -> stringResource(R.string.budget)
-                else -> stringResource(R.string.self_financing)
-            },
-            style = MaterialTheme.typography.titleLarge.merge(
-                TextStyle(
-                    lineHeight = 2.5.em,
-                    platformStyle = PlatformTextStyle(
-                        includeFontPadding = false
+            text =
+                when (onBudget.value) {
+                    true -> stringResource(R.string.budget)
+                    else -> stringResource(R.string.self_financing)
+                },
+            style =
+                MaterialTheme.typography.titleLarge.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle =
+                            PlatformTextStyle(
+                                includeFontPadding = false,
+                            ),
+                        lineHeightStyle =
+                            LineHeightStyle(
+                                alignment = LineHeightStyle.Alignment.Center,
+                                trim = LineHeightStyle.Trim.None,
+                            ),
                     ),
-                    lineHeightStyle = LineHeightStyle(
-                        alignment = LineHeightStyle.Alignment.Center,
-                        trim = LineHeightStyle.Trim.None
-                    )
-                )
-            ),
-            modifier = Modifier
-                .weight(4f)
+                ),
+            modifier =
+                Modifier
+                    .weight(4f),
         )
         Switch(
             checked = onBudget.value,
@@ -50,8 +59,10 @@ fun PriceSwitcher(onBudget: MutableState<Boolean>, onChanged: () -> Unit) {
 
                 onChanged()
             },
-            modifier = Modifier
-                .weight(1f)
+            modifier =
+                Modifier
+                    .weight(1f),
         )
     }
 }
+

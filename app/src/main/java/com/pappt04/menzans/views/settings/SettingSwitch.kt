@@ -13,28 +13,38 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+
 @Composable
-fun SettingSwitch(pref: MutableState<Boolean>, name: String, onChanged: () -> Unit) {
+fun SettingSwitch(
+    pref: MutableState<Boolean>,
+    name: String,
+    onChanged: () -> Unit,
+) {
     Row(
-        modifier = Modifier
-            .padding(10.dp)
+        modifier =
+            Modifier
+                .padding(10.dp),
     ) {
         Text(
             name,
-            style = MaterialTheme.typography.titleLarge.merge(
-                TextStyle(
-                    lineHeight = 2.5.em,
-                    platformStyle = PlatformTextStyle(
-                        includeFontPadding = false
+            style =
+                MaterialTheme.typography.titleLarge.merge(
+                    TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle =
+                            PlatformTextStyle(
+                                includeFontPadding = false,
+                            ),
+                        lineHeightStyle =
+                            LineHeightStyle(
+                                alignment = LineHeightStyle.Alignment.Center,
+                                trim = LineHeightStyle.Trim.None,
+                            ),
                     ),
-                    lineHeightStyle = LineHeightStyle(
-                        alignment = LineHeightStyle.Alignment.Center,
-                        trim = LineHeightStyle.Trim.None
-                    )
-                )
-            ),
-            modifier = Modifier
-                .weight(4f)
+                ),
+            modifier =
+                Modifier
+                    .weight(4f),
         )
         Switch(
             checked = pref.value,
@@ -42,8 +52,9 @@ fun SettingSwitch(pref: MutableState<Boolean>, name: String, onChanged: () -> Un
                 pref.value = it
                 onChanged()
             },
-            modifier = Modifier
-                .weight(1f)
+            modifier =
+                Modifier
+                    .weight(1f),
         )
     }
 }

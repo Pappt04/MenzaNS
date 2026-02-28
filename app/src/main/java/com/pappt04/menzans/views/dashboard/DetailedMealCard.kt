@@ -1,6 +1,5 @@
 package com.pappt04.menzans.views.dashboard
 
-
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.models.MealData
 import java.time.LocalDate
 import java.util.Date
-
 
 @SuppressLint("DefaultLocale")
 @Composable
@@ -121,40 +119,37 @@ fun DetailedMealCard(meal: MealData, remaining: MutableIntState, balance: Mutabl
                             onClick = {
                                 if (remaining.intValue > 0) {
                                     remaining.intValue--
+                                val statisticsMeal = EatingStatisticsData(
+                                    LocalDate.now(),
+                                    timeFormat.format(Date()),
+                                    timeFormat.format(Date()),
+                                    meal.name
+                                )
+                                onConsumeMeal(statisticsMeal)
+                            }
+                            onChanged()
+                        },
+                    ) {
+                        Text(stringResource(R.string.consume))
+                    }
 
-                                    val statisticsMeal = EatingStatisticsData(
-                                        LocalDate.now(),
-                                        timeFormat.format(Date()),
-                                        timeFormat.format(Date()),
-                                        meal.name
-                                    )
-                                    onConsumeMeal(statisticsMeal)
-                                }
-                                onChanged()
-                            },
-                        ) {
-                            Text(stringResource(R.string.consume))
-                        }
-
-                        Button(onClick = {
-                            if (balance.value > meal.price) {
-                                balance.value -= meal.price
-                                remaining.intValue++
-                                onChanged()
-                            } else
+                    Button(onClick = {
+                        if (balance.value > meal.price) {
+                            balance.value -= meal.price
+                            remaining.intValue++
+                            onChanged()
+                        } else
                             {
                                 noFunds()
                             }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = null,
-                            )
-                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null,
+                        )
                     }
                 }
-
+            }
         }
-
     }
 }

@@ -28,7 +28,10 @@ import kotlinx.coroutines.flow.first
 // ── Tokens Widget ───────────────────────────────────────────────────────────
 
 object TokensWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
         val data = MealDataStoreManager(context).getFromDataStore().first()
         provideContent {
             GlanceTheme {
@@ -37,11 +40,12 @@ object TokensWidget : GlanceAppWidget() {
                         Text(
                             "Tokens",
                             modifier = GlanceModifier.padding(horizontal = 16.dp, vertical = 10.dp),
-                            style = TextStyle(
-                                color = GlanceTheme.colors.onSurface,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                            ),
+                            style =
+                                TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
                         )
                     },
                     backgroundColor = GlanceTheme.colors.widgetBackground,
@@ -65,27 +69,33 @@ object TokensWidget : GlanceAppWidget() {
 }
 
 @Composable
-private fun TokenRow(label: String, count: Int, bold: Boolean = false) {
+private fun TokenRow(
+    label: String,
+    count: Int,
+    bold: Boolean = false,
+) {
     Row(
         modifier = GlanceModifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             label,
-            style = TextStyle(
-                color = GlanceTheme.colors.onSurface,
-                fontSize = 14.sp,
-                fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
-            ),
+            style =
+                TextStyle(
+                    color = GlanceTheme.colors.onSurface,
+                    fontSize = 14.sp,
+                    fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
+                ),
         )
         Spacer(GlanceModifier.defaultWeight())
         Text(
             "$count",
-            style = TextStyle(
-                color = GlanceTheme.colors.onSurface,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-            ),
+            style =
+                TextStyle(
+                    color = GlanceTheme.colors.onSurface,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
         )
     }
 }
@@ -97,7 +107,10 @@ class TokensWidgetReceiver : GlanceAppWidgetReceiver() {
 // ── Wait Time Widget ────────────────────────────────────────────────────────
 
 object WaitTimeWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
         var minutes = -1
         var lineLength = ""
         try {
@@ -109,7 +122,8 @@ object WaitTimeWidget : GlanceAppWidget() {
                     lineLength = it.linelength ?: ""
                 }
             }
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
 
         provideContent {
             GlanceTheme {
@@ -118,11 +132,12 @@ object WaitTimeWidget : GlanceAppWidget() {
                         Text(
                             "Canteen",
                             modifier = GlanceModifier.padding(horizontal = 16.dp, vertical = 10.dp),
-                            style = TextStyle(
-                                color = GlanceTheme.colors.onSurface,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                            ),
+                            style =
+                                TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
                         )
                     },
                     backgroundColor = GlanceTheme.colors.widgetBackground,
@@ -135,43 +150,48 @@ object WaitTimeWidget : GlanceAppWidget() {
                         if (minutes >= 0) {
                             Text(
                                 "$minutes",
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.primary,
-                                    fontSize = 40.sp,
-                                    fontWeight = FontWeight.Bold,
-                                ),
+                                style =
+                                    TextStyle(
+                                        color = GlanceTheme.colors.primary,
+                                        fontSize = 40.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    ),
                             )
                             Text(
                                 "min wait",
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.onSurface,
-                                    fontSize = 14.sp,
-                                ),
+                                style =
+                                    TextStyle(
+                                        color = GlanceTheme.colors.onSurface,
+                                        fontSize = 14.sp,
+                                    ),
                             )
                             if (lineLength.isNotEmpty()) {
                                 Spacer(GlanceModifier.height(6.dp))
                                 Text(
                                     "$lineLength people in line",
-                                    style = TextStyle(
-                                        color = GlanceTheme.colors.secondary,
-                                        fontSize = 12.sp,
-                                    ),
+                                    style =
+                                        TextStyle(
+                                            color = GlanceTheme.colors.secondary,
+                                            fontSize = 12.sp,
+                                        ),
                                 )
                             }
                         } else {
                             Text(
                                 "—",
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.onSurface,
-                                    fontSize = 32.sp,
-                                ),
+                                style =
+                                    TextStyle(
+                                        color = GlanceTheme.colors.onSurface,
+                                        fontSize = 32.sp,
+                                    ),
                             )
                             Text(
                                 "No data",
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.secondary,
-                                    fontSize = 14.sp,
-                                ),
+                                style =
+                                    TextStyle(
+                                        color = GlanceTheme.colors.secondary,
+                                        fontSize = 14.sp,
+                                    ),
                             )
                         }
                     }
@@ -184,4 +204,3 @@ object WaitTimeWidget : GlanceAppWidget() {
 class WaitTimeWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget = WaitTimeWidget
 }
-

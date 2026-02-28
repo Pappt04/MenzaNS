@@ -38,12 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.R
-import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.data.consts.PermissionData
 import com.pappt04.menzans.data.consts.PermissionData.permissionsNeeded
+import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.viewmodels.MainViewModel
 import kotlin.math.roundToInt
-
 
 @Composable
 fun SettingsScreen(
@@ -64,10 +63,11 @@ fun SettingsScreen(
     LaunchedEffect(state.onBudgetPricing) { onBudget.value = state.onBudgetPricing }
 
     LazyColumn(
-        modifier = Modifier
-            .padding(innerpadding)
-            .fillMaxWidth()
-            .fillMaxHeight()
+        modifier =
+            Modifier
+                .padding(innerpadding)
+                .fillMaxWidth()
+                .fillMaxHeight(),
     ) {
         item {
             DisclaimerCard()
@@ -106,7 +106,7 @@ fun SettingsScreen(
         }
         item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
         items(permissionsNeeded) { permission ->
-            var i= 0
+            var i = 0
             for (p in permissionsNeeded) {
                 if (p == permission) {
                     break
@@ -116,39 +116,42 @@ fun SettingsScreen(
             }
             PermissionSwitch(context, PermissionData.permissionExplanations[i].explanation, permission)
         }
-
     }
 }
 
-
-
 @Composable
-fun PermissionSwitch(context: Context, permissionName: Uitext, permissionType: String) {
+fun PermissionSwitch(
+    context: Context,
+    permissionName: Uitext,
+    permissionType: String,
+) {
     var hasPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
                 context,
-                permissionType
-            ) == PackageManager.PERMISSION_GRANTED
+                permissionType,
+            ) == PackageManager.PERMISSION_GRANTED,
         )
     }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            hasPermission = isGranted
-        }
-    )
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted ->
+                hasPermission = isGranted
+            },
+        )
 
     Card(
-        modifier = Modifier
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .padding(8.dp),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row {
                 Text(
                     stringResource(R.string.request_permission, permissionType.split(".").last()),
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.weight(4f)
+                    modifier = Modifier.weight(4f),
                 )
                 Switch(
                     checked = hasPermission,
@@ -156,22 +159,23 @@ fun PermissionSwitch(context: Context, permissionName: Uitext, permissionType: S
                         hasPermission = it
                         if (hasPermission) {
                             permissionLauncher.launch(permissionType)
-
                         }
                     },
-                    thumbContent = if (hasPermission) {
-                        {
-                            Icon(
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        }
-                    } else {
-                        null
-                    },
-                    modifier = Modifier
-                        .weight(1f)
+                    thumbContent =
+                        if (hasPermission) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                    modifier =
+                        Modifier
+                            .weight(1f),
                 )
             }
             HorizontalDivider()
@@ -180,35 +184,36 @@ fun PermissionSwitch(context: Context, permissionName: Uitext, permissionType: S
     }
 }
 
-
 @Composable
 fun DisclaimerCard() {
     Card(
-        modifier = Modifier
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .padding(8.dp),
     ) {
         Text(
             text = stringResource(R.string.disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
         )
     }
 }
 
-//@Preview(name = "Light Mode")
-//@Preview(
+// @Preview(name = "Light Mode")
+// @Preview(
 //    uiMode = Configuration.UI_MODE_NIGHT_YES,
 //    showBackground = true,
 //    name = "Dark Mode"
-//)
-//@Composable
-//fun PreviewSettingsScreen() {
+// )
+// @Composable
+// fun PreviewSettingsScreen() {
 //    MenzaNSTheme {
 //        val dark = remember { mutableStateOf(false) }
 //        SettingsScreen(PaddingValues(20.dp), dark, dark, dark)
 //    }
-//}
+// }

@@ -31,47 +31,37 @@ import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
 
-
-/*
-    surname: String,
-    name: String,
-    faculty: String,
-    birth: String,
-    issued: String,
-    valid: String,
-    index: String,
-    cardnumber: String,
-    isicnumber: String,
-    context: Context
- */
-
 @Composable
 fun MenzaCard(cardData: List<String>) {
     OutlinedCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Cyan,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color.Cyan,
+            ),
         border = BorderStroke(1.dp, Color.Black),
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
     ) {
         Column {
             Row {
                 Image(
                     painter = painterResource(id = R.drawable.isic_logo),
                     contentDescription = "ISIC Logo",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .padding(4.dp)
-                        .weight(1f)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .padding(4.dp)
+                            .weight(1f),
                 )
                 Text(
-                    text = stringResource(R.string.isic_card_number)+ cardData[8],
-                    modifier = Modifier
-                        .padding(8.dp)
+                    text = stringResource(R.string.isic_card_number) + cardData[8],
+                    modifier =
+                        Modifier
+                            .padding(8.dp),
                 )
             }
             Row {
@@ -79,18 +69,20 @@ fun MenzaCard(cardData: List<String>) {
                     imageVector = Icons.Filled.Email,
                     contentDescription = "Symbolic Chip in card",
                     tint = Color.Yellow,
-                    modifier = Modifier
-                        .weight(0.6f)
-                        .height(70.dp)
+                    modifier =
+                        Modifier
+                            .weight(0.6f)
+                            .height(70.dp),
                 )
                 Image(
                     painter = painterResource(id = R.drawable.eyca_logo),
                     contentDescription = "EYC logo",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .padding(4.dp)
-                        .weight(0.6f)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(4.dp)
+                            .weight(0.6f),
                 )
                 Text(
                     "Europen \n Youth card",
@@ -101,19 +93,21 @@ fun MenzaCard(cardData: List<String>) {
                 Image(
                     painter = painterResource(id = R.drawable.coat_of_arms_of_serbia_small),
                     contentDescription = "Coat of arms ",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .padding(4.dp)
-                        .weight(0.6f)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(4.dp)
+                            .weight(0.6f),
                 )
                 Icon(
                     imageVector = Icons.Filled.AccountBox,
                     contentDescription = "Profile photo",
                     tint = Color.Black,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .weight(1f)
+                    modifier =
+                        Modifier
+                            .size(80.dp)
+                            .weight(1f),
                 )
             }
             OutlinedTextField(
@@ -121,72 +115,78 @@ fun MenzaCard(cardData: List<String>) {
                 onValueChange = { print("Clicked") },
                 label = { Text(text = "Studies at") },
                 readOnly = true,
-                textStyle = LocalTextStyle.current.copy(
-                    fontSize = 22.sp
-                ),
-                modifier = Modifier
-                    .padding(4.dp)
+                textStyle =
+                    LocalTextStyle.current.copy(
+                        fontSize = 22.sp,
+                    ),
+                modifier =
+                    Modifier
+                        .padding(4.dp),
             )
-            Row()
+            Row
             {
                 OutlinedTextField(
                     value = cardData[1] + " " + cardData[0],
                     onValueChange = { print("Clicked") },
                     label = { Text(text = "Cardholder name") },
                     readOnly = true,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1.5f),
+                    modifier =
+                        Modifier
+                            .padding(4.dp)
+                            .weight(1.5f),
                 )
                 OutlinedTextField(
                     value = cardData[4],
                     onValueChange = { print("Clicked") },
                     label = { Text(text = "Issued") },
                     readOnly = true,
-
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .padding(4.dp)
+                            .weight(1f),
                 )
                 OutlinedTextField(
                     value = cardData[6],
                     onValueChange = { print("Clicked") },
                     label = { Text(text = "Index") },
                     readOnly = true,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .padding(4.dp)
+                            .weight(1f),
                 )
             }
-            Row()
+            Row
             {
                 OutlinedTextField(
                     value = cardData[3],
                     onValueChange = { print("Clicked") },
                     label = { Text(text = "Date of birth") },
                     readOnly = true,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1.5f),
+                    modifier =
+                        Modifier
+                            .padding(4.dp)
+                            .weight(1.5f),
                 )
                 OutlinedTextField(
                     value = cardData[5],
                     onValueChange = { print("Clicked") },
                     label = { Text(text = "Valid until") },
                     readOnly = true,
-
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .padding(4.dp)
+                            .weight(1f),
                 )
                 OutlinedTextField(
                     value = cardData[8],
                     onValueChange = { print("Clicked") },
                     label = { Text(text = "Card number") },
                     readOnly = true,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .padding(4.dp)
+                            .weight(1f),
                 )
             }
         }
@@ -197,7 +197,7 @@ fun MenzaCard(cardData: List<String>) {
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Dark Mode",
 )
 @Composable
 fun PreviewMenzaCard() {
@@ -212,8 +212,8 @@ fun PreviewMenzaCard() {
                 "2024 10 31",
                 "RA4/2022",
                 "212301047",
-                "S381000235412P"
-            )
+                "S381000235412P",
+            ),
         )
     }
 }

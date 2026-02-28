@@ -32,8 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.views.common.AnimatedNumber
 import com.pappt04.menzans.repository.WaitTimeRepository
+import com.pappt04.menzans.views.common.AnimatedNumber
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
@@ -43,29 +43,32 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
     val trajectory = remember { mutableIntStateOf(0) }
     val waitTimeRepository: WaitTimeRepository = koinInject()
 
-    val bscolor = when (trajectory.intValue) {
-        -1 -> Color.Green
-        1 -> Color.Red
-        else -> Color.Gray
-    }
+    val bscolor =
+        when (trajectory.intValue) {
+            -1 -> Color.Green
+            1 -> Color.Red
+            else -> Color.Gray
+        }
 
-    val arrowIcon = when (trajectory.intValue) {
-        1 -> Icons.Filled.KeyboardArrowUp
-        -1 -> Icons.Filled.KeyboardArrowDown
-        else -> Icons.Filled.Remove
-    }
+    val arrowIcon =
+        when (trajectory.intValue) {
+            1 -> Icons.Filled.KeyboardArrowUp
+            -1 -> Icons.Filled.KeyboardArrowDown
+            else -> Icons.Filled.Remove
+        }
 
     suspend fun fetch() {
         val result = waitTimeRepository.getWaitTime()
         result.onSuccess { wt ->
             val temp = waittime.intValue
             waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
-            trajectory.intValue = when {
-                temp == 999 -> wt.trajectory?.toIntOrNull() ?: 0
-                temp < waittime.intValue -> 1
-                temp > waittime.intValue -> -1
-                else -> 0
-            }
+            trajectory.intValue =
+                when {
+                    temp == 999 -> wt.trajectory?.toIntOrNull() ?: 0
+                    temp < waittime.intValue -> 1
+                    temp > waittime.intValue -> -1
+                    else -> 0
+                }
         }
     }
 
@@ -80,32 +83,35 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
     }
 
     Card(
-        colors = CardColors(
-            MaterialTheme.colorScheme.tertiaryContainer,
-            CardDefaults.cardColors().contentColor,
-            CardDefaults.cardColors().disabledContainerColor,
-            CardDefaults.cardColors().disabledContentColor
-        ),
+        colors =
+            CardColors(
+                MaterialTheme.colorScheme.tertiaryContainer,
+                CardDefaults.cardColors().contentColor,
+                CardDefaults.cardColors().disabledContainerColor,
+                CardDefaults.cardColors().disabledContentColor,
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.3f)
-            .padding(8.dp)
-            .clickable { Log.d("WAIT_TIME", "Manual refresh request sent") },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .padding(8.dp)
+                .clickable { Log.d("WAIT_TIME", "Manual refresh request sent") },
     ) {
         Column {
             Column(
                 modifier = Modifier.padding(8.dp),
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.Start,
             ) {
                 Text(
                     text = stringResource(R.string.wait_time),
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp),
                 )
                 Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     if (waittime.intValue != 999) {
@@ -122,7 +128,7 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
                             textAlign = TextAlign.Center,
                             fontSize = 42.sp,
                             style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(2.dp)
+                            modifier = Modifier.padding(2.dp),
                         )
                     } else {
                         Text(
@@ -137,12 +143,12 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
                         text = " min",
                         fontSize = 40.sp,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(2.dp)
+                        modifier = Modifier.padding(2.dp),
                     )
                     Icon(
                         imageVector = arrowIcon,
                         contentDescription = if (trajectory.intValue == -1) "Downward Trend" else "Upward Trend",
-                        tint = bscolor
+                        tint = bscolor,
                     )
                 }
             }

@@ -28,34 +28,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
-import com.pappt04.menzans.views.common.AnimatedNumber
-import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
+import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import com.pappt04.menzans.views.common.AnimatedNumber
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun MealCard(meal: MealData, remaining: MutableIntState,icon: ImageVector, onClicked: () -> Unit) {
+fun MealCard(
+    meal: MealData,
+    remaining: MutableIntState,
+    icon: ImageVector,
+    onClicked: () -> Unit,
+) {
     val context = LocalContext.current
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        modifier = Modifier
-            .padding(8.dp)
-            .clickable {
-                onClicked()
-            }
+        modifier =
+            Modifier
+                .padding(8.dp)
+                .clickable {
+                    onClicked()
+                },
     ) {
         Column(
-            modifier = Modifier
-                .padding(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(R.string.menu_description),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             )
             Text(
                 text = meal.name.asString(context),
@@ -65,7 +71,7 @@ fun MealCard(meal: MealData, remaining: MutableIntState,icon: ImageVector, onCli
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
                     text = stringResource(R.string.remaining) + ": ",
@@ -78,18 +84,17 @@ fun MealCard(meal: MealData, remaining: MutableIntState,icon: ImageVector, onCli
     }
 }
 
-
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
-    name = "Dark Mode"
+    name = "Dark Mode",
 )
 @Composable
 fun PreviewMealCard() {
     MenzaNSTheme {
         remember { mutableIntStateOf(500) }
         val remaining = remember { mutableIntStateOf(5) }
-        MealCard(MealSampleBudget[0], remaining, Icons.Default.Coffee ) {}
+        MealCard(MealSampleBudget[0], remaining, Icons.Default.Coffee) {}
     }
 }

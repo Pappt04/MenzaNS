@@ -17,14 +17,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
+import com.pappt04.menzans.viewmodels.MainViewModel
 import com.pappt04.menzans.views.card.CardScreen
-import com.pappt04.menzans.views.info.InfoScreen
 import com.pappt04.menzans.views.common.AnimatedAppearance
 import com.pappt04.menzans.views.dashboard.DashboardScreen
+import com.pappt04.menzans.views.info.InfoScreen
 import com.pappt04.menzans.views.settings.SettingsScreen
 import com.pappt04.menzans.views.statistics.StatisticsScreen
 import com.pappt04.menzans.views.welcome.WelcomeScreen
-import com.pappt04.menzans.viewmodels.MainViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -48,7 +48,7 @@ fun MenzaScaffold(
         snackbarHost = {
             SnackbarHost(
                 snackbarHostState,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
         bottomBar = {
@@ -57,7 +57,7 @@ fun MenzaScaffold(
             ) {
                 MenzaBottomNavigation(bottomController)
             }
-        }
+        },
     ) { innerpadding ->
 
         val graph =
@@ -68,10 +68,11 @@ fun MenzaScaffold(
                     } else {
                         AnimatedAppearance(
                             delay = 5.milliseconds,
-                            enter = slideInVertically { it }) {
+                            enter = slideInVertically { it },
+                        ) {
                             DashboardScreen(
                                 padding = innerpadding,
-                                snackbar = snackbarHostState
+                                snackbar = snackbarHostState,
                             )
                         }
                     }

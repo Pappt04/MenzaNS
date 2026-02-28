@@ -39,7 +39,7 @@ internal fun rememberMarker(
             color = MaterialTheme.colorScheme.surfaceBright,
             shape = labelBackgroundShape,
             shadow =
-            shadow(radius = LABEL_BACKGROUND_SHADOW_RADIUS_DP.dp, dy = LABEL_BACKGROUND_SHADOW_DY_DP.dp),
+                shadow(radius = LABEL_BACKGROUND_SHADOW_RADIUS_DP.dp, dy = LABEL_BACKGROUND_SHADOW_DY_DP.dp),
         )
     val label =
         rememberTextComponent(
@@ -57,11 +57,11 @@ internal fun rememberMarker(
         rememberLayeredComponent(
             rear = indicatorRearComponent,
             front =
-            rememberLayeredComponent(
-                rear = indicatorCenterComponent,
-                front = indicatorFrontComponent,
-                padding = dimensions(5.dp),
-            ),
+                rememberLayeredComponent(
+                    rear = indicatorCenterComponent,
+                    front = indicatorFrontComponent,
+                    padding = dimensions(5.dp),
+                ),
             padding = dimensions(10.dp),
         )
     val guideline = rememberAxisGuidelineComponent()
@@ -72,27 +72,27 @@ internal fun rememberMarker(
                 label = label,
                 labelPosition = labelPosition,
                 indicator =
-                if (showIndicator) {
-                    { color ->
-                        LayeredComponent(
-                            rear = ShapeComponent(color.copyColor(alpha = 0.15f), CorneredShape.Pill),
-                            front =
+                    if (showIndicator) {
+                        { color ->
                             LayeredComponent(
-                                rear =
-                                ShapeComponent(
-                                    color = color,
-                                    shape = CorneredShape.Pill,
-                                    shadow = Shadow(radiusDp = 12f, color = color),
-                                ),
-                                front = indicatorFrontComponent,
-                                padding = dimensions(5.dp),
-                            ),
-                            padding = dimensions(10.dp),
-                        )
-                    }
-                } else {
-                    null
-                },
+                                rear = ShapeComponent(color.copyColor(alpha = 0.15f), CorneredShape.Pill),
+                                front =
+                                    LayeredComponent(
+                                        rear =
+                                            ShapeComponent(
+                                                color = color,
+                                                shape = CorneredShape.Pill,
+                                                shadow = Shadow(radiusDp = 12f, color = color),
+                                            ),
+                                        front = indicatorFrontComponent,
+                                        padding = dimensions(5.dp),
+                                    ),
+                                padding = dimensions(10.dp),
+                            )
+                        }
+                    } else {
+                        null
+                    },
                 indicatorSizeDp = 36f,
                 guideline = guideline,
             ) {
@@ -109,8 +109,15 @@ internal fun rememberMarker(
                     var bottomInset = (baseShadowInsetDp + LABEL_BACKGROUND_SHADOW_DY_DP).pixels
                     when (labelPosition) {
                         LabelPosition.Top,
-                        LabelPosition.AbovePoint -> topInset += label.getHeight(context) + tickSizeDp.pixels
-                        LabelPosition.Bottom -> bottomInset += label.getHeight(context) + tickSizeDp.pixels
+                        LabelPosition.AbovePoint,
+                        -> {
+                            topInset += label.getHeight(context) + tickSizeDp.pixels
+                        }
+
+                        LabelPosition.Bottom -> {
+                            bottomInset += label.getHeight(context) + tickSizeDp.pixels
+                        }
+
                         LabelPosition.AroundPoint -> {}
                     }
                     insets.ensureValuesAtLeast(top = topInset, bottom = bottomInset)

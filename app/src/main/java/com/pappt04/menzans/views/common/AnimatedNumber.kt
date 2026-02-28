@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 
-
 @Composable
 fun AnimatedNumber(
     number: MutableIntState,
@@ -41,7 +40,6 @@ fun AnimatedNumber(
     style: TextStyle = LocalTextStyle.current,
     modifier: Modifier = Modifier,
 ) {
-
     var oldCount by remember {
         mutableIntStateOf(number.intValue)
     }
@@ -52,33 +50,34 @@ fun AnimatedNumber(
         val countString = number.intValue.toString()
         val oldCountString = oldCount.toString()
 
-        for(i in countString.indices) {
+        for (i in countString.indices) {
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
-            val char = if(oldChar == newChar) {
-                oldCountString[i]
-            } else {
-                countString[i]
-            }
+            val char =
+                if (oldChar == newChar) {
+                    oldCountString[i]
+                } else {
+                    countString[i]
+                }
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {
                     slideInVertically { it } togetherWith slideOutVertically { -it }
-                }
-            ) { char ->
+                },
+            ) { chr ->
                 Text(
-                    text = char.toString(),
+                    text = chr.toString(),
                     softWrap = false,
                     color = color,
                     fontSize = fontSize,
                     fontStyle = fontStyle,
                     fontWeight = fontWeight,
-                    fontFamily= fontFamily,
-                    letterSpacing=letterSpacing,
+                    fontFamily = fontFamily,
+                    letterSpacing = letterSpacing,
                     textDecoration = textDecoration,
                     textAlign = textAlign,
-                    lineHeight=lineHeight,
-                    style= style,
+                    lineHeight = lineHeight,
+                    style = style,
                     modifier = modifier,
                 )
             }

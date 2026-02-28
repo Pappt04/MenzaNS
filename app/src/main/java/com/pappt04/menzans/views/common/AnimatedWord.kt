@@ -20,13 +20,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import com.pappt04.menzans.models.Uitext
 
-
 @Composable
 fun AnimatedWord(cword: MutableState<Uitext>) {
+    val str = cword.value.asString(LocalContext.current)
 
-    val str= cword.value.asString(LocalContext.current)
-
-    val word= remember { mutableStateOf(str) }
+    val word = remember { mutableStateOf(str) }
 
     var oldCount by remember {
         mutableStateOf(word.value)
@@ -38,25 +36,26 @@ fun AnimatedWord(cword: MutableState<Uitext>) {
         val countString = word.value
         val oldCountString = oldCount
 
-        for(i in countString.indices) {
+        for (i in countString.indices) {
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
-            val char = if(oldChar == newChar) {
-                oldCountString[i]
-            } else {
-                countString[i]
-            }
+            val char =
+                if (oldChar == newChar) {
+                    oldCountString[i]
+                } else {
+                    countString[i]
+                }
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {
                     slideInVertically { it } togetherWith slideOutVertically { -it }
-                }
+                },
             ) { chr ->
                 Text(
                     text = chr.toString(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium,
-                    softWrap = false
+                    softWrap = false,
                 )
             }
         }

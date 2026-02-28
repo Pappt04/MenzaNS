@@ -1,6 +1,5 @@
 package com.pappt04.menzans.views.common
 
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
@@ -19,7 +18,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AnimatedAppearance(
-    delay: Duration= 0.milliseconds,
+    delay: Duration = 0.milliseconds,
     modifier: Modifier = Modifier,
     enter: EnterTransition = fadeIn() + expandIn(),
     label: String = "AnimatedAppearance",
