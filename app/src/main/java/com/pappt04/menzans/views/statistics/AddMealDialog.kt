@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -20,6 +22,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -37,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -44,7 +48,6 @@ import com.pappt04.menzans.data.consts.CalendarData.mealNames
 import com.pappt04.menzans.data.consts.CalendarData.mealNameToRes
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.R
-import com.pappt04.menzans.views.common.AutoResizedText
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.views.card.convertMillisToDate
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
@@ -70,135 +73,135 @@ fun AddMealDialog(
     val exitPickerState = rememberTimePickerState(0, 0, true)
 
     var selectedMeal by remember { mutableStateOf(Uitext.StringResource(R.string.breakfast)) }
-
     var isExpanded by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
+    if (showEnterDialog.value) {
+        TimePickerDialog(
+            onDismiss = { showEnterDialog.value = false },
+            timeState = enterPickerState,
+            enteredtime = timeofEnter,
+        ) {
+            TimePicker(state = enterPickerState)
+        }
+    }
+    if (showExitDialog.value) {
+        TimePickerDialog(
+            onDismiss = { showExitDialog.value = false },
+            timeState = exitPickerState,
+            enteredtime = timeofExit,
+        ) {
+            TimePicker(state = exitPickerState)
+        }
+    }
+
     Dialog(onDismissRequest = onDismissRequest) {
         Card(
-            elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            shape = RoundedCornerShape(16.dp),
+                .padding(16.dp),
+            shape = RoundedCornerShape(24.dp),
         ) {
             Column(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                Icon(
+                    imageVector = Icons.Outlined.Restaurant,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(32.dp),
+                )
                 Text(
                     text = stringResource(R.string.add_meal_to_statistics),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
-                Row()
-                {
-
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     OutlinedTextField(
                         value = timeofEnter.value,
-                        onValueChange = { print("Clicked") },
-                        label = { AutoResizedText(text = stringResource(R.string.time_of_enter)) },
+                        onValueChange = {},
+                        label = { Text(stringResource(R.string.time_of_enter)) },
                         enabled = false,
                         readOnly = true,
+                        shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
-                            .padding(4.dp)
-                            .clickable { showEnterDialog.value = !showEnterDialog.value }
-                            .weight(1f),
+                            .weight(1f)
+                            .clickable { showEnterDialog.value = true },
                     )
-                    if (showEnterDialog.value) {
-                        TimePickerDialog(
-                            onDismiss = { showEnterDialog.value = false },
-                            timeState = enterPickerState,
-                            enteredtime = timeofEnter
-                        ) {
-                            TimePicker(
-                                state = enterPickerState,
-                            )
-                        }
-                    }
                     OutlinedTextField(
                         value = timeofExit.value,
-                        onValueChange = { print("Clicked") },
-                        label = { AutoResizedText(text = stringResource(R.string.time_of_exit)) },
+                        onValueChange = {},
+                        label = { Text(stringResource(R.string.time_of_exit)) },
                         enabled = false,
                         readOnly = true,
+                        shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
-                            .padding(4.dp)
-                            .clickable { showExitDialog.value = !showExitDialog.value }
-                            .weight(1f),
+                            .weight(1f)
+                            .clickable { showExitDialog.value = true },
                     )
-                    if (showExitDialog.value) {
-                        TimePickerDialog(
-                            onDismiss = { showExitDialog.value = false },
-                            timeState = exitPickerState,
-                            enteredtime = timeofExit
-                        ) {
-                            TimePicker(
-                                state = exitPickerState,
-                            )
-                        }
-                    }
                 }
                 ExposedDropdownMenuBox(
                     expanded = isExpanded,
                     onExpandedChange = { isExpanded = !isExpanded },
-                    modifier = Modifier
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     OutlinedTextField(
-                        modifier = Modifier.menuAnchor(),
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
                         readOnly = true,
                         value = selectedMeal.asString(context),
                         onValueChange = {},
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
+                        shape = RoundedCornerShape(12.dp),
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                     )
                     ExposedDropdownMenu(
                         expanded = isExpanded,
-                        onDismissRequest = { isExpanded = false }) {
+                        onDismissRequest = { isExpanded = false },
+                    ) {
                         mealNames.forEach { meal ->
                             DropdownMenuItem(
                                 onClick = {
                                     isExpanded = false
                                     selectedMeal = Uitext.StringResource(mealNameToRes(meal))
                                 },
-                                text = { Text(Uitext.StringResource(mealNameToRes(meal)).asString(context)) }
+                                text = { Text(Uitext.StringResource(mealNameToRes(meal)).asString(context)) },
                             )
                         }
                     }
                 }
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                 ) {
+                    TextButton(onClick = onDismissRequest) {
+                        Text(stringResource(R.string.discard))
+                    }
                     Button(
                         onClick = {
+                            try {
+                                val statisticsMeal = EatingStatisticsData(
+                                    day.value,
+                                    timeofEnter.value,
+                                    timeofExit.value,
+                                    selectedMeal,
+                                )
+                                scope.launch {
+                                    viewModel.addMealEvent(statisticsMeal, monthName)
+                                }
+                            } catch (_: Exception) {
+                            }
                             onDismissRequest()
                         },
                     ) {
-                        Text(stringResource(R.string.discard))
-                    }
-                    Button(onClick = {
-                        try {
-                            val statisticsMeal = EatingStatisticsData(
-                                day.value,
-                                timeofEnter.value,
-                                timeofExit.value,
-                                selectedMeal
-                            )
-                            scope.launch {
-                                viewModel.addMealEvent(statisticsMeal, monthName)
-                            }
-                        } catch (_: Exception) {
-                        }
-                        onDismissRequest()
-                    }) {
                         Text(stringResource(R.string.confirm))
                     }
                 }
@@ -215,18 +218,10 @@ fun DateofMealPicker(
     mealDialogState: DatePickerState
 ) {
     DatePickerDialog(
-        colors = DatePickerDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
-        onDismissRequest = {
-            // Action when the dialog is dismissed without selecting a date
-            showMealDialog.value = false
-        },
+        onDismissRequest = { showMealDialog.value = false },
         confirmButton = {
-            // Confirm button with custom action and styling
             TextButton(
                 onClick = {
-                    // Action to set the selected date and close the dialog
                     showMealDialog.value = false
                     dateofMeal.value =
                         mealDialogState.selectedDateMillis?.convertMillisToDate() ?: ""
@@ -236,27 +231,21 @@ fun DateofMealPicker(
             }
         },
         dismissButton = {
-            // Dismiss button to close the dialog without selecting a date
-            TextButton(
-                onClick = {
-                    showMealDialog.value = false
-                }
-            ) {
+            TextButton(onClick = { showMealDialog.value = false }) {
                 Text(stringResource(R.string.discard))
             }
-        }
+        },
     ) {
-        // The actual DatePicker component within the dialog
         DatePicker(
             state = mealDialogState,
             colors = DatePickerDefaults.colors(
-                selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedDayContentColor = MaterialTheme.colorScheme.primary,
+                selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+                selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
                 selectedYearContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                selectedYearContentColor = MaterialTheme.colorScheme.secondary,
-                todayContentColor = MaterialTheme.colorScheme.tertiary,
-                todayDateBorderColor = MaterialTheme.colorScheme.tertiaryContainer
-            )
+                selectedYearContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                todayContentColor = MaterialTheme.colorScheme.primary,
+                todayDateBorderColor = MaterialTheme.colorScheme.primary,
+            ),
         )
     }
 }
@@ -272,7 +261,7 @@ fun TimePickerDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         dismissButton = {
-            TextButton(onClick = { onDismiss() }) {
+            TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.discard))
             }
         },
@@ -284,6 +273,6 @@ fun TimePickerDialog(
                 Text(stringResource(R.string.ok))
             }
         },
-        text = { content() }
+        text = { content() },
     )
 }

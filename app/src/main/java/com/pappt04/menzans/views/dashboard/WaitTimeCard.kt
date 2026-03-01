@@ -20,13 +20,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,13 +39,17 @@ import com.pappt04.menzans.R
 import com.pappt04.menzans.repository.WaitTimeRepository
 import com.pappt04.menzans.views.common.AnimatedNumber
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
-fun WaitTimeCard(refreshTrigger: Int = 0) {
+fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
     val waittime = remember { mutableIntStateOf(999) }
     val trajectory = remember { mutableIntStateOf(0) }
+    val showDialog = remember { mutableStateOf(false) }
     val waitTimeRepository: WaitTimeRepository = koinInject()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val trendColor = when (trajectory.intValue) {
         -1 -> MaterialTheme.colorScheme.tertiary
@@ -88,7 +96,7 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { Log.d("WAIT_TIME", "Manual refresh request sent") },
+            .clickable { showDialog.value = true },
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(
@@ -146,5 +154,21 @@ fun WaitTimeCard(refreshTrigger: Int = 0) {
                 }
             }
         }
+    }
+
+    if (showDialog.value) {
+        WaitTimeDialog(
+            onDismissRequest = { showDialog.value = false },
+            onSubmitted = { success ->
+                scope.launch {
+                    val message = if (success) {
+                        context.getString(R.string.wait_time_submitted)
+                    } else {
+                        context.getString(R.string.wait_time_submit_failed)
+                    }
+                    snackbar?.showSnackbar(message)
+                }
+            },
+        )
     }
 }

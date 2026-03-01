@@ -137,4 +137,11 @@
     <string name="onboarding_skip">Skip for now</string>
     <string name="onboarding_skip_setup">Skip setup</string>
     <string name="onboarding_required_for_full">Required for full functionality</string>
+    <string name="report_wait_time">Report Wait Time</string>
+    <string name="wait_time_minutes">Your wait time (min)</string>
+    <string name="wait_time_minutes_optional">Your wait time (min, optional)</string>
+    <string name="queue_size_optional">People in queue (optional)</string>
+    <string name="submit">Submit</string>
+    <string name="wait_time_submitted">Wait time submitted, thank you!</string>
+    <string name="wait_time_submit_failed">Failed to submit, please try again</string>
 </resources>

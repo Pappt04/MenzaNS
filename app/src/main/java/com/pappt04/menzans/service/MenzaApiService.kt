@@ -7,6 +7,7 @@ import com.pappt04.menzans.models.ExitEventString
 import com.pappt04.menzans.models.MealEventString
 import com.pappt04.menzans.models.UserResponse
 import com.pappt04.menzans.models.WaitTime
+import com.pappt04.menzans.models.WaitTimeSubmission
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -54,9 +55,22 @@ interface MenzaApiService {
     @GET("$BASE_API_NAME/waittime")
     suspend fun getWaitTime(): Response<WaitTime>
 
+    @Headers("Content-Type: application/json")
+    @POST("$BASE_API_NAME/waittime")
+    suspend fun submitWaitTime(
+        @Body submission: WaitTimeSubmission,
+    ): Response<Void>
+
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/linegraph")
     suspend fun getLineGraph(): Response<Map<String, Double>>
+
+    @Headers("Accept: application/json")
+    @GET("$BASE_API_NAME/linegraph/local/{day}/{meal}")
+    suspend fun getLineGraphForMeal(
+        @Path("day") day: Int,
+        @Path("meal") meal: String,
+    ): Response<Map<String, Double>>
 
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/menu/today")

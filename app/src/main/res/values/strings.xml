@@ -99,6 +99,9 @@
     <string name="not_enough_funds">Not enough funds</string>
     <string name="wait_time_min">Wait time[min]</string>
     <string name="time_of_day_hours">Time of Day[hours]</string>
+    <string name="busyness_forecast">Busyness Forecast</string>
+    <string name="metric_now">Now</string>
+    <string name="metric_peak">Peak</string>
     <string name="self_financing">Self Financing</string>
     <string name="budget">Budget</string>
     <string name="use_materialyou_theme">MaterialYou theme</string>
@@ -143,4 +146,11 @@
     <string name="onboarding_skip">Skip for now</string>
     <string name="onboarding_skip_setup">Skip setup</string>
     <string name="onboarding_required_for_full">Required for full functionality</string>
+    <string name="report_wait_time">Report Wait Time</string>
+    <string name="wait_time_minutes">Your wait time (min)</string>
+    <string name="wait_time_minutes_optional">Your wait time (min, optional)</string>
+    <string name="queue_size_optional">People in queue (optional)</string>
+    <string name="submit">Submit</string>
+    <string name="wait_time_submitted">Wait time submitted, thank you!</string>
+    <string name="wait_time_submit_failed">Failed to submit, please try again</string>
 </resources>

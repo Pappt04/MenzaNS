@@ -139,4 +139,11 @@
     <string name="onboarding_skip">Preskoči za sada</string>
     <string name="onboarding_skip_setup">Preskoči podešavanje</string>
     <string name="onboarding_required_for_full">Potrebno za punu funkcionalnost</string>
+    <string name="report_wait_time">Prijavi vreme čekanja</string>
+    <string name="wait_time_minutes">Tvoje vreme čekanja (min)</string>
+    <string name="wait_time_minutes_optional">Tvoje vreme čekanja (min, opciono)</string>
+    <string name="queue_size_optional">Broj ljudi u redu (opciono)</string>
+    <string name="submit">Pošalji</string>
+    <string name="wait_time_submitted">Vreme čekanja poslato, hvala!</string>
+    <string name="wait_time_submit_failed">Slanje nije uspelo, pokušaj ponovo</string>
 </resources>

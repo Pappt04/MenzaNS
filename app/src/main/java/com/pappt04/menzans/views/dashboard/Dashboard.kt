@@ -51,7 +51,6 @@ fun DashboardScreen(
 ) {
     val meals by viewModel.meals.collectAsState()
     val savedMealCounts by viewModel.mealCounts.collectAsState()
-    val graphcardState by viewModel.graphState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val refreshTick by viewModel.refreshTick.collectAsState()
 
@@ -147,39 +146,14 @@ fun DashboardScreen(
                 BalanceCard(balance)
             }
             item {
-                WaitTimeCard(refreshTrigger = refreshTick)
+                WaitTimeCard(refreshTrigger = refreshTick, snackbar = snackbar)
             }
             item {
                 TodayMenuCard()
             }
-            /*item {
-                when (graphcardState) {
-                    is UiState.Loading -> {
-                        viewModel.fetchGraphData()
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Center)
-                        ) { CircularProgressIndicator() }
-                    }
-                    is UiState.Success -> {
-                        val data = (graphcardState as UiState.Success).data
-                        OutlinedCard(modifier = Modifier.padding(8.dp)) {
-                            LineSizeGraph(data)
-                        }
-                    }
-                    is UiState.Error -> {
-                        val errorMessage = (graphcardState as UiState.Error).message
-                        Text("Error: $errorMessage", color = Color.Red)
-                    }
-                    is UiState.Empty -> {
-                        viewModel.fetchGraphData()
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth().align(Alignment.Center)
-                        ) { CircularProgressIndicator() }
-                    }
-                }
-            }*/
+            item {
+                LineGraphCard(viewModel = viewModel)
+            }
         }
 
         if (showBalanceDialog) {

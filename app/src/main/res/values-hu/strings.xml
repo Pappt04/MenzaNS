@@ -128,4 +128,20 @@
     <string name="onboarding_location_title">Okos zseton követés</string>
     <string name="onboarding_location_body">MenzaNS helymeghatározást alkalmaz a zsetonok automatikus követéséhez. Nincs szükség neked megjegyzeni őket.</string>
     <string name="onboarding_stats_title">Havi statisztikák</string>
+    <string name="onboarding_stats_body">Kövesd a saját szokásaidat, költségeid és lásd mennyi zsetont használtál el a hónap alatt.</string>
+    <string name="onboarding_permissions_title">Még egy utolsó lépés</string>
+    <string name="onboarding_permissions_body">MenzaNS-nek szüksége van néhány rendszer engedélyhez ahhoz, hogy teljes szolgáltatást nyújtson. Beállításban bármikor kikapcsolhatod őket.</string>
+    <string name="onboarding_next">Következő</string>
+    <string name="onboarding_get_started">Kezdje el</string>
+    <string name="onboarding_grant_all">Add meg a megfelelő engedélyeket</string>
+    <string name="onboarding_skip">Átugrás</string>
+    <string name="onboarding_skip_setup">Átugrás</string>
+    <string name="onboarding_required_for_full">Szükséges a teljes funkcionalításhoz</string>
+    <string name="report_wait_time">Várakozási idő bejelentése</string>
+    <string name="wait_time_minutes">Várakozási időd (perc)</string>
+    <string name="wait_time_minutes_optional">Várakozási időd (perc, nem kötelező)</string>
+    <string name="queue_size_optional">Emberek száma a sorban (nem kötelező)</string>
+    <string name="submit">Küldés</string>
+    <string name="wait_time_submitted">Várakozási idő elküldve, köszönjük!</string>
+    <string name="wait_time_submit_failed">Küldés sikertelen, kérjük próbáld újra</string>
 </resources>
