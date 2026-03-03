@@ -29,8 +29,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import com.pappt04.menzans.models.currentOrNextPeriod
 import com.pappt04.menzans.models.isActive
 import com.pappt04.menzans.models.itemsFrom
 import com.pappt04.menzans.viewmodels.MenuViewModel
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,6 +51,7 @@ fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
     val menu by viewModel.menu.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.fetchTodayMenu()
@@ -55,18 +59,16 @@ fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
     ) {
         when {
             isLoading -> {
                 Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -84,7 +86,8 @@ fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = error ?: "",
+                        // error is Uitext — resolve against current locale (#6)
+                        text = error?.asString(context) ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -100,56 +103,51 @@ fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
 
 @Composable
 private fun MenuCardContent(menu: DayMenu) {
-    val period = remember { currentOrNextPeriod() }
-    val items = period.itemsFrom(menu)
-    val active = remember { period.isActive() }
+    // Live-updating period state (#4): recomputes every minute so the card
+    // automatically switches from e.g. "Breakfast" to "Next: Lunch" at 9:30.
+    var period by remember { mutableStateOf(currentOrNextPeriod()) }
+    var active by remember { mutableStateOf(period.isActive()) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(60_000L)
+            period = currentOrNextPeriod()
+            active = period.isActive()
+        }
+    }
 
+    val items = period.itemsFrom(menu)
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(12.dp)) {
         // Header row
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded = !expanded },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
                 imageVector = period.icon,
-                contentDescription = null,
-                tint =
-                    if (active) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
+                // Accessible label for screen readers (#13)
+                contentDescription = stringResource(period.labelRes),
+                tint = if (active) MaterialTheme.colorScheme.primary
+                       else MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (active) stringResource(period.labelRes) else stringResource(R.string.next_meal, stringResource(period.labelRes)),
+                    text = if (active) stringResource(period.labelRes)
+                           else stringResource(R.string.next_meal, stringResource(period.labelRes)),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color =
-                        if (active) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
+                    color = if (active) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                /*
-                if (menu.day.isNotBlank()) {
-                    Text(
-                        text = menu.day,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }*/
             }
             Icon(
                 imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = if (expanded) stringResource(R.string.collapse) else stringResource(R.string.expand),
+                contentDescription = if (expanded) stringResource(R.string.collapse)
+                                     else stringResource(R.string.expand),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -170,20 +168,23 @@ private fun MenuCardContent(menu: DayMenu) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 } else {
-                    items.forEach { item ->
-                        Row(
-                            modifier = Modifier.padding(vertical = 2.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
-                            Text(
-                                text = "•",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            Text(
-                                text = item,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
+                    // key{} lets Compose efficiently diff individual rows (#9)
+                    items.forEachIndexed { index, item ->
+                        key(index) {
+                            Row(
+                                modifier = Modifier.padding(vertical = 2.dp),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                                Text(
+                                    text = "•",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Text(
+                                    text = item,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
                         }
                     }
                 }

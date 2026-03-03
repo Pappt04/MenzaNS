@@ -147,6 +147,11 @@
     <string name="wait_time_submitted">Vreme čekanja poslato, hvala!</string>
     <string name="wait_time_submit_failed">Slanje nije uspelo, pokušaj ponovo</string>
 
+    <!-- Menu error states -->
+    <string name="menu_error_timeout">Zahtev je istekao — pokušajte ponovo</string>
+    <string name="menu_error_network">Greška konekcije — proverite internet</string>
+    <string name="menu_error_server">Greška servera — pokušajte ponovo</string>
+
     <!-- Menu / meal strings -->
     <string name="menu_loading">Učitavanje jelovnika…</string>
     <string name="menu_unavailable">Jelovnik nije dostupan</string>

@@ -145,6 +145,11 @@
     <string name="wait_time_submitted">Várakozási idő elküldve, köszönjük!</string>
     <string name="wait_time_submit_failed">Küldés sikertelen, kérjük próbáld újra</string>
 
+    <!-- Menu error states -->
+    <string name="menu_error_timeout">A kérés időtúllépett — kérjük próbáld újra</string>
+    <string name="menu_error_network">Kapcsolódási hiba — ellenőrizd az internetet</string>
+    <string name="menu_error_server">Szerverkiba — kérjük próbáld újra</string>
+
     <!-- Menu / meal strings -->
     <string name="menu_loading">Menü betöltése…</string>
     <string name="menu_unavailable">A menü nem elérhető</string>

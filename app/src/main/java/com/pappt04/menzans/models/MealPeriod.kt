@@ -8,6 +8,16 @@ import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.pappt04.menzans.R
 import java.util.Calendar
+import java.util.TimeZone
+
+// All time comparisons use Belgrade timezone so period detection is correct
+// for users whose device is set to a different timezone.
+private val BELGRADE_TZ = TimeZone.getTimeZone("Europe/Belgrade")
+
+private fun nowMinutesBelgrade(): Int {
+    val cal = Calendar.getInstance(BELGRADE_TZ)
+    return cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+}
 
 internal enum class MealPeriod(
     @StringRes val labelRes: Int,
@@ -28,9 +38,12 @@ internal enum class MealPeriod(
 }
 
 internal fun currentOrNextPeriod(): MealPeriod {
-    val cal = Calendar.getInstance()
-    val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-    return MealPeriod.entries.firstOrNull { now < it.minuteEnd() } ?: MealPeriod.BREAKFAST
+    val now = nowMinutesBelgrade()
+    // Return the currently active period; if between meals, return the next one;
+    // if past dinner, wrap to breakfast (next day).
+    return MealPeriod.entries.firstOrNull { now in it.minuteStart() until it.minuteEnd() }
+        ?: MealPeriod.entries.firstOrNull { now < it.minuteStart() }
+        ?: MealPeriod.BREAKFAST
 }
 
 internal fun MealPeriod.itemsFrom(menu: DayMenu): List<String> =
@@ -41,7 +54,6 @@ internal fun MealPeriod.itemsFrom(menu: DayMenu): List<String> =
     }
 
 internal fun MealPeriod.isActive(): Boolean {
-    val cal = Calendar.getInstance()
-    val now = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+    val now = nowMinutesBelgrade()
     return now in minuteStart() until minuteEnd()
 }

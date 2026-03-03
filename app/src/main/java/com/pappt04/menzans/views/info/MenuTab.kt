@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -64,6 +65,7 @@ fun MenuTab() {
     val selectedDayMenu by viewModel.selectedDayMenu.collectAsState()
     val isLoading by viewModel.weekLoading.collectAsState()
     val error by viewModel.weekError.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.fetchWeekMenu()
@@ -89,7 +91,8 @@ fun MenuTab() {
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = error ?: stringResource(R.string.menu_load_error),
+                    // error is Uitext — resolve against current locale
+                    text = error?.asString(context) ?: stringResource(R.string.menu_load_error),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                 )

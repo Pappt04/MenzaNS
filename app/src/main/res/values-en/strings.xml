@@ -145,6 +145,11 @@
     <string name="wait_time_submitted">Wait time submitted, thank you!</string>
     <string name="wait_time_submit_failed">Failed to submit, please try again</string>
 
+    <!-- Menu error states -->
+    <string name="menu_error_timeout">Request timed out — please try again</string>
+    <string name="menu_error_network">Connection error — check your internet</string>
+    <string name="menu_error_server">Server error — please try again later</string>
+
     <!-- Menu / meal strings -->
     <string name="menu_loading">Loading menu…</string>
     <string name="menu_unavailable">Menu not available</string>
