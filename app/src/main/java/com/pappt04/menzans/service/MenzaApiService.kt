@@ -75,4 +75,8 @@ interface MenzaApiService {
     @Headers("Accept: application/json")
     @GET("$BASE_API_NAME/menu/today")
     suspend fun getTodayMenu(): Response<DayMenu>
+
+    @Headers("Accept: application/json")
+    @GET("$BASE_API_NAME/menu/week")
+    suspend fun getWeekMenu(): Response<Map<String, DayMenu>>
 }

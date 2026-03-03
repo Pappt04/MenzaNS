@@ -135,13 +135,13 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
                         style = MaterialTheme.typography.displaySmall,
                     )
                     Text(
-                        text = " min",
+                        text = " ${stringResource(R.string.min_unit)}",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onTertiaryContainer,
                     )
                     Icon(
                         imageVector = arrowIcon,
-                        contentDescription = if (trajectory.intValue == -1) "Downward trend" else "Upward trend",
+                        contentDescription = if (trajectory.intValue == -1) stringResource(R.string.trend_downward) else stringResource(R.string.trend_upward),
                         tint = trendColor,
                         modifier = Modifier.size(28.dp),
                     )

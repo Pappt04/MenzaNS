@@ -31,8 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.pappt04.menzans.R
 import com.pappt04.menzans.models.DayMenu
 import com.pappt04.menzans.models.MealPeriod
 import com.pappt04.menzans.models.currentOrNextPeriod
@@ -69,14 +71,14 @@ fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                    Text("Učitavanje jelovnika…", style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.menu_loading), style = MaterialTheme.typography.bodyMedium)
                 }
             }
 
             error != null -> {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Jelovnik nije dostupan",
+                        text = stringResource(R.string.menu_unavailable),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -126,7 +128,7 @@ private fun MenuCardContent(menu: DayMenu) {
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = if (active) period.label else "Sledeći: ${period.label}",
+                    text = if (active) stringResource(period.labelRes) else stringResource(R.string.next_meal, stringResource(period.labelRes)),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color =
@@ -147,7 +149,7 @@ private fun MenuCardContent(menu: DayMenu) {
             }
             Icon(
                 imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = if (expanded) "Skupi" else "Proširi",
+                contentDescription = if (expanded) stringResource(R.string.collapse) else stringResource(R.string.expand),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -163,7 +165,7 @@ private fun MenuCardContent(menu: DayMenu) {
                 Spacer(Modifier.height(8.dp))
                 if (items.isEmpty()) {
                     Text(
-                        text = "Nema podataka za ovaj obrok",
+                        text = stringResource(R.string.no_meal_data),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

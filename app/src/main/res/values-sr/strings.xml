@@ -146,4 +146,22 @@
     <string name="submit">Pošalji</string>
     <string name="wait_time_submitted">Vreme čekanja poslato, hvala!</string>
     <string name="wait_time_submit_failed">Slanje nije uspelo, pokušaj ponovo</string>
+
+    <!-- Menu / meal strings -->
+    <string name="menu_loading">Učitavanje jelovnika…</string>
+    <string name="menu_unavailable">Jelovnik nije dostupan</string>
+    <string name="next_meal">Sledeći: %1$s</string>
+    <string name="collapse">Skupi</string>
+    <string name="expand">Proširi</string>
+    <string name="no_meal_data">Nema podataka za ovaj obrok</string>
+    <string name="tap_to_adjust">Dodirni za podešavanje</string>
+    <string name="trend_downward">Opadajući trend</string>
+    <string name="trend_upward">Rastući trend</string>
+    <string name="min_unit" translatable="false">min</string>
+    <string name="today">danas</string>
+    <string name="now_badge">Sada</string>
+    <string name="menu_load_error">Greška pri učitavanju jelovnika</string>
+    <string name="menu_day_unavailable">Jelovnik za ovaj dan nije dostupan</string>
+    <string name="eating_threshold_desc">Prag brzine jedenja u minutima</string>
+    <string name="token_limit_desc">Prag upozorenja za tokene</string>
 </resources>

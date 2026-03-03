@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -27,8 +26,7 @@ fun EatingThresholdSlider(
     sliderpos: MutableFloatState,
     onChanged: () -> Unit,
 ) {
-    LocalContext.current
-
+    val thresholdDesc = stringResource(R.string.eating_threshold_desc)
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row {
             Text(
@@ -51,7 +49,7 @@ fun EatingThresholdSlider(
                 modifier = Modifier.weight(4f),
             )
             AutoResizedText(
-                "${sliderpos.floatValue.roundToInt()} min",
+                "${sliderpos.floatValue.roundToInt()} ${stringResource(R.string.min_unit)}",
                 style =
                     MaterialTheme.typography.titleLarge.merge(
                         TextStyle(
@@ -71,7 +69,7 @@ fun EatingThresholdSlider(
             )
         }
         Slider(
-            modifier = Modifier.semantics { contentDescription = "Eating speed threshold in minutes" },
+            modifier = Modifier.semantics { contentDescription = thresholdDesc },
             value = sliderpos.floatValue,
             onValueChange = { sliderpos.floatValue = it },
             valueRange = 5f..30f,

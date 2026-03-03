@@ -153,4 +153,22 @@
     <string name="submit">Submit</string>
     <string name="wait_time_submitted">Wait time submitted, thank you!</string>
     <string name="wait_time_submit_failed">Failed to submit, please try again</string>
+
+    <!-- Menu / meal strings -->
+    <string name="menu_loading">Loading menu…</string>
+    <string name="menu_unavailable">Menu not available</string>
+    <string name="next_meal">Next: %1$s</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+    <string name="no_meal_data">No data for this meal</string>
+    <string name="tap_to_adjust">Tap to adjust</string>
+    <string name="trend_downward">Downward trend</string>
+    <string name="trend_upward">Upward trend</string>
+    <string name="min_unit" translatable="false">min</string>
+    <string name="today">today</string>
+    <string name="now_badge">Now</string>
+    <string name="menu_load_error">Error loading menu</string>
+    <string name="menu_day_unavailable">Menu not available for this day</string>
+    <string name="eating_threshold_desc">Eating speed threshold in minutes</string>
+    <string name="token_limit_desc">Token warning threshold</string>
 </resources>

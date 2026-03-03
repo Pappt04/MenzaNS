@@ -82,7 +82,7 @@ fun DetailedMealCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = "${meal.price} rsd",
+                    text = "${meal.price} ${stringResource(R.string.rsd)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

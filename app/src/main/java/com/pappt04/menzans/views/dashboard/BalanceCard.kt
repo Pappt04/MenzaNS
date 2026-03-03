@@ -80,7 +80,7 @@ fun BalanceCard(balance: MutableIntState) {
             }
             Spacer(Modifier.height(6.dp))
             Text(
-                text = "Tap to adjust",
+                text = stringResource(R.string.tap_to_adjust),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
                 modifier = Modifier.align(Alignment.CenterHorizontally),

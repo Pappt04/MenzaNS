@@ -144,4 +144,22 @@
     <string name="submit">Küldés</string>
     <string name="wait_time_submitted">Várakozási idő elküldve, köszönjük!</string>
     <string name="wait_time_submit_failed">Küldés sikertelen, kérjük próbáld újra</string>
+
+    <!-- Menu / meal strings -->
+    <string name="menu_loading">Menü betöltése…</string>
+    <string name="menu_unavailable">A menü nem elérhető</string>
+    <string name="next_meal">Következő: %1$s</string>
+    <string name="collapse">Összecsuk</string>
+    <string name="expand">Kibont</string>
+    <string name="no_meal_data">Nincs adat ehhez az étkezéshez</string>
+    <string name="tap_to_adjust">Érintsd a módosításhoz</string>
+    <string name="trend_downward">Csökkenő tendencia</string>
+    <string name="trend_upward">Növekvő tendencia</string>
+    <string name="min_unit" translatable="false">min</string>
+    <string name="today">ma</string>
+    <string name="now_badge">Most</string>
+    <string name="menu_load_error">Hiba a menü betöltésekor</string>
+    <string name="menu_day_unavailable">Ezen a napon nincs menü</string>
+    <string name="eating_threshold_desc">Az evési sebesség küszöbértéke percben</string>
+    <string name="token_limit_desc">Zseton figyelmeztetési küszöb</string>
 </resources>
