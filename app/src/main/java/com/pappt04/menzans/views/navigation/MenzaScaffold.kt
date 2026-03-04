@@ -42,7 +42,7 @@ fun MenzaScaffold(
     Scaffold(
         topBar = {
             AnimatedAppearance(enter = slideInVertically { -it }) {
-                MenzaTopBar(state.isFirstWelcome, drawerState, screenTitle)
+                MenzaTopBar(state.isFirstWelcome, drawerState, screenTitle, state.userId)
             }
         },
         snackbarHost = {

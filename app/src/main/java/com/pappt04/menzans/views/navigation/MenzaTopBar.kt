@@ -33,7 +33,6 @@ import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.UsefulLinks
 import com.pappt04.menzans.repository.WaitTimeRepository
 import com.pappt04.menzans.ui.theme.megatitleFont
-import com.pappt04.menzans.views.UserID
 import com.pappt04.menzans.views.common.AutoResizedText
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -44,6 +43,7 @@ fun MenzaTopBar(
     isFirstWelcome: Boolean,
     drawerState: DrawerState,
     screenTitle: String,
+    userId: String,
 ) {
     val showtopbarpopup = remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -109,7 +109,7 @@ fun MenzaTopBar(
                     )
                 }
             }
-            TopBarPopup(showtopbarpopup.value) {
+            TopBarPopup(showtopbarpopup.value, userId) {
                 showtopbarpopup.value = false
             }
         },
@@ -119,6 +119,7 @@ fun MenzaTopBar(
 @Composable
 private fun TopBarPopup(
     expanded: Boolean,
+    userId: String,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -141,7 +142,7 @@ private fun TopBarPopup(
                 val intent = Intent(Intent.ACTION_SENDTO)
                 intent.data = "mailto:".toUri()
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apollo4.labs@gmail.com"))
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Contact from ${UserID.userid}")
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Contact from $userId")
                 intent.putExtra(Intent.EXTRA_TEXT, "Hello, please delete my data")
                 try {
                     context.startActivity(intent)
@@ -158,7 +159,7 @@ private fun TopBarPopup(
                 val intent = Intent(Intent.ACTION_SENDTO)
                 intent.data = "mailto:".toUri()
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apollo4.labs@gmail.com"))
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Contact from ${UserID.userid}")
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Contact from $userId")
                 intent.putExtra(Intent.EXTRA_TEXT, "")
                 try {
                     context.startActivity(intent)

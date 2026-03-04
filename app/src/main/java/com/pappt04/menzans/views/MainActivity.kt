@@ -21,9 +21,6 @@ import com.pappt04.menzans.ui.theme.MenzaNSTheme
 import com.pappt04.menzans.viewmodels.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-// Temporary global UserID for backward compatibility during migration
-var UserID: com.pappt04.menzans.models.UserIDString = com.pappt04.menzans.models.UserIDString("")
-
 class MainActivity : AppCompatActivity() {
     private val NOTIFICATION_PERMISSION_CODE = 1004
     private val ALL_LOCATION_PERMISSIONS = 1010
@@ -45,11 +42,6 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val context = LocalContext.current
             val state by mainViewModel.uiState.collectAsState()
-
-            // Keep global UserID in sync for backward compatibility
-            LaunchedEffect(state.userId) {
-                UserID.userid = state.userId
-            }
 
             // Register geofences once loaded
             LaunchedEffect(state.isLoaded) {
