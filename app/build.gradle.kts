@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
@@ -5,16 +7,40 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// ── Signing ───────────────────────────────────────────────────────────────────
+// Copy keystore.properties.template → keystore.properties (git-ignored) and fill in values.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) load(keystorePropertiesFile.inputStream())
+}
+
+// ── Version ───────────────────────────────────────────────────────────────────
+// Bump versionCode/versionName in app/version.properties before each release.
+val versionProps = Properties().apply {
+    load(file("version.properties").inputStream())
+}
+
 android {
     namespace = "com.pappt04.menzans"
     compileSdk = 36
+
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.pappt04.menzans"
         minSdk = 30
         targetSdk = 36
-        versionCode = 10
-        versionName = "1.0.$versionCode"
+        versionCode = versionProps.getProperty("versionCode").toInt()
+        versionName = versionProps.getProperty("versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -23,9 +49,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Separate application ID so dev and prod builds can coexist on a device
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            // Use the release keystore when available; fall back to debug for local builds
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

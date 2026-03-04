@@ -1,3 +1,7 @@
+# Signing
+keystore.properties
+*.jks
+
 *.iml
 .gradle
 /local.properties
@@ -38,3 +42,4 @@ local.properties
 /gradlew.bat
 /kls_database.db
 .editorconfig
+/keystore.properties.template

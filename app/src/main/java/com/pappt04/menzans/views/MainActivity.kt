@@ -1,6 +1,7 @@
 package com.pappt04.menzans.views
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -23,7 +24,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     private val NOTIFICATION_PERMISSION_CODE = 1004
-    private val ALL_LOCATION_PERMISSIONS = 1010
+    private val FOREGROUND_LOCATION_PERMISSIONS = 1010
+    private val BACKGROUND_LOCATION_PERMISSION = 1011
 
     private val mainViewModel: MainViewModel by viewModel()
 
@@ -78,15 +80,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestAllLocationPermission() {
+        // On Android 11+ ACCESS_BACKGROUND_LOCATION must be requested separately,
+        // after the user has already granted foreground location.
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             ),
-            ALL_LOCATION_PERMISSIONS,
+            FOREGROUND_LOCATION_PERMISSIONS,
         )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == FOREGROUND_LOCATION_PERMISSIONS &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+            checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                BACKGROUND_LOCATION_PERMISSION,
+            )
+        }
     }
 
     private fun requestNotificationLocationPermission() {
