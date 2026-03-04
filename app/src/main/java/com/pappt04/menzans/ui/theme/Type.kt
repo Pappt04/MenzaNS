@@ -5,7 +5,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.pappt04.menzans.R
-import androidx.compose.ui.unit.sp
 
 val provider =
     GoogleFont.Provider(
@@ -44,18 +43,18 @@ val baseline = Typography()
 
 val AppTypography =
     Typography(
-        displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily, letterSpacing = (-1.0).sp),
-        displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily, letterSpacing = (-0.5).sp),
-        displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily, letterSpacing = (-0.5).sp),
-        headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily, letterSpacing = (-0.5).sp),
-        headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily, letterSpacing = (-0.5).sp),
+        displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
+        displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily),
+        displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily),
+        headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
+        headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
         headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
-        titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold),
-        titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily, fontWeight = androidx.compose.ui.text.font.FontWeight.Medium),
-        titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily, fontWeight = androidx.compose.ui.text.font.FontWeight.Medium),
-        bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily, lineHeight = 24.sp),
-        bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily, lineHeight = 20.sp),
-        bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily, lineHeight = 16.sp),
+        titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
+        titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
+        titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
+        bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
+        bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
+        bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
         labelLarge = baseline.labelLarge.copy(fontFamily = bodyFontFamily),
         labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
         labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),

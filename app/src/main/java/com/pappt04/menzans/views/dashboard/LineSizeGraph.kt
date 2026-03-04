@@ -34,6 +34,7 @@ import com.pappt04.menzans.views.statistics.rememberMarker
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.cartesian.cartesianLayerPadding
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -260,6 +261,7 @@ fun LineSizeGraph(
             ),
             // Y-axis: show busyness as a percentage
             startAxis = VerticalAxis.rememberStart(
+                label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 valueFormatter = remember {
                     CartesianValueFormatter { _, value, _ -> "${value.toInt()}%" }
                 },
@@ -267,6 +269,7 @@ fun LineSizeGraph(
             // X-axis: map integer index → "HH:MM", label only at 15-minute boundaries.
             // spacing=3 steps through every 3rd index (= every 15 min for 5-min data).
             bottomAxis = HorizontalAxis.rememberBottom(
+                label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 valueFormatter = remember(sortedEntries) {
                     CartesianValueFormatter { _, value, _ ->
                         val idx = value.roundToInt()
