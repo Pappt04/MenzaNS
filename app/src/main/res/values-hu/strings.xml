@@ -145,6 +145,7 @@
     <string name="submit">Küldés</string>
     <string name="wait_time_submitted">Várakozási idő elküldve, köszönjük!</string>
     <string name="wait_time_submit_failed">Küldés sikertelen, kérjük próbáld újra</string>
+    <string name="wait_time_unavailable">Nem elérhető — húzd le a frissítéshez</string>
 
     <!-- Menu error states -->
     <string name="menu_error_timeout">A kérés időtúllépett — kérjük próbáld újra</string>

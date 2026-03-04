@@ -1,5 +1,7 @@
 package com.pappt04.menzans.views.dashboard
 
+import android.app.NotificationManager
+import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -19,6 +21,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,6 +36,7 @@ import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.data.consts.MealSample.mealIcons
+import com.pappt04.menzans.notifications.sendTopUpReminder
 import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.viewmodels.DashboardViewModel
 import com.pappt04.menzans.viewmodels.MenuViewModel
@@ -59,6 +63,15 @@ fun DashboardScreen(
 
     val context = LocalContext.current
     val statisticsRepository: StatisticsRepository = koinInject()
+
+    val notificationManager = remember {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+    LaunchedEffect(Unit) {
+        viewModel.tokenWarningEvent.collect { (mealFile, remaining) ->
+            notificationManager.sendTopUpReminder(context, mealFile, remaining)
+        }
+    }
 
     val mealValueList = remember(savedMealCounts) {
         mutableListOf(
@@ -111,7 +124,7 @@ fun DashboardScreen(
                     targetState = selectedCard.intValue,
                     transitionSpec = { slideInVertically { -it } togetherWith slideOutVertically { it } }
                 ) {
-                    if (it in 0..meals.size)
+                    if (it in 0 until meals.size)
                         DetailedMealCard(
                             meals[it],
                             mealValueList[it],

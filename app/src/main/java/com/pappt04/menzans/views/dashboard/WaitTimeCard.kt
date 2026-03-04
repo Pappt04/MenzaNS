@@ -44,11 +44,13 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 private const val WAIT_TIME_LOADING = 999
+private const val WAIT_TIME_ERROR = -1
 
 @Composable
 fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
     val waittime = remember { mutableIntStateOf(WAIT_TIME_LOADING) }
     val trajectory = remember { mutableIntStateOf(0) }
+    val hasError = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
     val waitTimeRepository: WaitTimeRepository = koinInject()
     val context = LocalContext.current
@@ -68,9 +70,19 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
 
     suspend fun fetch() {
         val result = waitTimeRepository.getWaitTime()
+        if (result.isFailure) {
+            hasError.value = true
+            return
+        }
         result.onSuccess { wt ->
+            val parsed = wt.waittime?.toIntOrNull()
+            if (parsed == null) {
+                hasError.value = true
+                return@onSuccess
+            }
+            hasError.value = false
             val temp = waittime.intValue
-            waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
+            waittime.intValue = parsed
             trajectory.intValue =
                 when {
                     temp == WAIT_TIME_LOADING -> wt.trajectory?.toIntOrNull() ?: 0
@@ -99,7 +111,7 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-            .clickable { showDialog.value = true },
+            .clickable { if (!hasError.value) showDialog.value = true },
     ) {
         Column(modifier = Modifier.padding(Spacing.md)) {
             Row(
@@ -124,36 +136,46 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                if (waittime.intValue != WAIT_TIME_LOADING) {
-                    Text(
-                        text = "~",
-                        fontStyle = FontStyle.Italic,
-                        style = MaterialTheme.typography.displaySmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    )
-                    AnimatedNumber(
-                        number = waittime,
-                        fontStyle = FontStyle.Italic,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                        style = MaterialTheme.typography.displaySmall,
-                    )
-                    Text(
-                        text = " ${stringResource(R.string.min_unit)}",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    )
-                    Icon(
-                        imageVector = arrowIcon,
-                        contentDescription = if (trajectory.intValue == -1) stringResource(R.string.trend_downward) else stringResource(R.string.trend_upward),
-                        tint = trendColor,
-                        modifier = Modifier.size(28.dp),
-                    )
-                } else {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(36.dp),
-                        strokeWidth = 3.dp,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    )
+                when {
+                    hasError.value -> {
+                        Text(
+                            text = stringResource(R.string.wait_time_unavailable),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f),
+                        )
+                    }
+                    waittime.intValue != WAIT_TIME_LOADING -> {
+                        Text(
+                            text = "~",
+                            fontStyle = FontStyle.Italic,
+                            style = MaterialTheme.typography.displaySmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        )
+                        AnimatedNumber(
+                            number = waittime,
+                            fontStyle = FontStyle.Italic,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            style = MaterialTheme.typography.displaySmall,
+                        )
+                        Text(
+                            text = " ${stringResource(R.string.min_unit)}",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        )
+                        Icon(
+                            imageVector = arrowIcon,
+                            contentDescription = if (trajectory.intValue == -1) stringResource(R.string.trend_downward) else stringResource(R.string.trend_upward),
+                            tint = trendColor,
+                            modifier = Modifier.size(28.dp),
+                        )
+                    }
+                    else -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(36.dp),
+                            strokeWidth = 3.dp,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        )
+                    }
                 }
             }
         }

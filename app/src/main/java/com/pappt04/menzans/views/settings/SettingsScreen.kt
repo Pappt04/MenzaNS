@@ -1,6 +1,9 @@
 package com.pappt04.menzans.views.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -217,10 +220,17 @@ fun PermissionSwitch(
                 )
                 Switch(
                     checked = hasPermission,
-                    onCheckedChange = {
-                        hasPermission = it
-                        if (hasPermission) {
+                    onCheckedChange = { checked ->
+                        if (checked) {
                             permissionLauncher.launch(permissionType)
+                        } else {
+                            // Android does not allow apps to revoke permissions programmatically.
+                            // Send the user to the system app settings page to do it manually.
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", context.packageName, null)
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                            context.startActivity(intent)
                         }
                     },
                     thumbContent =

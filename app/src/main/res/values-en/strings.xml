@@ -145,6 +145,7 @@
     <string name="submit">Submit</string>
     <string name="wait_time_submitted">Wait time submitted, thank you!</string>
     <string name="wait_time_submit_failed">Failed to submit, please try again</string>
+    <string name="wait_time_unavailable">Unavailable — pull to refresh</string>
 
     <!-- Menu error states -->
     <string name="menu_error_timeout">Request timed out — please try again</string>

@@ -11,10 +11,14 @@ import com.pappt04.menzans.models.UiState
 import com.pappt04.menzans.repository.MealRepository
 import com.pappt04.menzans.repository.SettingsRepository
 import com.pappt04.menzans.repository.WaitTimeRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -46,8 +50,26 @@ class DashboardViewModel(
     private val _refreshTick = MutableStateFlow(0)
     val refreshTick: StateFlow<Int> = _refreshTick.asStateFlow()
 
+    // Emits (fileContainerName, remainingCount) when a meal count drops to/below tokenWarning.
+    // "breakfast" | "lunch" | "dinner" matches FileContainer.FileNames indices 0-2.
+    private val _tokenWarningEvent = MutableSharedFlow<Pair<String, Int>>(extraBufferCapacity = 3)
+    val tokenWarningEvent: SharedFlow<Pair<String, Int>> = _tokenWarningEvent.asSharedFlow()
+
     fun saveMealCounts(prefs: MealPreferences) {
-        viewModelScope.launch { mealRepository.saveMealCounts(prefs) }
+        viewModelScope.launch {
+            mealRepository.saveMealCounts(prefs)
+            val threshold = settingsRepository.getSettings().first().tokenwarning
+            val checks = listOf(
+                "breakfast" to prefs.breakfast,
+                "lunch" to prefs.lunch,
+                "dinner" to prefs.dinner,
+            )
+            for ((name, count) in checks) {
+                if (count in 0..threshold) {
+                    _tokenWarningEvent.emit(name to count)
+                }
+            }
+        }
     }
 
     /**

@@ -147,6 +147,7 @@
     <string name="submit">Pošalji</string>
     <string name="wait_time_submitted">Vreme čekanja poslato, hvala!</string>
     <string name="wait_time_submit_failed">Slanje nije uspelo, pokušaj ponovo</string>
+    <string name="wait_time_unavailable">Nedostupno — povuci za osvežavanje</string>
 
     <!-- Menu error states -->
     <string name="menu_error_timeout">Zahtev je istekao — pokušajte ponovo</string>
