@@ -23,7 +23,10 @@ fun MenzaBottomNavigation(navController: NavHostController) {
                 selected = selectedNavigationIndex.intValue == index,
                 onClick = {
                     selectedNavigationIndex.intValue = index
-                    navController.navigate(item.route)
+                    navController.navigate(item.route) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     when (selectedNavigationIndex.intValue == index) {

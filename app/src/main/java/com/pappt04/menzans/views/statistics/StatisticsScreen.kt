@@ -34,7 +34,9 @@ import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.viewmodels.StatisticsViewModel
+import com.pappt04.menzans.views.common.AnimatedAppearance
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Date
@@ -101,60 +103,66 @@ fun StatisticsScreen(
         }
 
         item {
-            Card(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier =
-                    Modifier
-                        .padding(horizontal = Spacing.md, vertical = Spacing.sm),
-            )
-            {
-                Text(
-                    stringResource(R.string.your_monthly_token_usage),
-                    style = MaterialTheme.typography.titleMedium,
+            AnimatedAppearance(delay = 100.milliseconds) {
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     modifier =
                         Modifier
-                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                            .align(Alignment.CenterHorizontally),
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
                 )
-                MonthlyMealsChart(formattedStatisticsData)
+                {
+                    Text(
+                        stringResource(R.string.your_monthly_token_usage),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier =
+                            Modifier
+                                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                                .align(Alignment.CenterHorizontally),
+                    )
+                    MonthlyMealsChart(formattedStatisticsData)
+                }
             }
         }
         item {
-            Card(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier =
-                    Modifier
-                        .padding(horizontal = Spacing.md, vertical = Spacing.sm),
-            )
-            {
-                Text(
-                    stringResource(R.string.your_weekly_token_usage),
-                    style = MaterialTheme.typography.titleMedium,
+            AnimatedAppearance(delay = 200.milliseconds) {
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     modifier =
                         Modifier
-                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                            .align(Alignment.CenterHorizontally),
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
                 )
-                WeeklyMealChart(formattedStatisticsData)
+                {
+                    Text(
+                        stringResource(R.string.your_weekly_token_usage),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier =
+                            Modifier
+                                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                                .align(Alignment.CenterHorizontally),
+                    )
+                    WeeklyMealChart(formattedStatisticsData)
+                }
             }
         }
         item {
-            Card(
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                modifier =
-                    Modifier
-                        .padding(horizontal = Spacing.md, vertical = Spacing.sm),
-            )
-            {
-                Text(
-                    stringResource(R.string.predicted_spending),
-                    style = MaterialTheme.typography.titleMedium,
+            AnimatedAppearance(delay = 300.milliseconds) {
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     modifier =
                         Modifier
-                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                            .align(Alignment.CenterHorizontally),
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
                 )
-                PredictedSpendingChart(selectedMonth ?: initialMonth, onBudget, formattedStatisticsData)
+                {
+                    Text(
+                        stringResource(R.string.predicted_spending),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier =
+                            Modifier
+                                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                                .align(Alignment.CenterHorizontally),
+                    )
+                    PredictedSpendingChart(selectedMonth ?: initialMonth, onBudget, formattedStatisticsData)
+                }
             }
         }
     }

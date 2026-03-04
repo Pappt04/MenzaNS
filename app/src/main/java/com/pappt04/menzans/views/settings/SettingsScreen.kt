@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.Security
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +48,9 @@ import com.pappt04.menzans.data.consts.PermissionData
 import com.pappt04.menzans.data.consts.PermissionData.permissionsNeeded
 import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.viewmodels.MainViewModel
+import com.pappt04.menzans.views.common.AnimatedAppearance
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SettingsScreen(
@@ -82,7 +85,9 @@ fun SettingsScreen(
     ) {
         // Appearance
         item {
-            SectionHeader(Icons.Outlined.Palette, stringResource(R.string.settings_section_appearance))
+            AnimatedAppearance(delay = 50.milliseconds) {
+                SectionHeader(Icons.Outlined.Palette, stringResource(R.string.settings_section_appearance))
+            }
         }
         item {
             LanguageChanger()
@@ -106,7 +111,9 @@ fun SettingsScreen(
 
         // Price & Tokens
         item {
-            SectionHeader(Icons.Outlined.Payments, stringResource(R.string.settings_section_price_tokens))
+            AnimatedAppearance(delay = 100.milliseconds) {
+                SectionHeader(Icons.Outlined.Payments, stringResource(R.string.settings_section_price_tokens))
+            }
         }
         item {
             PriceSwitcher(onBudget) {
@@ -121,7 +128,9 @@ fun SettingsScreen(
 
         // Detection
         item {
-            SectionHeader(Icons.Outlined.MyLocation, stringResource(R.string.settings_section_detection))
+            AnimatedAppearance(delay = 150.milliseconds) {
+                SectionHeader(Icons.Outlined.MyLocation, stringResource(R.string.settings_section_detection))
+            }
         }
         item {
             SettingSwitch(
@@ -147,7 +156,9 @@ fun SettingsScreen(
 
         // Permissions
         item {
-            SectionHeader(Icons.Outlined.Security, stringResource(R.string.settings_section_permissions))
+            AnimatedAppearance(delay = 200.milliseconds) {
+                SectionHeader(Icons.Outlined.Security, stringResource(R.string.settings_section_permissions))
+            }
         }
         items(permissionsNeeded) { permission ->
             var i = 0
@@ -192,6 +203,7 @@ fun PermissionSwitch(
         )
 
     Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier =
             Modifier
                 .padding(8.dp),
@@ -237,6 +249,7 @@ fun PermissionSwitch(
 @Composable
 fun DisclaimerCard() {
     Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier =
             Modifier
                 .padding(8.dp),
