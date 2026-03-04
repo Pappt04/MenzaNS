@@ -46,6 +46,7 @@
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Mislimo da ste bili u menzi %1$s minuta i mislimo da ste jeli %2$s</string>
     <string name="request_permission">Pristup %1$s dozvolu</string>
     <string name="menu_description">Meni</string>
+    <string name="links">Linkovi</string>
     <string name="language">Srpski</string>
     <string name="card">Karta</string>
     <string name="statistics">Statistika</string>

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.views.common.AnimatedNumber
 
 @Composable
@@ -38,16 +39,16 @@ fun BalanceCard(balance: MutableIntState) {
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
             .clickable { showBalanceDialog = true },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+        Column(modifier = Modifier.padding(Spacing.md)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
             ) {
                 Icon(
                     imageVector = Icons.Outlined.AccountBalanceWallet,
@@ -78,11 +79,11 @@ fun BalanceCard(balance: MutableIntState) {
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(Spacing.sm))
             Text(
                 text = stringResource(R.string.tap_to_adjust),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
         }

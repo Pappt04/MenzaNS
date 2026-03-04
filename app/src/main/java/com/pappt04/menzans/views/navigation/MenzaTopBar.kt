@@ -1,7 +1,6 @@
 package com.pappt04.menzans.views.navigation
 
 import android.content.Intent
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -61,11 +60,10 @@ fun MenzaTopBar(
                 Text(
                     screenTitle,
                     softWrap = false,
-                    fontSize = 42.sp,
+                    fontSize = 32.sp,
                     fontFamily = megatitleFont,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.basicMarquee(),
                 )
             }
         },

@@ -45,6 +45,7 @@
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Did you eat %2$s for %1$s minutes</string>
     <string name="request_permission">Access to %1$s permission</string>
     <string name="menu_description">Menu</string>
+    <string name="links">Links</string>
     <string name="your_balance_is_now_rsd">Your balance is now: %1$s rsd</string>
     <string name="language">English</string>
     <string name="card">Card</string>

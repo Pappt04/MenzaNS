@@ -45,6 +45,7 @@
     <string name="we_automatically_deducted_one_meal_token_for_you_notification">Automatically deducted one meal token for you</string>
     <string name="request_permission">Access to %1$s permission</string>
     <string name="menu_description">Menu</string>
+    <string name="links">Links</string>
     <string name="language">English</string>
     <string name="en" translatable="false">English</string>
     <string name="hu" translatable="false">Magyar</string>

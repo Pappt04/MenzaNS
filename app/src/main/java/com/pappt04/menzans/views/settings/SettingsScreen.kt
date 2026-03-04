@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import com.pappt04.menzans.ui.theme.Spacing
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -161,7 +162,7 @@ fun SettingsScreen(
         }
 
         // Disclaimer at the bottom
-        item { HorizontalDivider(modifier = Modifier.padding(10.dp)) }
+        item { HorizontalDivider(modifier = Modifier.padding(Spacing.md)) }
         item {
             DisclaimerCard()
         }
@@ -195,7 +196,7 @@ fun PermissionSwitch(
             Modifier
                 .padding(8.dp),
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(Spacing.md)) {
             Row {
                 Text(
                     stringResource(R.string.request_permission, permissionType.split(".").last()),
@@ -244,11 +245,11 @@ fun DisclaimerCard() {
             text = stringResource(R.string.disclaimer_this_is_a_student_project_with_no_affiliation_with_the_university_of_novi_sad),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.bodyMedium,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(Spacing.md),
         )
     }
 }

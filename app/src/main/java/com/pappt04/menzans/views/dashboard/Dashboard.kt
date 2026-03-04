@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.data.consts.MealSample.mealIcons
@@ -87,7 +88,7 @@ fun DashboardScreen(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(horizontal = Spacing.md, vertical = Spacing.sm)
                         .clickable { selectedCard.intValue = NO_MEAL_SELECTED },
                 ) {
                     var i = 0

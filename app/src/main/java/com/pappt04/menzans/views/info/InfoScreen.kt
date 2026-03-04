@@ -1,7 +1,6 @@
 package com.pappt04.menzans.views.info
 
 import android.content.res.Configuration
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,26 +14,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.pappt04.menzans.views.common.AnimatedAppearance
 
 @Composable
 fun InfoScreen(innerpadding: PaddingValues) {
     val tab = remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
 
     LazyColumn(modifier = Modifier.padding(innerpadding)) {
-        /*item {
+        item {
             TabPickerButton(tab)
         }
         when (tab.intValue) {
-            0 -> item{
+            0 -> item {
                 MenuTab()
             }
-            else -> item{
+            else -> item {
                 LinkTab(context)
             }
-        }*/
-        item {
-            MenuTab()
         }
     }
 }

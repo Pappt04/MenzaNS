@@ -69,6 +69,7 @@ import androidx.core.content.ContextCompat.startActivity
 import com.pappt04.menzans.R
 import com.pappt04.menzans.models.CardPreferences
 import com.pappt04.menzans.ui.theme.IconSize
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.viewmodels.CardViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -168,7 +169,7 @@ fun CardScreen(
             )
         }
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Column(modifier = Modifier.padding(horizontal = Spacing.md)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = surname,
@@ -205,7 +206,7 @@ fun CardScreen(
         }
         item {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = Spacing.md),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
@@ -244,7 +245,7 @@ fun CardScreen(
         }
         item {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = Spacing.md),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 DateFieldRow(
@@ -267,7 +268,7 @@ fun CardScreen(
 
         // Action buttons
         item {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.md))
             ActionButtons(
                 onDiscard = {
                     surname = cardInfo.surname
@@ -331,12 +332,12 @@ private fun StudentCardPreview(
     val onPrimary = MaterialTheme.colorScheme.onPrimary
 
     ElevatedCard(
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(Spacing.lg),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
                 .height(180.dp),
     ) {
         Box(
@@ -348,7 +349,7 @@ private fun StudentCardPreview(
                         Brush.linearGradient(
                             colors = listOf(primary, primaryContainer),
                         ),
-                    ).padding(20.dp),
+                    ).padding(Spacing.md),
         ) {
             // Logos top-right
             Row(
@@ -395,7 +396,7 @@ private fun StudentCardPreview(
                     Text(
                         text = faculty,
                         style = MaterialTheme.typography.bodySmall,
-                        color = onPrimary.copy(alpha = 0.8f),
+                        color = onPrimary.copy(alpha = 0.75f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -404,7 +405,7 @@ private fun StudentCardPreview(
                     Text(
                         text = index,
                         style = MaterialTheme.typography.bodySmall,
-                        color = onPrimary.copy(alpha = 0.7f),
+                        color = onPrimary.copy(alpha = 0.75f),
                     )
                 }
             }
@@ -414,7 +415,7 @@ private fun StudentCardPreview(
                 Text(
                     text = "Važi do: $validUntil",
                     style = MaterialTheme.typography.labelSmall,
-                    color = onPrimary.copy(alpha = 0.8f),
+                    color = onPrimary.copy(alpha = 0.75f),
                     modifier = Modifier.align(Alignment.BottomStart),
                 )
             }
@@ -423,7 +424,7 @@ private fun StudentCardPreview(
             Icon(
                 imageVector = Icons.Default.Share,
                 contentDescription = stringResource(R.string.share),
-                tint = onPrimary.copy(alpha = 0.8f),
+                tint = onPrimary.copy(alpha = 0.75f),
                 modifier =
                     Modifier
                         .align(Alignment.BottomEnd)
@@ -451,8 +452,8 @@ private fun TokenSummaryRow(
         )
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = Spacing.md, vertical = Spacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
         items(meals.size) { i ->
             val (label, count, icon) = meals[i]
@@ -483,7 +484,7 @@ private fun TokenChip(
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -535,9 +536,9 @@ private fun SectionHeader(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 6.dp),
+                .padding(start = Spacing.md, end = Spacing.md, top = Spacing.md, bottom = Spacing.sm),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
         Icon(
             imageVector = icon,
@@ -593,8 +594,8 @@ private fun ActionButtons(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(horizontal = Spacing.md),
+        verticalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
         Button(
             onClick = onSave,

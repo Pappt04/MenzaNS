@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.views.common.AnimatedNumber
 import com.pappt04.menzans.data.consts.CalendarData.timeFormat
 import com.pappt04.menzans.models.EatingStatisticsData
@@ -53,10 +54,10 @@ fun DetailedMealCard(
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
             .clickable { onClicked() },
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Spacing.md)) {
             Text(
                 text = meal.name.asString(context),
                 style = MaterialTheme.typography.titleLarge,
@@ -65,7 +66,7 @@ fun DetailedMealCard(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(Spacing.sm))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,

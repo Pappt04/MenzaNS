@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.models.UiState
 import com.pappt04.menzans.viewmodels.DashboardViewModel
 import com.pappt04.menzans.views.statistics.rememberMarker
@@ -72,9 +73,9 @@ fun LineGraphCard(viewModel: DashboardViewModel) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+        Column(modifier = Modifier.padding(Spacing.md)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -192,7 +193,7 @@ private fun BusynessMetric(label: String, value: String, modifier: Modifier = Mo
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = Spacing.sm, vertical = Spacing.sm),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(

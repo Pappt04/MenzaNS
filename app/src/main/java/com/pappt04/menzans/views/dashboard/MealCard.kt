@@ -33,6 +33,7 @@ import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.ui.theme.MenzaNSTheme
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.views.common.AnimatedNumber
 
 @SuppressLint("DefaultLocale")
@@ -53,11 +54,11 @@ fun MealCard(
             ),
         modifier =
             Modifier
-                .padding(8.dp)
+                .padding(Spacing.sm)
                 .clickable { onClicked() },
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(Spacing.md),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
@@ -83,7 +84,7 @@ fun MealCard(
             ) {
                 Text(
                     text = stringResource(R.string.remaining) + ": ",
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 AnimatedNumber(

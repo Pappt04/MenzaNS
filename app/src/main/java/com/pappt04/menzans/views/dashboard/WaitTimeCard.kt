@@ -36,15 +36,18 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.repository.WaitTimeRepository
 import com.pappt04.menzans.views.common.AnimatedNumber
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+private const val WAIT_TIME_LOADING = 999
+
 @Composable
 fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
-    val waittime = remember { mutableIntStateOf(999) }
+    val waittime = remember { mutableIntStateOf(WAIT_TIME_LOADING) }
     val trajectory = remember { mutableIntStateOf(0) }
     val showDialog = remember { mutableStateOf(false) }
     val waitTimeRepository: WaitTimeRepository = koinInject()
@@ -70,7 +73,7 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
             waittime.intValue = wt.waittime?.toIntOrNull() ?: return@onSuccess
             trajectory.intValue =
                 when {
-                    temp == 999 -> wt.trajectory?.toIntOrNull() ?: 0
+                    temp == WAIT_TIME_LOADING -> wt.trajectory?.toIntOrNull() ?: 0
                     temp < waittime.intValue -> 1
                     temp > waittime.intValue -> -1
                     else -> 0
@@ -95,13 +98,13 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
             .clickable { showDialog.value = true },
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+        Column(modifier = Modifier.padding(Spacing.md)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Timer,
@@ -121,7 +124,7 @@ fun WaitTimeCard(refreshTrigger: Int = 0, snackbar: SnackbarHostState? = null) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                if (waittime.intValue != 999) {
+                if (waittime.intValue != WAIT_TIME_LOADING) {
                     Text(
                         text = "~",
                         fontStyle = FontStyle.Italic,

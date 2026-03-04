@@ -66,8 +66,8 @@ fun StatisticsScreen(
         item {
             Column {
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                    contentPadding = PaddingValues(horizontal = Spacing.md),
                 ) {
                     items(monthNames) { month ->
                         val localizedMonth =
@@ -88,7 +88,7 @@ fun StatisticsScreen(
                 AnimatedVisibility(visible = selectedMonth != null) {
                     TextButton(
                         onClick = { selectedMonth = null },
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(horizontal = Spacing.md),
                     ) {
                         Text(stringResource(R.string.clear_month_filter))
                     }
@@ -105,7 +105,7 @@ fun StatisticsScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                 modifier =
                     Modifier
-                        .padding(8.dp),
+                        .padding(horizontal = Spacing.md, vertical = Spacing.sm),
             )
             {
                 Text(
@@ -124,7 +124,7 @@ fun StatisticsScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                 modifier =
                     Modifier
-                        .padding(8.dp),
+                        .padding(horizontal = Spacing.md, vertical = Spacing.sm),
             )
             {
                 Text(
@@ -143,7 +143,7 @@ fun StatisticsScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                 modifier =
                     Modifier
-                        .padding(8.dp),
+                        .padding(horizontal = Spacing.md, vertical = Spacing.sm),
             )
             {
                 Text(

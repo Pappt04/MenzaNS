@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.models.DayMenu
 import com.pappt04.menzans.models.MealPeriod
 import com.pappt04.menzans.models.currentOrNextPeriod
@@ -61,7 +62,7 @@ fun TodayMenuCard(viewModel: MenuViewModel = koinViewModel()) {
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
     ) {
         when {
             isLoading -> {
@@ -118,7 +119,7 @@ private fun MenuCardContent(menu: DayMenu) {
     val items = period.itemsFrom(menu)
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(12.dp)) {
+    Column(modifier = Modifier.padding(Spacing.md)) {
         // Header row
         Row(
             modifier = Modifier
@@ -172,8 +173,8 @@ private fun MenuCardContent(menu: DayMenu) {
                     items.forEachIndexed { index, item ->
                         key(index) {
                             Row(
-                                modifier = Modifier.padding(vertical = 2.dp),
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                modifier = Modifier.padding(vertical = Spacing.xs),
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
                             ) {
                                 Text(
                                     text = "•",

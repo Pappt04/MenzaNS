@@ -46,6 +46,7 @@
     <string name="we_think_you_were_at_menza_for_there_is_a_big_chance_you_ate_notification">Úgy gondoljuk a Menzán voltál %1$s percet és ettél %2$s</string>
     <string name="request_permission">Hozzáférés a %1$s engedélyhez</string>
     <string name="menu_description">Menü</string>
+    <string name="links">Linkek</string>
     <string name="language">Magyar</string>
     <string name="card">Kártya</string>
     <string name="statistics">Statisztika</string>
