@@ -1,0 +1,7 @@
+package com.pappt04.menzans.data.consts
+
+object AppConfig {
+    const val BASE_SERVER_URL = "http://192.168.1.32:8080/"
+    const val BASE_API_NAME = "/appapi"
+    const val APP_STORE_URL = "https://play.google.com/store/apps/details?id=com.pappt04.menzans"
+}
