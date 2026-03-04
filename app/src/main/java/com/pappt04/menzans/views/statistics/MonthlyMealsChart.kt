@@ -50,6 +50,16 @@ fun MonthlyMealsChart(data: List<EatingStatisticsData>) {
                         color = MaterialTheme.colorScheme.primary,
                         thickness = 8.dp,
                         shape = CorneredShape.rounded(allPercent = 40),
+                    ),
+                    rememberLineComponent(
+                        color = MaterialTheme.colorScheme.secondary,
+                        thickness = 8.dp,
+                        shape = CorneredShape.rounded(allPercent = 40),
+                    ),
+                    rememberLineComponent(
+                        color = MaterialTheme.colorScheme.tertiary,
+                        thickness = 8.dp,
+                        shape = CorneredShape.rounded(allPercent = 40),
                     )
                 )
             ),
