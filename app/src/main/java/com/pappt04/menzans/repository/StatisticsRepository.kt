@@ -44,7 +44,7 @@ class StatisticsRepository(
         try {
             val meal = buildMealEventString(mealData)
             withContext(Dispatchers.IO) {
-                apiService.addMeal(meal)
+                apiService.addMeal(userRepository.getUserId(), meal)
             }
         } catch (_: Exception) {
         }
