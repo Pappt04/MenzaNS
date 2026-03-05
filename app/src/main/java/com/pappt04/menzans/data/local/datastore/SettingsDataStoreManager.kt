@@ -24,7 +24,9 @@ class SettingsDataStoreManager(
         val DARK_THEME = booleanPreferencesKey("DARK_THEME")
         val MATERIALYOU_THEME = booleanPreferencesKey("MATERIALYOU_THEME")
         val BUDGET = booleanPreferencesKey("BUDGET")
-        val TOKEN_WARNING = intPreferencesKey("TOKEN_WARNING")
+        val BREAKFAST_TOKEN_WARNING = intPreferencesKey("BREAKFAST_TOKEN_WARNING")
+        val LUNCH_TOKEN_WARNING = intPreferencesKey("LUNCH_TOKEN_WARNING")
+        val DINNER_TOKEN_WARNING = intPreferencesKey("DINNER_TOKEN_WARNING")
         val USERID = stringPreferencesKey("USERID")
         val FIRST_WELCOME = booleanPreferencesKey("FIRST_WELCOME")
         val GEOFENCE_ENABLED = booleanPreferencesKey("GEOFENCE_ENABLED")
@@ -42,7 +44,9 @@ class SettingsDataStoreManager(
             it[DARK_THEME] = settingsData.darktheme
             it[MATERIALYOU_THEME] = settingsData.materialyoutheme
             it[BUDGET] = settingsData.budget
-            it[TOKEN_WARNING] = settingsData.tokenwarning
+            it[BREAKFAST_TOKEN_WARNING] = settingsData.breakfastTokenWarning
+            it[LUNCH_TOKEN_WARNING] = settingsData.lunchTokenWarning
+            it[DINNER_TOKEN_WARNING] = settingsData.dinnerTokenWarning
             it[USERID] = settingsData.userID
             it[FIRST_WELCOME] = settingsData.firstWelcome
             it[GEOFENCE_ENABLED] = settingsData.geofenceEnabled
@@ -62,7 +66,9 @@ class SettingsDataStoreManager(
                 darktheme = it[DARK_THEME] ?: false,
                 materialyoutheme = it[MATERIALYOU_THEME] ?: false,
                 budget = it[BUDGET] ?: false,
-                tokenwarning = it[TOKEN_WARNING] ?: 0,
+                breakfastTokenWarning = it[BREAKFAST_TOKEN_WARNING] ?: 2,
+                lunchTokenWarning = it[LUNCH_TOKEN_WARNING] ?: 2,
+                dinnerTokenWarning = it[DINNER_TOKEN_WARNING] ?: 2,
                 userID = it[USERID] ?: "",
                 firstWelcome = it[FIRST_WELCOME] ?: true,
                 geofenceEnabled = it[GEOFENCE_ENABLED] ?: true,

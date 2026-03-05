@@ -30,8 +30,16 @@ class CardViewModel(
     val mealCounts: StateFlow<MealPreferences> = mealRepository.getMealCounts()
         .stateIn(viewModelScope, SharingStarted.Lazily, MealPreferences())
 
-    val tokenWarningLimit: StateFlow<Int> = settingsRepository.getSettings()
-        .map { it.tokenwarning }
+    val breakfastTokenWarning: StateFlow<Int> = settingsRepository.getSettings()
+        .map { it.breakfastTokenWarning }
+        .stateIn(viewModelScope, SharingStarted.Lazily, 2)
+
+    val lunchTokenWarning: StateFlow<Int> = settingsRepository.getSettings()
+        .map { it.lunchTokenWarning }
+        .stateIn(viewModelScope, SharingStarted.Lazily, 2)
+
+    val dinnerTokenWarning: StateFlow<Int> = settingsRepository.getSettings()
+        .map { it.dinnerTokenWarning }
         .stateIn(viewModelScope, SharingStarted.Lazily, 2)
 
     fun saveCardInfo(prefs: CardPreferences) {

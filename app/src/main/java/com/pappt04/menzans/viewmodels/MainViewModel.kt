@@ -18,7 +18,9 @@ data class MainUiState(
     val darkTheme: Boolean = false,
     val materialYouTheme: Boolean = false,
     val onBudgetPricing: Boolean = false,
-    val tokenWarning: Int = 2,
+    val breakfastTokenWarning: Int = 2,
+    val lunchTokenWarning: Int = 2,
+    val dinnerTokenWarning: Int = 2,
     val userId: String = "",
     val isFirstWelcome: Boolean = true,
     val savedMeals: List<Int> = listOf(0, 0, 0, 0),
@@ -51,7 +53,9 @@ class MainViewModel(
                     darkTheme = settings.darktheme,
                     materialYouTheme = settings.materialyoutheme,
                     onBudgetPricing = settings.budget,
-                    tokenWarning = settings.tokenwarning,
+                    breakfastTokenWarning = settings.breakfastTokenWarning,
+                    lunchTokenWarning = settings.lunchTokenWarning,
+                    dinnerTokenWarning = settings.dinnerTokenWarning,
                     userId = userId,
                     isFirstWelcome = settings.firstWelcome,
                     geofenceEnabled = settings.geofenceEnabled,
@@ -87,8 +91,18 @@ class MainViewModel(
         persistSettings()
     }
 
-    fun updateTokenWarning(value: Int) {
-        _uiState.value = _uiState.value.copy(tokenWarning = value)
+    fun updateBreakfastTokenWarning(value: Int) {
+        _uiState.value = _uiState.value.copy(breakfastTokenWarning = value)
+        persistSettings()
+    }
+
+    fun updateLunchTokenWarning(value: Int) {
+        _uiState.value = _uiState.value.copy(lunchTokenWarning = value)
+        persistSettings()
+    }
+
+    fun updateDinnerTokenWarning(value: Int) {
+        _uiState.value = _uiState.value.copy(dinnerTokenWarning = value)
         persistSettings()
     }
 
@@ -152,7 +166,9 @@ class MainViewModel(
                     darktheme = state.darkTheme,
                     materialyoutheme = state.materialYouTheme,
                     budget = state.onBudgetPricing,
-                    tokenwarning = state.tokenWarning,
+                    breakfastTokenWarning = state.breakfastTokenWarning,
+                    lunchTokenWarning = state.lunchTokenWarning,
+                    dinnerTokenWarning = state.dinnerTokenWarning,
                     firstWelcome = state.isFirstWelcome,
                     geofenceEnabled = state.geofenceEnabled,
                     eatingSpeedThreshold = state.eatingSpeedThreshold,

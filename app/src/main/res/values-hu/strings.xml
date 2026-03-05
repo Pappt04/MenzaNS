@@ -108,6 +108,9 @@
     <string name="developer_contact">Developer Contact</string>
     <string name="google_play">Google Play</string>
     <string name="token_warning">Zseton emlékeztető</string>
+    <string name="token_warning_breakfast">Reggeli zseton figyelmeztetés</string>
+    <string name="token_warning_lunch">Ebéd zseton figyelmeztetés</string>
+    <string name="token_warning_dinner">Vacsora zseton figyelmeztetés</string>
     <string name="settings_section_appearance">Megjelenés</string>
     <string name="settings_section_price_tokens">Ár és zseton</string>
     <string name="settings_section_detection">Észlelés</string>

@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.PlatformTextStyle
@@ -17,20 +16,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.pappt04.menzans.R
 import kotlin.math.roundToInt
 
 @Composable
 fun TokenLimitSlider(
+    label: String,
     sliderpos: MutableFloatState,
     onChanged: () -> Unit,
 ) {
-    val tokenLimitDesc = stringResource(R.string.token_limit_desc)
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row()
         {
             Text(
-                stringResource(R.string.token_warning),
+                label,
                 style =
                     MaterialTheme.typography.titleLarge.merge(
                         TextStyle(
@@ -69,7 +67,7 @@ fun TokenLimitSlider(
             )
         }
         Slider(
-            modifier = Modifier.semantics { contentDescription = tokenLimitDesc },
+            modifier = Modifier.semantics { contentDescription = label },
             value = sliderpos.value,
             onValueChange = { sliderpos.value = it },
             valueRange = 0f..10f,

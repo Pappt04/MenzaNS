@@ -108,6 +108,9 @@
     <string name="developer_contact">Developer Contact</string>
     <string name="google_play">Google Play</string>
     <string name="token_warning">Token Warning</string>
+    <string name="token_warning_breakfast">Breakfast token warning</string>
+    <string name="token_warning_lunch">Lunch token warning</string>
+    <string name="token_warning_dinner">Dinner token warning</string>
     <string name="settings_section_appearance">Appearance</string>
     <string name="settings_section_price_tokens">Price &amp; Tokens</string>
     <string name="settings_section_detection">Detection</string>

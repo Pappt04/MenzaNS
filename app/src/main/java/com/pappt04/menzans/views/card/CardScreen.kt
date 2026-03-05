@@ -90,7 +90,9 @@ fun CardScreen(
     val scope = rememberCoroutineScope()
     val cardInfo by viewModel.cardInfo.collectAsState()
     val mealCounts by viewModel.mealCounts.collectAsState()
-    val tokenWarningLimit by viewModel.tokenWarningLimit.collectAsState()
+    val breakfastTokenWarning by viewModel.breakfastTokenWarning.collectAsState()
+    val lunchTokenWarning by viewModel.lunchTokenWarning.collectAsState()
+    val dinnerTokenWarning by viewModel.dinnerTokenWarning.collectAsState()
 
     var surname by remember { mutableStateOf(cardInfo.surname) }
     var name by remember { mutableStateOf(cardInfo.name) }
@@ -157,7 +159,9 @@ fun CardScreen(
         item {
             TokenSummaryRow(
                 mealCounts = mealCounts,
-                warningLimit = tokenWarningLimit,
+                breakfastWarning = breakfastTokenWarning,
+                lunchWarning = lunchTokenWarning,
+                dinnerWarning = dinnerTokenWarning,
             )
         }
 
@@ -426,13 +430,15 @@ private fun StudentCardPreview(
 @Composable
 private fun TokenSummaryRow(
     mealCounts: com.pappt04.menzans.models.MealPreferences,
-    warningLimit: Int,
+    breakfastWarning: Int,
+    lunchWarning: Int,
+    dinnerWarning: Int,
 ) {
     val meals =
         listOf(
-            Triple(stringResource(R.string.breakfast), mealCounts.breakfast, Icons.Default.Coffee),
-            Triple(stringResource(R.string.lunch), mealCounts.lunch, Icons.Filled.Restaurant),
-            Triple(stringResource(R.string.dinner), mealCounts.dinner, Icons.Outlined.Fastfood),
+            Triple(stringResource(R.string.breakfast), mealCounts.breakfast to breakfastWarning, Icons.Default.Coffee),
+            Triple(stringResource(R.string.lunch), mealCounts.lunch to lunchWarning, Icons.Filled.Restaurant),
+            Triple(stringResource(R.string.dinner), mealCounts.dinner to dinnerWarning, Icons.Outlined.Fastfood),
         )
 
     LazyRow(
@@ -440,7 +446,8 @@ private fun TokenSummaryRow(
         horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
         items(meals.size) { i ->
-            val (label, count, icon) = meals[i]
+            val (label, countAndLimit, icon) = meals[i]
+            val (count, warningLimit) = countAndLimit
             TokenChip(label, count, warningLimit, icon)
         }
     }

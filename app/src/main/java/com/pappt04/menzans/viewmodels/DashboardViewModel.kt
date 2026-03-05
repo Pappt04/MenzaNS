@@ -58,13 +58,13 @@ class DashboardViewModel(
     fun saveMealCounts(prefs: MealPreferences) {
         viewModelScope.launch {
             mealRepository.saveMealCounts(prefs)
-            val threshold = settingsRepository.getSettings().first().tokenwarning
+            val settings = settingsRepository.getSettings().first()
             val checks = listOf(
-                "breakfast" to prefs.breakfast,
-                "lunch" to prefs.lunch,
-                "dinner" to prefs.dinner,
+                Triple("breakfast", prefs.breakfast, settings.breakfastTokenWarning),
+                Triple("lunch", prefs.lunch, settings.lunchTokenWarning),
+                Triple("dinner", prefs.dinner, settings.dinnerTokenWarning),
             )
-            for ((name, count) in checks) {
+            for ((name, count, threshold) in checks) {
                 if (count in 0..threshold) {
                     _tokenWarningEvent.emit(name to count)
                 }

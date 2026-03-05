@@ -66,7 +66,9 @@ fun SettingsScreen(
     val state by mainViewModel.uiState.collectAsState()
     val darkTheme = remember { mutableStateOf(state.darkTheme) }
     val materialyoutheme = remember { mutableStateOf(state.materialYouTheme) }
-    val tokenwarning = remember { mutableFloatStateOf(state.tokenWarning.toFloat()) }
+    val breakfastTokenWarning = remember { mutableFloatStateOf(state.breakfastTokenWarning.toFloat()) }
+    val lunchTokenWarning = remember { mutableFloatStateOf(state.lunchTokenWarning.toFloat()) }
+    val dinnerTokenWarning = remember { mutableFloatStateOf(state.dinnerTokenWarning.toFloat()) }
     val onBudget = remember { mutableStateOf(state.onBudgetPricing) }
     val geofenceEnabled = remember { mutableStateOf(state.geofenceEnabled) }
     val eatingSpeedThreshold = remember { mutableFloatStateOf(state.eatingSpeedThreshold.toFloat()) }
@@ -77,7 +79,9 @@ fun SettingsScreen(
 
     LaunchedEffect(state.darkTheme) { darkTheme.value = state.darkTheme }
     LaunchedEffect(state.materialYouTheme) { materialyoutheme.value = state.materialYouTheme }
-    LaunchedEffect(state.tokenWarning) { tokenwarning.floatValue = state.tokenWarning.toFloat() }
+    LaunchedEffect(state.breakfastTokenWarning) { breakfastTokenWarning.floatValue = state.breakfastTokenWarning.toFloat() }
+    LaunchedEffect(state.lunchTokenWarning) { lunchTokenWarning.floatValue = state.lunchTokenWarning.toFloat() }
+    LaunchedEffect(state.dinnerTokenWarning) { dinnerTokenWarning.floatValue = state.dinnerTokenWarning.toFloat() }
     LaunchedEffect(state.onBudgetPricing) { onBudget.value = state.onBudgetPricing }
     LaunchedEffect(state.geofenceEnabled) { geofenceEnabled.value = state.geofenceEnabled }
     LaunchedEffect(state.eatingSpeedThreshold) { eatingSpeedThreshold.floatValue = state.eatingSpeedThreshold.toFloat() }
@@ -131,8 +135,27 @@ fun SettingsScreen(
             }
         }
         item {
-            TokenLimitSlider(tokenwarning) {
-                mainViewModel.updateTokenWarning(tokenwarning.floatValue.roundToInt())
+            TokenLimitSlider(
+                label = stringResource(R.string.token_warning_breakfast),
+                sliderpos = breakfastTokenWarning,
+            ) {
+                mainViewModel.updateBreakfastTokenWarning(breakfastTokenWarning.floatValue.roundToInt())
+            }
+        }
+        item {
+            TokenLimitSlider(
+                label = stringResource(R.string.token_warning_lunch),
+                sliderpos = lunchTokenWarning,
+            ) {
+                mainViewModel.updateLunchTokenWarning(lunchTokenWarning.floatValue.roundToInt())
+            }
+        }
+        item {
+            TokenLimitSlider(
+                label = stringResource(R.string.token_warning_dinner),
+                sliderpos = dinnerTokenWarning,
+            ) {
+                mainViewModel.updateDinnerTokenWarning(dinnerTokenWarning.floatValue.roundToInt())
             }
         }
 
