@@ -47,7 +47,7 @@ fun TokenLimitSlider(
                 modifier = Modifier.weight(4f),
             )
             Text(
-                "${sliderpos.value.roundToInt()}",
+                "${sliderpos.floatValue.roundToInt()}",
                 style =
                     MaterialTheme.typography.titleLarge.merge(
                         TextStyle(
@@ -68,8 +68,8 @@ fun TokenLimitSlider(
         }
         Slider(
             modifier = Modifier.semantics { contentDescription = label },
-            value = sliderpos.value,
-            onValueChange = { sliderpos.value = it },
+            value = sliderpos.floatValue,
+            onValueChange = { sliderpos.floatValue = it },
             valueRange = 0f..10f,
             onValueChangeFinished = {
                 onChanged()

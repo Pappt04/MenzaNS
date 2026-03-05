@@ -96,6 +96,7 @@
     <string name="explanation_COARSE_LOCATION">Hozzávetőleges helymeghatározást arra használjuk, hogy megmondjuk, valószínűleg elmész-e a kantinba enni</string>
     <string name="explanation_FINE_LOCATION">Pontos helymeghatározást használunk annak megállapítására, hogy a kantinban tartózkodik-e vagy sem</string>
     <string name="time_of_day_hours">Napszak[óra]</string>
+    <string name="metric_peak">Csúcs</string>
     <string name="self_financing">Önköltséges</string>
     <string name="budget">Államilag támogatott</string>
     <string name="use_materialyou_theme">MaterialYou színskála</string>
@@ -176,4 +177,6 @@
     <string name="notify_threshold_breakfast">Reggeli foglaltság küszöb</string>
     <string name="notify_threshold_lunch">Ebéd foglaltság küszöb</string>
     <string name="notify_threshold_dinner">Vacsora foglaltság küszöb</string>
+    <string name="busyness_forecast">Sűrűségi előrejelzés</string>
+    <string name="metric_now">Most</string>
 </resources>

@@ -68,8 +68,8 @@ fun DashboardScreen(
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
     LaunchedEffect(Unit) {
-        viewModel.tokenWarningEvent.collect { (mealFile, remaining) ->
-            notificationManager.sendTopUpReminder(context, mealFile, remaining)
+        viewModel.tokenWarningEvent.collect { (index, remaining) ->
+            notificationManager.sendTopUpReminder(context, index, remaining)
         }
     }
 
@@ -141,6 +141,7 @@ fun DashboardScreen(
                             onChanged = {
                                 if (mealValueList.size == 3) {
                                     viewModel.saveMealCounts(
+                                        it,
                                         MealPreferences(
                                             breakfast = mealValueList[0].intValue,
                                             lunch = mealValueList[1].intValue,
@@ -175,6 +176,7 @@ fun DashboardScreen(
                 onDismissRequest = {
                     showBalanceDialog = false
                     viewModel.saveMealCounts(
+                        -1,
                         MealPreferences(
                             breakfast = mealValueList[0].intValue,
                             lunch = mealValueList[1].intValue,

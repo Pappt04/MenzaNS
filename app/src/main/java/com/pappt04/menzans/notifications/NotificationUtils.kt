@@ -9,7 +9,6 @@ import androidx.core.app.NotificationCompat
 import com.pappt04.menzans.R
 import com.pappt04.menzans.data.consts.MealSample
 import com.pappt04.menzans.data.consts.NotificationConstants
-import com.pappt04.menzans.data.local.FileContainer
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.views.MainActivity
 
@@ -114,19 +113,12 @@ fun NotificationManager.sendAutomaticDeductNotification(
 
 fun NotificationManager.sendTopUpReminder(
     context: Context,
-    file: String,
+    index: Int,
     remaining: Int,
 ) {
-    var i = 0
-    for (name in FileContainer.FileNames) {
-        if (file == name) {
-            break
-        }
-        i++
-    }
     var s1 = ""
     try {
-        s1 = MealSample.MealSampleBudget[i].name.asString(context)
+        s1 = MealSample.MealSampleBudget[index%3].name.asString(context)
     } catch (_: Exception) {
     }
 

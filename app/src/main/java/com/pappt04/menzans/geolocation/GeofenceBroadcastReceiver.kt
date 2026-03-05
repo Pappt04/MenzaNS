@@ -102,9 +102,19 @@ class GeofenceBroadcastReceiver :
 
                     val correctmeal = calculateCorrectMeal(timeEntered, timeExited)
 
+                    var notify = false
+
                     if (alldiff > settings.eatingSpeedThreshold && settings.autoDeduct && correctmeal != null) {
-                        automaticallyDeductToken(timeEntered, timeExited, correctmeal)
-                        notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
+                        val newmealcount=automaticallyDeductToken(timeEntered, timeExited, correctmeal)
+
+                        when(correctmeal.name.asString(context)) {
+                            MealSampleBudget[0].name.asString(context) -> notify = settings.breakfastTokenWarning > newmealcount
+                            MealSampleBudget[1].name.asString(context) -> notify = settings.lunchTokenWarning > newmealcount
+                            MealSampleBudget[2].name.asString(context) -> notify = settings.dinnerTokenWarning > newmealcount
+                        }
+
+                        if(notify)
+                            notificationManager.sendAutomaticDeductNotification(context, alldiff, correctmeal)
 
                         if (userId.isNotEmpty()) {
                             CoroutineScope(Dispatchers.IO).launch {
@@ -141,7 +151,8 @@ class GeofenceBroadcastReceiver :
         timeEntered: String,
         timeExited: String,
         mealdata: MealData?,
-    ) {
+    ): Int {
+        var currentMeals=0
         if (mealdata != null) {
             val mealIndex = findMealIndex(mealdata)
 
@@ -157,7 +168,7 @@ class GeofenceBroadcastReceiver :
                 statisticsRepository.appendMealEvent(statisticsMeal)
 
                 val mealPrefs = mealRepository.getMealCounts().first()
-                val currentMeals =
+                currentMeals =
                     when (mealIndex) {
                         0 -> mealPrefs.breakfast
                         1 -> mealPrefs.lunch
@@ -177,6 +188,8 @@ class GeofenceBroadcastReceiver :
                 }
             }
         }
+
+        return currentMeals - 1
     }
 }
 

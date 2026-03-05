@@ -96,6 +96,7 @@
     <string name="explanation_BACKGROUND_LOCATION">Ponekad pratimo lokaciju u pozadini! Snimamo sistemske događaje kada ste u kantini tako da ne morate ručno da evidentirate svoje obroke. Snimamo vreme kada ulazite i izlazite iz kantine i šaljemo obaveštenje drugim korisnicima i serveru</string>
     <string name="explanation_NOTIFICATION_ACCESS">Potreban nam je pristup obaveštenjima da bismo mogli da šaljemo korisne podsetnike</string>
     <string name="time_of_day_hours">Doba dana[sat]</string>
+    <string name="metric_peak">Maks</string>
     <string name="self_financing">Samofinansiranje</string>
     <string name="budget">Budžet</string>
     <string name="use_materialyou_theme">MaterialYou tema</string>
@@ -178,4 +179,6 @@
     <string name="notify_threshold_breakfast">Prag zauzetosti za doručak</string>
     <string name="notify_threshold_lunch">Prag zauzetosti za ručak</string>
     <string name="notify_threshold_dinner">Prag zauzetosti za večeru</string>
+    <string name="busyness_forecast">Prognoza gustine</string>
+    <string name="metric_now">Sada</string>
 </resources>

@@ -50,33 +50,24 @@ class DashboardViewModel(
     private val _refreshTick = MutableStateFlow(0)
     val refreshTick: StateFlow<Int> = _refreshTick.asStateFlow()
 
-    // Emits (fileContainerName, remainingCount) when a meal count drops to/below tokenWarning.
-    // "breakfast" | "lunch" | "dinner" matches FileContainer.FileNames indices 0-2.
-    private val _tokenWarningEvent = MutableSharedFlow<Pair<String, Int>>(extraBufferCapacity = 3)
-    val tokenWarningEvent: SharedFlow<Pair<String, Int>> = _tokenWarningEvent.asSharedFlow()
+    private val _tokenWarningEvent = MutableSharedFlow<Pair<Int, Int>>(extraBufferCapacity = 3)
+    val tokenWarningEvent: SharedFlow<Pair<Int, Int>> = _tokenWarningEvent.asSharedFlow()
 
-    fun saveMealCounts(prefs: MealPreferences) {
+    fun saveMealCounts(changedIndex: Int,prefs: MealPreferences) {
         viewModelScope.launch {
             mealRepository.saveMealCounts(prefs)
             val settings = settingsRepository.getSettings().first()
             val checks = listOf(
-                Triple("breakfast", prefs.breakfast, settings.breakfastTokenWarning),
-                Triple("lunch", prefs.lunch, settings.lunchTokenWarning),
-                Triple("dinner", prefs.dinner, settings.dinnerTokenWarning),
+                Pair(prefs.breakfast, settings.breakfastTokenWarning),
+                Pair(prefs.lunch, settings.lunchTokenWarning),
+                Pair(prefs.dinner, settings.dinnerTokenWarning),
             )
-            for ((name, count, threshold) in checks) {
-                if (count in 0..threshold) {
-                    _tokenWarningEvent.emit(name to count)
-                }
-            }
+            if(checks[changedIndex].first in 0.. checks[changedIndex].second)
+                _tokenWarningEvent.emit(changedIndex to checks[changedIndex].first)
         }
     }
 
-    /**
-     * Returns (dayOfWeek 0=Mon…6=Sun, meal API name) matching the current-or-next meal period,
-     * using the same logic as the menu card. After all meals end for the day, returns tomorrow's
-     * breakfast so the graph is always populated.
-     */
+
     private fun detectCurrentOrNextMeal(): Pair<Int, String> {
         val cal = Calendar.getInstance()
         val nowMinutes = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)

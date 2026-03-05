@@ -98,6 +98,7 @@
     <string name="not_enough_funds">Not enough funds</string>
     <string name="wait_time_min">Wait time[min]</string>
     <string name="time_of_day_hours">Time of Day[hours]</string>
+    <string name="metric_peak">Peak</string>
     <string name="self_financing">Self Financing</string>
     <string name="budget">Budget</string>
     <string name="use_materialyou_theme">MaterialYou theme</string>
@@ -176,4 +177,6 @@
     <string name="notify_threshold_breakfast">Breakfast busyness threshold</string>
     <string name="notify_threshold_lunch">Lunch busyness threshold</string>
     <string name="notify_threshold_dinner">Dinner busyness threshold</string>
+    <string name="busyness_forecast">Busyness Forecast</string>
+    <string name="metric_now">Now</string>
 </resources>
