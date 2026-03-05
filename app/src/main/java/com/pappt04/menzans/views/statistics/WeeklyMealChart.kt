@@ -9,16 +9,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.pappt04.menzans.data.consts.CalendarData.weekDays
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
-import com.patrykandpatrick.vico.compose.cartesian.cartesianLayerPadding
+import com.patrykandpatrick.vico.compose.cartesian.layer.cartesianLayerPadding
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -26,7 +29,6 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
 import com.patrykandpatrick.vico.core.common.Defaults.AXIS_LABEL_ROTATION_DEGREES
-import com.patrykandpatrick.vico.core.common.Defaults.COLUMN_ROUNDNESS_PERCENT
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 
 @SuppressLint("RestrictedApi")
@@ -59,25 +61,25 @@ fun WeeklyMealChart(data: List<EatingStatisticsData>) {
                 columnProvider =
                 ColumnCartesianLayer.ColumnProvider.series(
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.secondary,
+                        fill = fill(MaterialTheme.colorScheme.secondary),
                         thickness = 4.dp,
                         shape =
                         CorneredShape.rounded(
-                            bottomLeftPercent = COLUMN_ROUNDNESS_PERCENT,
-                            bottomRightPercent = COLUMN_ROUNDNESS_PERCENT,
+                            bottomLeftPercent = 40,
+                            bottomRightPercent = 40,
                         ),
                     ),
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.primary,
+                        fill = fill(MaterialTheme.colorScheme.primary),
                         thickness = 4.dp
                     ),
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.tertiary,
+                        fill = fill(MaterialTheme.colorScheme.tertiary),
                         thickness = 4.dp,
                         shape =
                         CorneredShape.rounded(
-                            topLeftPercent = COLUMN_ROUNDNESS_PERCENT,
-                            topRightPercent = COLUMN_ROUNDNESS_PERCENT,
+                            topLeftPercent = 40,
+                            topRightPercent = 40,
                         ),
                     ),
                 ),
@@ -85,20 +87,22 @@ fun WeeklyMealChart(data: List<EatingStatisticsData>) {
             ),
             startAxis =
             VerticalAxis.rememberStart(
+                label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 itemPlacer = startAxisItemPlacer,
                 labelRotationDegrees = AXIS_LABEL_ROTATION_DEGREES,
             ),
             bottomAxis =
             HorizontalAxis.rememberBottom(
+                label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 valueFormatter = bottomaxisformatter,
                 labelRotationDegrees = AXIS_LABEL_ROTATION_DEGREES,
                 itemPlacer = remember { HorizontalAxis.ItemPlacer.segmented() },
             ),
             marker = rememberMarker(),
-            layerPadding =
-            cartesianLayerPadding(scalableStartPadding = 16.dp, scalableEndPadding = 16.dp),
+            layerPadding = { cartesianLayerPadding() },
         ),
         modelProducer = modelProducer,
+        scrollState = rememberVicoScrollState(scrollEnabled = false),
         zoomState = rememberVicoZoomState(zoomEnabled = false),
         modifier = Modifier.padding(8.dp)
     )

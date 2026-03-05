@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -15,7 +16,10 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -47,34 +51,39 @@ fun MonthlyMealsChart(data: List<EatingStatisticsData>) {
             rememberColumnCartesianLayer(
                 ColumnCartesianLayer.ColumnProvider.series(
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.primary,
+                        fill = fill(MaterialTheme.colorScheme.primary),
                         thickness = 8.dp,
                         shape = CorneredShape.rounded(allPercent = 40),
                     ),
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.secondary,
+                        fill = fill(MaterialTheme.colorScheme.secondary),
                         thickness = 8.dp,
                         shape = CorneredShape.rounded(allPercent = 40),
                     ),
                     rememberLineComponent(
-                        color = MaterialTheme.colorScheme.tertiary,
+                        fill = fill(MaterialTheme.colorScheme.tertiary),
                         thickness = 8.dp,
                         shape = CorneredShape.rounded(allPercent = 40),
                     )
                 )
             ),
-            startAxis = VerticalAxis.rememberStart(),
+            startAxis = VerticalAxis.rememberStart(
+                label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
+            ),
             bottomAxis =
             HorizontalAxis.rememberBottom(
+                label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 valueFormatter = bottomaxisformatter,
                 itemPlacer =
                 remember {
-                    HorizontalAxis.ItemPlacer.aligned(spacing = 1, addExtremeLabelPadding = true)
+                    HorizontalAxis.ItemPlacer.aligned(spacing = { 1 }, addExtremeLabelPadding = true)
                 },
             ),
             marker = rememberMarker()
         ),
         modelProducer,
+        scrollState = rememberVicoScrollState(scrollEnabled = false),
+        zoomState = rememberVicoZoomState(zoomEnabled = false),
         modifier = Modifier.padding(8.dp)
     )
 }

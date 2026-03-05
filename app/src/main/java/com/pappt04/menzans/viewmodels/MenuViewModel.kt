@@ -78,6 +78,12 @@ class MenuViewModel(
 
     private var isFetchingWeek = false
 
+    fun refreshWeekMenu() {
+        if (isFetchingWeek) return
+        _weekMenu.value = null
+        fetchWeekMenu()
+    }
+
     fun fetchWeekMenu() {
         if (_weekMenu.value != null) return  // Already have data — use cache
         if (isFetchingWeek) return           // Already in flight

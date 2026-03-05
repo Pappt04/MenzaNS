@@ -36,14 +36,14 @@ import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
-import com.patrykandpatrick.vico.compose.cartesian.cartesianLayerPadding
+import com.patrykandpatrick.vico.compose.cartesian.layer.cartesianLayerPadding
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.compose.common.data.rememberExtraLambda
 import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.CartesianChart
 import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
@@ -157,7 +157,7 @@ fun LineGraphCard(viewModel: DashboardViewModel) {
                             val pM = ((peakEntry.first - pH) * 60).roundToInt()
                             BusynessMetric(
                                 label = stringResource(R.string.metric_peak),
-                                value = "%d%% · %02d:%02d".format(peakEntry.second.roundToInt(), pH, pM),
+                                value = "${peakEntry.second.roundToInt()}% · ${"%02d".format(pH)}:${"%02d".format(pM)}",
                                 modifier = if (currentBusyness != null) Modifier.weight(1f)
                                            else Modifier.fillMaxWidth(0.5f),
                             )
@@ -225,8 +225,6 @@ fun LineSizeGraph(
 ) {
     val modelProducer = remember { CartesianChartModelProducer() }
 
-    // Use sequential integer indices as x-values so Vico's GCD is always 1,
-    // avoiding the "too precise" crash and giving clean spacing arithmetic.
     LaunchedEffect(sortedEntries) {
         if (sortedEntries.isEmpty()) return@LaunchedEffect
         modelProducer.runTransaction {
@@ -260,15 +258,12 @@ fun LineSizeGraph(
                     )
                 )
             ),
-            // Y-axis: show busyness as a percentage
             startAxis = VerticalAxis.rememberStart(
                 label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 valueFormatter = remember {
                     CartesianValueFormatter { _, value, _ -> "${value.toInt()}%" }
                 },
             ),
-            // X-axis: map integer index → "HH:MM", label only at 15-minute boundaries.
-            // spacing=3 steps through every 3rd index (= every 15 min for 5-min data).
             bottomAxis = HorizontalAxis.rememberBottom(
                 label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                 valueFormatter = remember(sortedEntries) {
@@ -283,19 +278,14 @@ fun LineSizeGraph(
                 },
                 itemPlacer = remember {
                     HorizontalAxis.ItemPlacer.aligned(
-                        spacing = 3,
+                        spacing = { 3 },
                         addExtremeLabelPadding = true,
                     )
                 },
             ),
             marker = marker,
-            persistentMarkers = rememberExtraLambda(marker) {
-                if (nowIndex != null) marker at nowIndex
-            },
-            layerPadding = cartesianLayerPadding(
-                scalableStartPadding = 8.dp,
-                scalableEndPadding = 8.dp,
-            ),
+            persistentMarkers = nowIndex?.let { idx -> { marker at idx } },
+            layerPadding = { cartesianLayerPadding() },
         ),
         modelProducer = modelProducer,
         scrollState = rememberVicoScrollState(scrollEnabled = false),
@@ -306,7 +296,6 @@ fun LineSizeGraph(
     )
 }
 
-/** Parses "HH:MM" into a decimal hour rounded to 4 decimal places (Vico's maximum precision). */
 fun parseTimeToDecimalHour(timeStr: String): Double {
     val parts = timeStr.split(":")
     val h = parts[0].toInt()

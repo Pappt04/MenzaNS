@@ -7,16 +7,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.pappt04.menzans.models.EatingStatisticsData
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
-import com.patrykandpatrick.vico.compose.cartesian.cartesianLayerPadding
+import com.patrykandpatrick.vico.compose.cartesian.layer.cartesianLayerPadding
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.compose.common.data.rememberExtraLambda
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
@@ -54,27 +55,25 @@ fun PredictedSpendingChart(
                     LineCartesianLayer.LineProvider.series(
                         LineCartesianLayer.rememberLine(
                             fill = remember { LineCartesianLayer.LineFill.single(fill(c)) },
-                            pointConnector =
-                                remember {
-                                    LineCartesianLayer.PointConnector.cubic(
-                                        curvature = 0f,
-                                    )
-                                },
+                            pointConnector = remember { LineCartesianLayer.PointConnector.cubic() },
                         ),
                     ),
                 ),
-                startAxis = VerticalAxis.rememberStart(),
+                startAxis = VerticalAxis.rememberStart(
+                    label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
+                ),
                 bottomAxis =
                     HorizontalAxis.rememberBottom(
+                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                         guideline = null,
                         itemPlacer = remember { HorizontalAxis.ItemPlacer.segmented() },
                     ),
                 marker = marker,
-                layerPadding =
-                    cartesianLayerPadding(scalableStartPadding = 16.dp, scalableEndPadding = 16.dp),
-                persistentMarkers = rememberExtraLambda(marker) { marker at LocalDate.now().dayOfMonth },
+                layerPadding = { cartesianLayerPadding() },
+                persistentMarkers = { marker at LocalDate.now().dayOfMonth },
             ),
         modelProducer = modelProducer,
+        scrollState = rememberVicoScrollState(scrollEnabled = false),
         zoomState = rememberVicoZoomState(zoomEnabled = false),
         modifier = Modifier.padding(4.dp),
     )
