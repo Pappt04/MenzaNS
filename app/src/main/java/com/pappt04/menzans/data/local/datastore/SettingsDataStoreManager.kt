@@ -30,6 +30,9 @@ class SettingsDataStoreManager(
         val GEOFENCE_ENABLED = booleanPreferencesKey("GEOFENCE_ENABLED")
         val EATING_SPEED_THRESHOLD = intPreferencesKey("EATING_SPEED_THRESHOLD")
         val AUTO_DEDUCT = booleanPreferencesKey("AUTO_DEDUCT")
+        val BREAKFAST_NOTIFY_THRESHOLD = intPreferencesKey("BREAKFAST_NOTIFY_THRESHOLD")
+        val LUNCH_NOTIFY_THRESHOLD = intPreferencesKey("LUNCH_NOTIFY_THRESHOLD")
+        val DINNER_NOTIFY_THRESHOLD = intPreferencesKey("DINNER_NOTIFY_THRESHOLD")
     }
 
     suspend fun saveToDataStore(settingsData: SettingsPreferences) {
@@ -45,6 +48,9 @@ class SettingsDataStoreManager(
             it[GEOFENCE_ENABLED] = settingsData.geofenceEnabled
             it[EATING_SPEED_THRESHOLD] = settingsData.eatingSpeedThreshold
             it[AUTO_DEDUCT] = settingsData.autoDeduct
+            it[BREAKFAST_NOTIFY_THRESHOLD] = settingsData.breakfastNotifyThreshold
+            it[LUNCH_NOTIFY_THRESHOLD] = settingsData.lunchNotifyThreshold
+            it[DINNER_NOTIFY_THRESHOLD] = settingsData.dinnerNotifyThreshold
         }
     }
 
@@ -62,6 +68,9 @@ class SettingsDataStoreManager(
                 geofenceEnabled = it[GEOFENCE_ENABLED] ?: true,
                 eatingSpeedThreshold = it[EATING_SPEED_THRESHOLD] ?: 15,
                 autoDeduct = it[AUTO_DEDUCT] ?: true,
+                breakfastNotifyThreshold = it[BREAKFAST_NOTIFY_THRESHOLD] ?: 70,
+                lunchNotifyThreshold = it[LUNCH_NOTIFY_THRESHOLD] ?: 70,
+                dinnerNotifyThreshold = it[DINNER_NOTIFY_THRESHOLD] ?: 70,
             )
         }
 

@@ -169,4 +169,8 @@
     <string name="menu_day_unavailable">Ezen a napon nincs menü</string>
     <string name="eating_threshold_desc">Az evési sebesség küszöbértéke percben</string>
     <string name="token_limit_desc">Zseton figyelmeztetési küszöb</string>
+    <string name="settings_section_notifications">Értesítések</string>
+    <string name="notify_threshold_breakfast">Reggeli foglaltság küszöb</string>
+    <string name="notify_threshold_lunch">Ebéd foglaltság küszöb</string>
+    <string name="notify_threshold_dinner">Vacsora foglaltság küszöb</string>
 </resources>

@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -109,7 +111,6 @@ fun CardScreen(
     val validState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val showValidDialog = remember { mutableStateOf(false) }
 
-    // Sync local form state whenever the ViewModel emits (initial load or after discard)
     LaunchedEffect(cardInfo) {
         surname = cardInfo.surname
         name = cardInfo.name
@@ -153,7 +154,6 @@ fun CardScreen(
             )
         }
 
-        // Token summary
         item {
             TokenSummaryRow(
                 mealCounts = mealCounts,
@@ -161,7 +161,6 @@ fun CardScreen(
             )
         }
 
-        // Personal info section
         item {
             SectionHeader(
                 icon = Icons.Default.School,
@@ -197,7 +196,6 @@ fun CardScreen(
             }
         }
 
-        // Card numbers section
         item {
             SectionHeader(
                 icon = Icons.Default.CreditCard,
@@ -236,7 +234,6 @@ fun CardScreen(
             }
         }
 
-        // Dates section
         item {
             SectionHeader(
                 icon = Icons.Default.CalendarMonth,
@@ -266,7 +263,6 @@ fun CardScreen(
             }
         }
 
-        // Action buttons
         item {
             Spacer(Modifier.height(Spacing.md))
             ActionButtons(
@@ -314,10 +310,6 @@ fun CardScreen(
     }
 }
 
-// ────────────────────────────────────────────────────
-// Visual card preview
-// ────────────────────────────────────────────────────
-
 @Composable
 private fun StudentCardPreview(
     name: String,
@@ -351,7 +343,6 @@ private fun StudentCardPreview(
                         ),
                     ).padding(Spacing.md),
         ) {
-            // Logos top-right
             Row(
                 modifier = Modifier.align(Alignment.TopEnd),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -377,7 +368,6 @@ private fun StudentCardPreview(
                 )
             }
 
-            // Name + faculty
             Column(modifier = Modifier.align(Alignment.CenterStart)) {
                 Text(
                     text =
@@ -410,7 +400,6 @@ private fun StudentCardPreview(
                 }
             }
 
-            // Bottom-start: validity text
             if (validUntil.isNotBlank()) {
                 Text(
                     text = "Važi do: $validUntil",
@@ -420,7 +409,6 @@ private fun StudentCardPreview(
                 )
             }
 
-            // Bottom-end: share button
             Icon(
                 imageVector = Icons.Default.Share,
                 contentDescription = stringResource(R.string.share),
@@ -434,10 +422,6 @@ private fun StudentCardPreview(
         }
     }
 }
-
-// ────────────────────────────────────────────────────
-// Token summary (read-only)
-// ────────────────────────────────────────────────────
 
 @Composable
 private fun TokenSummaryRow(
@@ -523,10 +507,6 @@ private fun TokenChip(
     }
 }
 
-// ────────────────────────────────────────────────────
-// Section header
-// ────────────────────────────────────────────────────
-
 @Composable
 private fun SectionHeader(
     icon: ImageVector,
@@ -555,10 +535,6 @@ private fun SectionHeader(
     }
 }
 
-// ────────────────────────────────────────────────────
-// Date field row
-// ────────────────────────────────────────────────────
-
 @Composable
 private fun DateFieldRow(
     label: String,
@@ -580,10 +556,6 @@ private fun DateFieldRow(
                 .clickable { onClick() },
     )
 }
-
-// ────────────────────────────────────────────────────
-// Action buttons
-// ────────────────────────────────────────────────────
 
 @Composable
 private fun ActionButtons(
@@ -611,10 +583,6 @@ private fun ActionButtons(
         }
     }
 }
-
-// ────────────────────────────────────────────────────
-// Date picker dialogs (unchanged logic, shared styling)
-// ────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -704,9 +672,6 @@ private fun menzaDatePickerColors() =
         todayDateBorderColor = MaterialTheme.colorScheme.tertiaryContainer,
     )
 
-// ────────────────────────────────────────────────────
-// Utilities
-// ────────────────────────────────────────────────────
 
 fun Long.convertMillisToDate(): String {
     val calendar =

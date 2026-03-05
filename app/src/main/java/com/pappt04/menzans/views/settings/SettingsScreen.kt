@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.Security
@@ -70,6 +71,9 @@ fun SettingsScreen(
     val geofenceEnabled = remember { mutableStateOf(state.geofenceEnabled) }
     val eatingSpeedThreshold = remember { mutableFloatStateOf(state.eatingSpeedThreshold.toFloat()) }
     val autoDeduct = remember { mutableStateOf(state.autoDeduct) }
+    val breakfastNotifyThreshold = remember { mutableFloatStateOf(state.breakfastNotifyThreshold.toFloat()) }
+    val lunchNotifyThreshold = remember { mutableFloatStateOf(state.lunchNotifyThreshold.toFloat()) }
+    val dinnerNotifyThreshold = remember { mutableFloatStateOf(state.dinnerNotifyThreshold.toFloat()) }
 
     LaunchedEffect(state.darkTheme) { darkTheme.value = state.darkTheme }
     LaunchedEffect(state.materialYouTheme) { materialyoutheme.value = state.materialYouTheme }
@@ -78,6 +82,9 @@ fun SettingsScreen(
     LaunchedEffect(state.geofenceEnabled) { geofenceEnabled.value = state.geofenceEnabled }
     LaunchedEffect(state.eatingSpeedThreshold) { eatingSpeedThreshold.floatValue = state.eatingSpeedThreshold.toFloat() }
     LaunchedEffect(state.autoDeduct) { autoDeduct.value = state.autoDeduct }
+    LaunchedEffect(state.breakfastNotifyThreshold) { breakfastNotifyThreshold.floatValue = state.breakfastNotifyThreshold.toFloat() }
+    LaunchedEffect(state.lunchNotifyThreshold) { lunchNotifyThreshold.floatValue = state.lunchNotifyThreshold.toFloat() }
+    LaunchedEffect(state.dinnerNotifyThreshold) { dinnerNotifyThreshold.floatValue = state.dinnerNotifyThreshold.toFloat() }
 
     LazyColumn(
         modifier =
@@ -157,9 +164,40 @@ fun SettingsScreen(
             }
         }
 
-        // Permissions
+        // Notifications
         item {
             AnimatedAppearance(delay = 200.milliseconds) {
+                SectionHeader(Icons.Outlined.Notifications, stringResource(R.string.settings_section_notifications))
+            }
+        }
+        item {
+            MealThresholdSlider(
+                label = stringResource(R.string.notify_threshold_breakfast),
+                sliderpos = breakfastNotifyThreshold,
+            ) {
+                mainViewModel.updateBreakfastNotifyThreshold(breakfastNotifyThreshold.floatValue.roundToInt())
+            }
+        }
+        item {
+            MealThresholdSlider(
+                label = stringResource(R.string.notify_threshold_lunch),
+                sliderpos = lunchNotifyThreshold,
+            ) {
+                mainViewModel.updateLunchNotifyThreshold(lunchNotifyThreshold.floatValue.roundToInt())
+            }
+        }
+        item {
+            MealThresholdSlider(
+                label = stringResource(R.string.notify_threshold_dinner),
+                sliderpos = dinnerNotifyThreshold,
+            ) {
+                mainViewModel.updateDinnerNotifyThreshold(dinnerNotifyThreshold.floatValue.roundToInt())
+            }
+        }
+
+        // Permissions
+        item {
+            AnimatedAppearance(delay = 250.milliseconds) {
                 SectionHeader(Icons.Outlined.Security, stringResource(R.string.settings_section_permissions))
             }
         }

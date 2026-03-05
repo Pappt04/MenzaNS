@@ -25,6 +25,9 @@ data class MainUiState(
     val geofenceEnabled: Boolean = true,
     val eatingSpeedThreshold: Int = 15,
     val autoDeduct: Boolean = true,
+    val breakfastNotifyThreshold: Int = 70,
+    val lunchNotifyThreshold: Int = 70,
+    val dinnerNotifyThreshold: Int = 70,
 )
 
 class MainViewModel(
@@ -54,6 +57,9 @@ class MainViewModel(
                     geofenceEnabled = settings.geofenceEnabled,
                     eatingSpeedThreshold = settings.eatingSpeedThreshold,
                     autoDeduct = settings.autoDeduct,
+                    breakfastNotifyThreshold = settings.breakfastNotifyThreshold,
+                    lunchNotifyThreshold = settings.lunchNotifyThreshold,
+                    dinnerNotifyThreshold = settings.dinnerNotifyThreshold,
                     savedMeals =
                         listOf(
                             mealPrefs.breakfast,
@@ -101,6 +107,21 @@ class MainViewModel(
         persistSettings()
     }
 
+    fun updateBreakfastNotifyThreshold(value: Int) {
+        _uiState.value = _uiState.value.copy(breakfastNotifyThreshold = value)
+        persistSettings()
+    }
+
+    fun updateLunchNotifyThreshold(value: Int) {
+        _uiState.value = _uiState.value.copy(lunchNotifyThreshold = value)
+        persistSettings()
+    }
+
+    fun updateDinnerNotifyThreshold(value: Int) {
+        _uiState.value = _uiState.value.copy(dinnerNotifyThreshold = value)
+        persistSettings()
+    }
+
     fun setFirstWelcomeComplete() {
         _uiState.value = _uiState.value.copy(isFirstWelcome = false)
         persistSettings()
@@ -136,6 +157,9 @@ class MainViewModel(
                     geofenceEnabled = state.geofenceEnabled,
                     eatingSpeedThreshold = state.eatingSpeedThreshold,
                     autoDeduct = state.autoDeduct,
+                    breakfastNotifyThreshold = state.breakfastNotifyThreshold,
+                    lunchNotifyThreshold = state.lunchNotifyThreshold,
+                    dinnerNotifyThreshold = state.dinnerNotifyThreshold,
                 ),
             )
         }

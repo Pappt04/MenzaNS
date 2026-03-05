@@ -171,4 +171,8 @@
     <string name="menu_day_unavailable">Jelovnik za ovaj dan nije dostupan</string>
     <string name="eating_threshold_desc">Prag brzine jedenja u minutima</string>
     <string name="token_limit_desc">Prag upozorenja za tokene</string>
+    <string name="settings_section_notifications">Obaveštenja</string>
+    <string name="notify_threshold_breakfast">Prag zauzetosti za doručak</string>
+    <string name="notify_threshold_lunch">Prag zauzetosti za ručak</string>
+    <string name="notify_threshold_dinner">Prag zauzetosti za večeru</string>
 </resources>

@@ -11,4 +11,7 @@ data class SettingsPreferences(
     var geofenceEnabled: Boolean = true,
     var eatingSpeedThreshold: Int = 15,
     var autoDeduct: Boolean = true,
+    var breakfastNotifyThreshold: Int = 70,
+    var lunchNotifyThreshold: Int = 70,
+    var dinnerNotifyThreshold: Int = 70,
 )

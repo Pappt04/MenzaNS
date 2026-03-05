@@ -178,4 +178,8 @@
     <string name="menu_day_unavailable">Menu not available for this day</string>
     <string name="eating_threshold_desc">Eating speed threshold in minutes</string>
     <string name="token_limit_desc">Token warning threshold</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="notify_threshold_breakfast">Breakfast busyness threshold</string>
+    <string name="notify_threshold_lunch">Lunch busyness threshold</string>
+    <string name="notify_threshold_dinner">Dinner busyness threshold</string>
 </resources>
