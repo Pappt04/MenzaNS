@@ -225,14 +225,7 @@ fun SettingsScreen(
             }
         }
         items(permissionsNeeded) { permission ->
-            var i = 0
-            for (p in permissionsNeeded) {
-                if (p == permission) {
-                    break
-                } else {
-                    i++
-                }
-            }
+            val i = permissionsNeeded.indexOf(permission)
             PermissionSwitch(context, PermissionData.permissionExplanations[i].explanation, permission)
         }
 

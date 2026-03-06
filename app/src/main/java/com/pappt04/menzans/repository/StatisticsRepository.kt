@@ -57,6 +57,11 @@ class StatisticsRepository(
         // The app does not currently store server IDs, so the server call is skipped.
     }
 
+    suspend fun getHistoryPage(page: Int, pageSize: Int = 50): List<EatingStatisticsData> =
+        mealEventDao.getRecentEvents(limit = pageSize, offset = page * pageSize).map { toModel(it) }
+
+    suspend fun getTotalEventCount(): Int = mealEventDao.getTotalEventCount()
+
     suspend fun appendMealEvent(mealData: EatingStatisticsData) {
         mealEventDao.insert(toEntity(mealData))
     }

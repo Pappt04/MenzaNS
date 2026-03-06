@@ -105,9 +105,9 @@ fun WaitTimeDialog(
                             val userId = userRepository.getUserId()
                             scope.launch {
                                 val result = waitTimeRepository.submitWaitTime(userId, time, queueSize)
+                                onDismissRequest()
                                 onSubmitted(result.isSuccess)
                             }
-                            onDismissRequest()
                         },
                         enabled = time != null || queueSize != null,
                     ) {

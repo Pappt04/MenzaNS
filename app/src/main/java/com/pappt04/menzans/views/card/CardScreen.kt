@@ -466,7 +466,7 @@ private fun TokenChip(
                     if (low) {
                         MaterialTheme.colorScheme.errorContainer
                     } else {
-                        MaterialTheme.colorScheme.secondaryContainer
+                        MaterialTheme.colorScheme.tertiaryContainer
                     },
             ),
         shape = RoundedCornerShape(16.dp),
@@ -484,7 +484,7 @@ private fun TokenChip(
                     if (low) {
                         MaterialTheme.colorScheme.error
                     } else {
-                        MaterialTheme.colorScheme.secondary
+                        MaterialTheme.colorScheme.tertiary
                     },
             )
             Text(
@@ -494,7 +494,7 @@ private fun TokenChip(
                     if (low) {
                         MaterialTheme.colorScheme.onErrorContainer
                     } else {
-                        MaterialTheme.colorScheme.onSecondaryContainer
+                        MaterialTheme.colorScheme.onTertiaryContainer
                     },
             )
             Text(
@@ -505,7 +505,7 @@ private fun TokenChip(
                     if (low) {
                         MaterialTheme.colorScheme.error
                     } else {
-                        MaterialTheme.colorScheme.secondary
+                        MaterialTheme.colorScheme.tertiary
                     },
             )
         }

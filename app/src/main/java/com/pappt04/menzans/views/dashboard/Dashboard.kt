@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarDuration
@@ -104,18 +105,13 @@ fun DashboardScreen(
                         .padding(horizontal = Spacing.md, vertical = Spacing.sm)
                         .clickable { selectedCard.intValue = NO_MEAL_SELECTED },
                 ) {
-                    var i = 0
-                    items(meals) { meal ->
-                        val index = remember { mutableIntStateOf(i) }
-
-                        AnimatedVisibility(selectedCard.intValue != index.intValue) {
-                            MealCard(meal, mealValueList[index.intValue], mealIcons[index.intValue]) {
+                    itemsIndexed(meals) { index, meal ->
+                        AnimatedVisibility(selectedCard.intValue != index) {
+                            MealCard(meal, mealValueList[index], mealIcons[index]) {
                                 selectedCard.intValue =
-                                    if (selectedCard.intValue == index.intValue) NO_MEAL_SELECTED else index.intValue
+                                    if (selectedCard.intValue == index) NO_MEAL_SELECTED else index
                             }
                         }
-                        i++
-                        i %= 3
                     }
                 }
             }

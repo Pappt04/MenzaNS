@@ -20,9 +20,17 @@ interface MealEventDao {
         mealType: String,
     )
 
-    @Query("SELECT * FROM meal_events WHERE date BETWEEN :startDate AND :endDate ORDER BY date ASC")
+    @Query("SELECT * FROM meal_events WHERE date BETWEEN :startDate AND :endDate ORDER BY date ASC LIMIT :limit OFFSET :offset")
     suspend fun getEventsForDateRange(
         startDate: LocalDate,
         endDate: LocalDate,
+        limit: Int = 200,
+        offset: Int = 0,
     ): List<MealEventEntity>
+
+    @Query("SELECT * FROM meal_events ORDER BY date DESC LIMIT :limit OFFSET :offset")
+    suspend fun getRecentEvents(limit: Int, offset: Int): List<MealEventEntity>
+
+    @Query("SELECT COUNT(*) FROM meal_events")
+    suspend fun getTotalEventCount(): Int
 }

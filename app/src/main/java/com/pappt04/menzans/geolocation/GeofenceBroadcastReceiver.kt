@@ -105,7 +105,7 @@ class GeofenceBroadcastReceiver :
                     var notify = false
 
                     if (alldiff > settings.eatingSpeedThreshold && settings.autoDeduct && correctmeal != null) {
-                        val newmealcount=automaticallyDeductToken(timeEntered, timeExited, correctmeal)
+                        val newmealcount = automaticallyDeductToken(timeEntered, timeExited, correctmeal)
 
                         when(correctmeal.name.asString(context)) {
                             MealSampleBudget[0].name.asString(context) -> notify = settings.breakfastTokenWarning > newmealcount
@@ -147,49 +147,40 @@ class GeofenceBroadcastReceiver :
         }
     }
 
-    private fun automaticallyDeductToken(
+    private suspend fun automaticallyDeductToken(
         timeEntered: String,
         timeExited: String,
         mealdata: MealData?,
     ): Int {
-        var currentMeals=0
-        if (mealdata != null) {
-            val mealIndex = findMealIndex(mealdata)
+        if (mealdata == null) return 0
 
-            val statisticsMeal =
-                EatingStatisticsData(
-                    LocalDate.now(),
-                    timeEntered,
-                    timeExited,
-                    mealdata.name,
-                )
+        val mealIndex = findMealIndex(mealdata)
 
-            CoroutineScope(Dispatchers.IO).launch {
-                statisticsRepository.appendMealEvent(statisticsMeal)
+        statisticsRepository.appendMealEvent(
+            EatingStatisticsData(LocalDate.now(), timeEntered, timeExited, mealdata.name),
+        )
 
-                val mealPrefs = mealRepository.getMealCounts().first()
-                currentMeals =
-                    when (mealIndex) {
-                        0 -> mealPrefs.breakfast
-                        1 -> mealPrefs.lunch
-                        2 -> mealPrefs.dinner
-                        else -> 0
-                    }
-
-                if (currentMeals > 0) {
-                    val newMeals = currentMeals - 1
-                    val newPrefs =
-                        mealPrefs.copy(
-                            breakfast = if (mealIndex == 0) newMeals else mealPrefs.breakfast,
-                            lunch = if (mealIndex == 1) newMeals else mealPrefs.lunch,
-                            dinner = if (mealIndex == 2) newMeals else mealPrefs.dinner,
-                        )
-                    mealRepository.saveMealCounts(newPrefs)
-                }
-            }
+        val mealPrefs = mealRepository.getMealCounts().first()
+        val currentMeals = when (mealIndex) {
+            0 -> mealPrefs.breakfast
+            1 -> mealPrefs.lunch
+            2 -> mealPrefs.dinner
+            else -> 0
         }
 
-        return currentMeals - 1
+        if (currentMeals > 0) {
+            val newMeals = currentMeals - 1
+            mealRepository.saveMealCounts(
+                mealPrefs.copy(
+                    breakfast = if (mealIndex == 0) newMeals else mealPrefs.breakfast,
+                    lunch = if (mealIndex == 1) newMeals else mealPrefs.lunch,
+                    dinner = if (mealIndex == 2) newMeals else mealPrefs.dinner,
+                ),
+            )
+            return newMeals
+        }
+
+        return 0
     }
 }
 

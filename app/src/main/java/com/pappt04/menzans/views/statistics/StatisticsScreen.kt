@@ -2,15 +2,18 @@ package com.pappt04.menzans.views.statistics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,10 +52,11 @@ fun StatisticsScreen(
 ) {
     val initialMonth = monthNames[monthFormat.format(Date()).toInt() - 1]
 
-    var selectedMonth by remember { mutableStateOf<String?>(null) }
+    var selectedMonth by remember { mutableStateOf<String?>(monthNames[monthFormat.format(Date()).toInt() - 1]) }
 
     val formattedStatisticsData by viewModel.statistics.collectAsState()
     val onBudget by viewModel.onBudgetPricing.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(selectedMonth) {
         viewModel.loadStatistics(selectedMonth ?: initialMonth)
@@ -99,6 +103,15 @@ fun StatisticsScreen(
         }
 
         item {
+            AnimatedAppearance(delay = 50.milliseconds) {
+                MonthlySummaryRow(
+                    data = formattedStatisticsData,
+                    onBudget = onBudget,
+                )
+            }
+        }
+
+        item {
             CalendarMonthView(selectedMonth ?: initialMonth, formattedStatisticsData, viewModel)
         }
 
@@ -106,20 +119,20 @@ fun StatisticsScreen(
             AnimatedAppearance(delay = 100.milliseconds) {
                 Card(
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
-                )
-                {
+                    modifier = Modifier.padding(horizontal = Spacing.md, vertical = Spacing.sm),
+                ) {
                     Text(
                         stringResource(R.string.your_monthly_token_usage),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier =
-                            Modifier
-                                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                                .align(Alignment.CenterHorizontally),
+                        modifier = Modifier
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                            .align(Alignment.CenterHorizontally),
                     )
-                    MonthlyMealsChart(formattedStatisticsData)
+                    if (isLoading) {
+                        ChartLoadingPlaceholder()
+                    } else {
+                        MonthlyMealsChart(formattedStatisticsData)
+                    }
                 }
             }
         }
@@ -127,20 +140,20 @@ fun StatisticsScreen(
             AnimatedAppearance(delay = 200.milliseconds) {
                 Card(
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
-                )
-                {
+                    modifier = Modifier.padding(horizontal = Spacing.md, vertical = Spacing.sm),
+                ) {
                     Text(
                         stringResource(R.string.your_weekly_token_usage),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier =
-                            Modifier
-                                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                                .align(Alignment.CenterHorizontally),
+                        modifier = Modifier
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                            .align(Alignment.CenterHorizontally),
                     )
-                    WeeklyMealChart(formattedStatisticsData)
+                    if (isLoading) {
+                        ChartLoadingPlaceholder()
+                    } else {
+                        WeeklyMealChart(formattedStatisticsData)
+                    }
                 }
             }
         }
@@ -148,23 +161,35 @@ fun StatisticsScreen(
             AnimatedAppearance(delay = 300.milliseconds) {
                 Card(
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.md, vertical = Spacing.sm),
-                )
-                {
+                    modifier = Modifier.padding(horizontal = Spacing.md, vertical = Spacing.sm),
+                ) {
                     Text(
                         stringResource(R.string.predicted_spending),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier =
-                            Modifier
-                                .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                                .align(Alignment.CenterHorizontally),
+                        modifier = Modifier
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                            .align(Alignment.CenterHorizontally),
                     )
-                    PredictedSpendingChart(selectedMonth ?: initialMonth, onBudget, formattedStatisticsData)
+                    if (isLoading) {
+                        ChartLoadingPlaceholder()
+                    } else {
+                        PredictedSpendingChart(selectedMonth ?: initialMonth, onBudget, formattedStatisticsData)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ChartLoadingPlaceholder() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(160.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator()
     }
 }
 
