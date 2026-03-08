@@ -6,4 +6,7 @@ object AppConfig {
     const val APP_STORE_URL = "https://play.google.com/store/apps/details?id=com.pappt04.menzans"
     // Debug API key — must match APP_API_KEY in MenzaNS-server/.env on your dev machine
     const val APP_API_KEY = "cce660ed96c39bfaa51ee831bd7c7a093f94f75a76c7bfaaa9f9c4724df834a7"
+    // Certificate pinning disabled in debug builds (HTTP + local IP)
+    const val SERVER_HOSTNAME = ""
+    val CERT_PIN: String? = null
 }

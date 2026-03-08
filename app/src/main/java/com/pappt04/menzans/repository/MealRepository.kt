@@ -13,6 +13,9 @@ class MealRepository(
         mealDataStoreManager.saveToDataStore(prefs)
     }
 
+    suspend fun decrementMealCount(mealIndex: Int): Int =
+        mealDataStoreManager.decrementMealCount(mealIndex)
+
     suspend fun clearAll() {
         mealDataStoreManager.clearDataStore()
     }

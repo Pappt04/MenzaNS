@@ -77,10 +77,12 @@ class GeofenceBroadcastReceiver :
         when (geofencingEvent.geofenceTransition) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
                 Log.i(tag, "GEOFENCE ENTERED")
-                val currentTime = timeFormat.format(Date())
-                geofenceRepository.saveEnterTime(currentTime)
-
                 CoroutineScope(Dispatchers.IO).launch {
+                    val settings = settingsRepository.getSettings().first()
+                    if (!settings.geofenceEnabled) return@launch
+
+                    val currentTime = timeFormat.format(Date())
+                    geofenceRepository.saveEnterTime(currentTime)
                     geofenceRepository.sendEnterEvent(
                         dateFormat.format(Date()),
                         currentTime,
@@ -161,27 +163,9 @@ class GeofenceBroadcastReceiver :
             EatingStatisticsData(LocalDate.now(), timeEntered, timeExited, mealdata.name),
         )
 
-        val mealPrefs = mealRepository.getMealCounts().first()
-        val currentMeals = when (mealIndex) {
-            0 -> mealPrefs.breakfast
-            1 -> mealPrefs.lunch
-            2 -> mealPrefs.dinner
-            else -> 0
-        }
-
-        if (currentMeals > 0) {
-            val newMeals = currentMeals - 1
-            mealRepository.saveMealCounts(
-                mealPrefs.copy(
-                    breakfast = if (mealIndex == 0) newMeals else mealPrefs.breakfast,
-                    lunch = if (mealIndex == 1) newMeals else mealPrefs.lunch,
-                    dinner = if (mealIndex == 2) newMeals else mealPrefs.dinner,
-                ),
-            )
-            return newMeals
-        }
-
-        return 0
+        // Atomic read-modify-write: prevents double-deduction if the geofence fires
+        // multiple times in rapid succession.
+        return mealRepository.decrementMealCount(mealIndex)
     }
 }
 

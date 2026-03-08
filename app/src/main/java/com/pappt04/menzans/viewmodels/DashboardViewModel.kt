@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pappt04.menzans.data.consts.MealSample.MealSampleBudget
 import com.pappt04.menzans.data.consts.MealSample.MealSampleSelfFinancing
+import com.pappt04.menzans.models.EatingStatisticsData
 import com.pappt04.menzans.models.MealData
 import com.pappt04.menzans.models.MealPeriod
 import com.pappt04.menzans.models.MealPreferences
@@ -55,7 +56,7 @@ class DashboardViewModel(
     private val _tokenWarningEvent = MutableSharedFlow<Pair<Int, Int>>(extraBufferCapacity = 3)
     val tokenWarningEvent: SharedFlow<Pair<Int, Int>> = _tokenWarningEvent.asSharedFlow()
 
-    fun addMealEvent(meal: MealData) {
+    fun addMealEvent(meal: EatingStatisticsData) {
         viewModelScope.launch { statisticsRepository.addMealEvent(meal) }
     }
 

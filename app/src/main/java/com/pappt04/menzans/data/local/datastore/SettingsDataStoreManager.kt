@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -35,6 +36,7 @@ class SettingsDataStoreManager(
         val BREAKFAST_NOTIFY_THRESHOLD = intPreferencesKey("BREAKFAST_NOTIFY_THRESHOLD")
         val LUNCH_NOTIFY_THRESHOLD = intPreferencesKey("LUNCH_NOTIFY_THRESHOLD")
         val DINNER_NOTIFY_THRESHOLD = intPreferencesKey("DINNER_NOTIFY_THRESHOLD")
+        val GEOFENCE_RADIUS = floatPreferencesKey("GEOFENCE_RADIUS")
     }
 
     suspend fun saveToDataStore(settingsData: SettingsPreferences) {
@@ -55,6 +57,7 @@ class SettingsDataStoreManager(
             it[BREAKFAST_NOTIFY_THRESHOLD] = settingsData.breakfastNotifyThreshold
             it[LUNCH_NOTIFY_THRESHOLD] = settingsData.lunchNotifyThreshold
             it[DINNER_NOTIFY_THRESHOLD] = settingsData.dinnerNotifyThreshold
+            it[GEOFENCE_RADIUS] = settingsData.geofenceRadius
         }
     }
 
@@ -77,6 +80,7 @@ class SettingsDataStoreManager(
                 breakfastNotifyThreshold = it[BREAKFAST_NOTIFY_THRESHOLD] ?: 70,
                 lunchNotifyThreshold = it[LUNCH_NOTIFY_THRESHOLD] ?: 70,
                 dinnerNotifyThreshold = it[DINNER_NOTIFY_THRESHOLD] ?: 70,
+                geofenceRadius = it[GEOFENCE_RADIUS] ?: 25f,
             )
         }
 

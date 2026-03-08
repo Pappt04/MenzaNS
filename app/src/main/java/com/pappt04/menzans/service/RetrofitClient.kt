@@ -3,6 +3,9 @@ package com.pappt04.menzans.service
 import com.pappt04.menzans.BuildConfig
 import com.pappt04.menzans.data.consts.AppConfig.APP_API_KEY
 import com.pappt04.menzans.data.consts.AppConfig.BASE_SERVER_URL
+import com.pappt04.menzans.data.consts.AppConfig.CERT_PIN
+import com.pappt04.menzans.data.consts.AppConfig.SERVER_HOSTNAME
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,6 +16,15 @@ object RetrofitClient {
         OkHttpClient
             .Builder()
             .apply {
+                // Certificate pinning — enabled when CERT_PIN is set in release AppConfig
+                val pin = CERT_PIN
+                if (pin != null && SERVER_HOSTNAME.isNotEmpty()) {
+                    certificatePinner(
+                        CertificatePinner.Builder()
+                            .add(SERVER_HOSTNAME, "sha256/$pin")
+                            .build(),
+                    )
+                }
                 // Attach the API key to every request
                 addInterceptor { chain ->
                     val request = chain.request().newBuilder()
@@ -23,8 +35,9 @@ object RetrofitClient {
                 if (BuildConfig.DEBUG) {
                     addInterceptor(
                         HttpLoggingInterceptor().apply {
-                            level = HttpLoggingInterceptor.Level.BODY
-                        }
+                            // Headers only — never log request/response bodies in any build
+                            level = HttpLoggingInterceptor.Level.HEADERS
+                        },
                     )
                 }
             }

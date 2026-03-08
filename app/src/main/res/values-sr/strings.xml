@@ -119,6 +119,9 @@
     <string name="enable_auto_detection">Automatska detekcija</string>
     <string name="eating_speed_threshold">Prag detekcije</string>
     <string name="auto_deduct_token">Automatski odbiti token</string>
+    <string name="geofence_radius">Radijus geofence zone</string>
+    <string name="geofence_radius_desc">Radijus detekcije geofence zone u metrima</string>
+    <string name="m_unit" translatable="false">m</string>
     <string name="request">Zatražite</string>
     <string name="approximate_location">Približna lokacija</string>
     <string name="precise_location">Precizna lokacija</string>

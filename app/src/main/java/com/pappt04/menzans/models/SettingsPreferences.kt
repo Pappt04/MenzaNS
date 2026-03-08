@@ -16,4 +16,5 @@ data class SettingsPreferences(
     var breakfastNotifyThreshold: Int = 70,
     var lunchNotifyThreshold: Int = 70,
     var dinnerNotifyThreshold: Int = 70,
+    var geofenceRadius: Float = 25f,
 )

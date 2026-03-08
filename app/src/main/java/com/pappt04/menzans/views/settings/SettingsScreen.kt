@@ -73,6 +73,7 @@ fun SettingsScreen(
     val geofenceEnabled = remember { mutableStateOf(state.geofenceEnabled) }
     val eatingSpeedThreshold = remember { mutableFloatStateOf(state.eatingSpeedThreshold.toFloat()) }
     val autoDeduct = remember { mutableStateOf(state.autoDeduct) }
+    val geofenceRadius = remember { mutableFloatStateOf(state.geofenceRadius) }
     val breakfastNotifyThreshold = remember { mutableFloatStateOf(state.breakfastNotifyThreshold.toFloat()) }
     val lunchNotifyThreshold = remember { mutableFloatStateOf(state.lunchNotifyThreshold.toFloat()) }
     val dinnerNotifyThreshold = remember { mutableFloatStateOf(state.dinnerNotifyThreshold.toFloat()) }
@@ -86,6 +87,7 @@ fun SettingsScreen(
     LaunchedEffect(state.geofenceEnabled) { geofenceEnabled.value = state.geofenceEnabled }
     LaunchedEffect(state.eatingSpeedThreshold) { eatingSpeedThreshold.floatValue = state.eatingSpeedThreshold.toFloat() }
     LaunchedEffect(state.autoDeduct) { autoDeduct.value = state.autoDeduct }
+    LaunchedEffect(state.geofenceRadius) { geofenceRadius.floatValue = state.geofenceRadius }
     LaunchedEffect(state.breakfastNotifyThreshold) { breakfastNotifyThreshold.floatValue = state.breakfastNotifyThreshold.toFloat() }
     LaunchedEffect(state.lunchNotifyThreshold) { lunchNotifyThreshold.floatValue = state.lunchNotifyThreshold.toFloat() }
     LaunchedEffect(state.dinnerNotifyThreshold) { dinnerNotifyThreshold.floatValue = state.dinnerNotifyThreshold.toFloat() }
@@ -184,6 +186,11 @@ fun SettingsScreen(
                 stringResource(R.string.auto_deduct_token),
             ) {
                 mainViewModel.updateAutoDeduct(autoDeduct.value)
+            }
+        }
+        item {
+            GeofenceRadiusSlider(geofenceRadius) {
+                mainViewModel.updateGeofenceRadius(geofenceRadius.floatValue)
             }
         }
 

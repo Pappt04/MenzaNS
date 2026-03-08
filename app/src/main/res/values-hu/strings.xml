@@ -119,6 +119,9 @@
     <string name="enable_auto_detection">Automatikus észlelés</string>
     <string name="eating_speed_threshold">Észlelési küszöb</string>
     <string name="auto_deduct_token">Zseton automatikus levonása</string>
+    <string name="geofence_radius">Geokerítés sugara</string>
+    <string name="geofence_radius_desc">A geokerítés észlelési sugara méterben</string>
+    <string name="m_unit" translatable="false">m</string>
     <string name="request">Engedély</string>
     <string name="approximate_location">Hozzávetőleges helymeghatározás</string>
     <string name="precise_location">Pontos helymeghatározás</string>

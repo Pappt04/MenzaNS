@@ -119,6 +119,9 @@
     <string name="enable_auto_detection">Auto Detection</string>
     <string name="eating_speed_threshold">Detection Threshold</string>
     <string name="auto_deduct_token">Auto Deduct Token</string>
+    <string name="geofence_radius">Geofence Radius</string>
+    <string name="geofence_radius_desc">Geofence detection radius in meters</string>
+    <string name="m_unit" translatable="false">m</string>
     <string name="request">Request</string>
     <string name="approximate_location">Approximate location</string>
     <string name="precise_location">Precise location</string>

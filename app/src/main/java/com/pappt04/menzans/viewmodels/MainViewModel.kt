@@ -30,6 +30,7 @@ data class MainUiState(
     val breakfastNotifyThreshold: Int = 70,
     val lunchNotifyThreshold: Int = 70,
     val dinnerNotifyThreshold: Int = 70,
+    val geofenceRadius: Float = 25f,
 )
 
 class MainViewModel(
@@ -64,6 +65,7 @@ class MainViewModel(
                     breakfastNotifyThreshold = settings.breakfastNotifyThreshold,
                     lunchNotifyThreshold = settings.lunchNotifyThreshold,
                     dinnerNotifyThreshold = settings.dinnerNotifyThreshold,
+                    geofenceRadius = settings.geofenceRadius,
                     savedMeals =
                         listOf(
                             mealPrefs.breakfast,
@@ -136,6 +138,11 @@ class MainViewModel(
         persistSettings()
     }
 
+    fun updateGeofenceRadius(radius: Float) {
+        _uiState.value = _uiState.value.copy(geofenceRadius = radius)
+        persistSettings()
+    }
+
     fun setFirstWelcomeComplete() {
         _uiState.value = _uiState.value.copy(isFirstWelcome = false)
         persistSettings()
@@ -176,6 +183,7 @@ class MainViewModel(
                     breakfastNotifyThreshold = state.breakfastNotifyThreshold,
                     lunchNotifyThreshold = state.lunchNotifyThreshold,
                     dinnerNotifyThreshold = state.dinnerNotifyThreshold,
+                    geofenceRadius = state.geofenceRadius,
                 ),
             )
         }

@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.pappt04.menzans.models.MealPreferences
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 const val MEAL_DATASTORE = "meal_data"
@@ -44,6 +45,33 @@ class MealDataStoreManager(
                 balance = it[BALANCE] ?: 0,
             )
         }
+
+    /**
+     * Atomically decrements the meal count for the given index (0=breakfast, 1=lunch, 2=dinner).
+     * Returns the new count, or 0 if there were no tokens to deduct.
+     * The entire read-modify-write runs inside a single DataStore edit transaction,
+     * preventing concurrent geofence events from deducting the same token twice.
+     */
+    suspend fun decrementMealCount(mealIndex: Int): Int {
+        var newCount = 0
+        context.mealpreferenceDataStore.edit { prefs ->
+            val current = when (mealIndex) {
+                0 -> prefs[BREAKFAST] ?: 0
+                1 -> prefs[LUNCH] ?: 0
+                2 -> prefs[DINNER] ?: 0
+                else -> 0
+            }
+            if (current > 0) {
+                newCount = current - 1
+                when (mealIndex) {
+                    0 -> prefs[BREAKFAST] = newCount
+                    1 -> prefs[LUNCH] = newCount
+                    2 -> prefs[DINNER] = newCount
+                }
+            }
+        }
+        return newCount
+    }
 
     suspend fun clearDataStore() =
         context.mealpreferenceDataStore.edit {

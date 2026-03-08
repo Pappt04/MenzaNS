@@ -7,6 +7,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.pappt04.menzans.data.consts.GeofenceConstants
+import com.pappt04.menzans.data.local.datastore.SettingsDataStoreManager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 /**
  * Re-registers geofences after device reboot.
@@ -24,12 +27,16 @@ class BootCompletedReceiver : BroadcastReceiver() {
             ) != PackageManager.PERMISSION_GRANTED
         ) return
 
+        val geofenceRadius = runBlocking {
+            SettingsDataStoreManager(context).getFromDataStore().first().geofenceRadius
+        }
+
         val geofenceManager = GeofenceManager(context)
         for (geofence in GeofenceConstants.LANDMARKS) {
             geofenceManager.addGeofence(
                 geofence.key,
                 geofence.location,
-                geofence.radiusInMeters,
+                geofenceRadius,
                 geofence.expirationTimeInMillis,
             )
         }

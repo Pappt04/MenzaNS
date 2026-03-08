@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                         geofenceManager.addGeofence(
                             geofence.key,
                             geofence.location,
-                            geofence.radiusInMeters,
+                            state.geofenceRadius,
                             geofence.expirationTimeInMillis,
                         )
                     }
