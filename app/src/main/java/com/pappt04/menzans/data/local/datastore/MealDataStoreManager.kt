@@ -8,7 +8,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.pappt04.menzans.models.MealPreferences
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 const val MEAL_DATASTORE = "meal_data"

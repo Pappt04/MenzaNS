@@ -177,7 +177,7 @@
     <string name="tap_to_adjust">Tap to adjust</string>
     <string name="trend_downward">Downward trend</string>
     <string name="trend_upward">Upward trend</string>
-    <string name="min_unit" translatable="false">min</string>
+    <string name="min_unit">min</string>
     <string name="today">today</string>
     <string name="now_badge">Now</string>
     <string name="menu_load_error">Error loading menu</string>
