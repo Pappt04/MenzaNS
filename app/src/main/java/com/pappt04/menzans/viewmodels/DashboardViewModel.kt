@@ -10,6 +10,7 @@ import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.models.UiState
 import com.pappt04.menzans.repository.MealRepository
 import com.pappt04.menzans.repository.SettingsRepository
+import com.pappt04.menzans.repository.StatisticsRepository
 import com.pappt04.menzans.repository.WaitTimeRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,7 @@ class DashboardViewModel(
     private val mealRepository: MealRepository,
     private val waitTimeRepository: WaitTimeRepository,
     private val settingsRepository: SettingsRepository,
+    private val statisticsRepository: StatisticsRepository,
 ) : ViewModel() {
 
     val meals: StateFlow<List<MealData>> = settingsRepository.getSettings()
@@ -52,6 +54,10 @@ class DashboardViewModel(
 
     private val _tokenWarningEvent = MutableSharedFlow<Pair<Int, Int>>(extraBufferCapacity = 3)
     val tokenWarningEvent: SharedFlow<Pair<Int, Int>> = _tokenWarningEvent.asSharedFlow()
+
+    fun addMealEvent(meal: MealData) {
+        viewModelScope.launch { statisticsRepository.addMealEvent(meal) }
+    }
 
     fun saveMealCounts(changedIndex: Int,prefs: MealPreferences) {
         viewModelScope.launch {

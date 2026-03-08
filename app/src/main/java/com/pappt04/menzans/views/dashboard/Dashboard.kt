@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,20 +31,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.R
-import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.data.consts.MealSample.mealIcons
+import com.pappt04.menzans.models.MealPreferences
 import com.pappt04.menzans.notifications.sendTopUpReminder
-import com.pappt04.menzans.repository.StatisticsRepository
+import com.pappt04.menzans.ui.theme.Spacing
 import com.pappt04.menzans.viewmodels.DashboardViewModel
 import com.pappt04.menzans.viewmodels.MenuViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
-const val NO_MEAL_SELECTED=-1
+const val NO_MEAL_SELECTED = -1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,25 +59,25 @@ fun DashboardScreen(
     val menuViewModel: MenuViewModel = koinViewModel()
 
     val context = LocalContext.current
-    val statisticsRepository: StatisticsRepository = koinInject()
 
-    val notificationManager = remember {
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
+    val notificationManager =
+        remember {
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
     LaunchedEffect(Unit) {
         viewModel.tokenWarningEvent.collect { (index, remaining) ->
             notificationManager.sendTopUpReminder(context, index, remaining)
         }
     }
 
-    val mealValueList = remember(savedMealCounts) {
-        mutableListOf(
-            mutableIntStateOf(savedMealCounts.breakfast),
-            mutableIntStateOf(savedMealCounts.lunch),
-            mutableIntStateOf(savedMealCounts.dinner),
-        )
-    }
-    var showBalanceDialog: Boolean by remember { mutableStateOf(false) }
+    val mealValueList =
+        remember(savedMealCounts) {
+            mutableListOf(
+                mutableIntStateOf(savedMealCounts.breakfast),
+                mutableIntStateOf(savedMealCounts.lunch),
+                mutableIntStateOf(savedMealCounts.dinner),
+            )
+        }
     val balance = remember(savedMealCounts.balance) { mutableIntStateOf(savedMealCounts.balance) }
     val scope = rememberCoroutineScope()
     val selectedCard = remember { mutableIntStateOf(NO_MEAL_SELECTED) }
@@ -92,18 +88,20 @@ fun DashboardScreen(
             viewModel.refresh()
             menuViewModel.fetchTodayMenu()
         },
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(padding)
+        modifier =
+            Modifier
+                .fillMaxWidth(1f)
+                .padding(padding),
     ) {
         LazyColumn {
             item {
                 LazyRow(
                     state = lazyListState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.md, vertical = Spacing.sm)
-                        .clickable { selectedCard.intValue = NO_MEAL_SELECTED },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                            .clickable { selectedCard.intValue = NO_MEAL_SELECTED },
                 ) {
                     itemsIndexed(meals) { index, meal ->
                         AnimatedVisibility(selectedCard.intValue != index) {
@@ -118,9 +116,9 @@ fun DashboardScreen(
             item {
                 AnimatedContent(
                     targetState = selectedCard.intValue,
-                    transitionSpec = { slideInVertically { -it } togetherWith slideOutVertically { it } }
+                    transitionSpec = { slideInVertically { -it } togetherWith slideOutVertically { it } },
                 ) {
-                    if (it in 0 until meals.size)
+                    if (it in 0 until meals.size) {
                         DetailedMealCard(
                             meals[it],
                             mealValueList[it],
@@ -130,7 +128,7 @@ fun DashboardScreen(
                                 scope.launch {
                                     snackbar.showSnackbar(
                                         context.getString(R.string.not_enough_funds),
-                                        duration = SnackbarDuration.Short
+                                        duration = SnackbarDuration.Short,
                                     )
                                 }
                             },
@@ -143,14 +141,13 @@ fun DashboardScreen(
                                             lunch = mealValueList[1].intValue,
                                             dinner = mealValueList[2].intValue,
                                             balance = balance.intValue,
-                                        )
+                                        ),
                                     )
                                 }
                             },
-                            onConsumeMeal = { meal ->
-                                scope.launch { statisticsRepository.addMealEvent(meal) }
-                            }
+                            onConsumeMeal = { meal -> viewModel.addMealEvent(meal) },
                         )
+                    }
                 }
             }
             item {
@@ -165,25 +162,6 @@ fun DashboardScreen(
             item {
                 LineGraphCard(viewModel = viewModel)
             }
-        }
-
-        if (showBalanceDialog) {
-            BalanceDialog(
-                onDismissRequest = {
-                    showBalanceDialog = false
-                    viewModel.saveMealCounts(
-                        -1,
-                        MealPreferences(
-                            breakfast = mealValueList[0].intValue,
-                            lunch = mealValueList[1].intValue,
-                            dinner = mealValueList[2].intValue,
-                            balance = balance.intValue,
-                        )
-                    )
-                },
-                balance,
-                LocalContext.current
-            )
         }
     }
 }

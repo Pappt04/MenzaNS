@@ -92,6 +92,7 @@ class GeofenceBroadcastReceiver :
                 Log.i(tag, "GEOFENCE EXITED")
                 CoroutineScope(Dispatchers.IO).launch {
                     val settings = settingsRepository.getSettings().first()
+                    if (!settings.geofenceEnabled) return@launch
                     val timeExited = timeFormat.format(Date())
                     val timeEntered = geofenceRepository.getEnterTime()
 
