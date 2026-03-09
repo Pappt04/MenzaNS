@@ -95,11 +95,11 @@ object UsefulLinks {
         listOf(
             LinkContainer(
                 Uitext.StringResource(R.string.privacy_policy),
-                "https://apollo4.duckdns.org/menzaapi/privacyPolicy",
+                "https://apollo4.duckdns.org/menzaapi/webapi/privacyPolicy",
             ),
             LinkContainer(
                 Uitext.StringResource(R.string.data_disclosure),
-                "https://apollo4.duckdns.org/menzaapi/dataDeletionDisclosure",
+                "https://apollo4.duckdns.org/menzaapi/webapi/dataDeletionDisclosure",
             ),
             LinkContainer(
                 Uitext.StringResource(R.string.open_source_code),

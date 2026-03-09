@@ -61,8 +61,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            // Request permissions only after the tutorial/walkthrough is complete.
+            // On first launch, WelcomeScreen handles permissions via its own launcher.
+            LaunchedEffect(state.isLoaded, state.isFirstWelcome) {
+                if (state.isLoaded && !state.isFirstWelcome) {
+                    requestAllPermissions()
+                }
+            }
+
             MenzaNSTheme(darkTheme = state.darkTheme, dynamicColor = state.materialYouTheme) {
-                requestAllPermissions()
                 createChannel(context)
 
                 if (state.isLoaded) {

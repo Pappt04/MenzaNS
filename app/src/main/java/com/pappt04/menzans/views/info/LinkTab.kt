@@ -165,7 +165,10 @@ fun openUrl(
 ) {
     val uri = link.toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri)
-
-    context.startActivity(intent)
+    try {
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
