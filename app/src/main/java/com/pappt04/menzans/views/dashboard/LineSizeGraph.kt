@@ -29,8 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pappt04.menzans.R
 import com.pappt04.menzans.ui.theme.Spacing
+import com.pappt04.menzans.data.consts.CalendarData
 import com.pappt04.menzans.models.UiState
+import com.pappt04.menzans.models.Uitext
 import com.pappt04.menzans.viewmodels.DashboardViewModel
+import java.time.LocalDate
 import com.pappt04.menzans.views.statistics.rememberMarker
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -58,6 +61,7 @@ import kotlin.math.roundToInt
 fun LineGraphCard(viewModel: DashboardViewModel) {
     val graphState by viewModel.graphState.collectAsState()
     val currentMeal by viewModel.currentMeal.collectAsState()
+    val forecastDay by viewModel.forecastDay.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.fetchGraphData()
@@ -68,6 +72,16 @@ fun LineGraphCard(viewModel: DashboardViewModel) {
         "lunch" -> R.string.lunch
         "dinner" -> R.string.dinner
         else -> null
+    }
+
+    val todayIndex = remember { LocalDate.now().dayOfWeek.value - 1 }
+    val dayLabelRes = if (forecastDay in 0..6 && forecastDay != todayIndex) {
+        (CalendarData.weekDays[forecastDay] as? Uitext.StringResource)?.id
+    } else null
+    val subtitle = when {
+        mealLabelRes == null -> null
+        dayLabelRes != null -> stringResource(mealLabelRes) + " · " + stringResource(dayLabelRes)
+        else -> stringResource(mealLabelRes)
     }
 
     OutlinedCard(
@@ -93,9 +107,9 @@ fun LineGraphCard(viewModel: DashboardViewModel) {
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
-                    if (mealLabelRes != null) {
+                    if (subtitle != null) {
                         Text(
-                            text = stringResource(mealLabelRes),
+                            text = subtitle,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

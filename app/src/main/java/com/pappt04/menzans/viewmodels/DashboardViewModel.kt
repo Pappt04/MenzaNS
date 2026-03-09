@@ -47,6 +47,9 @@ class DashboardViewModel(
     private val _currentMeal = MutableStateFlow<String?>(null)
     val currentMeal: StateFlow<String?> = _currentMeal.asStateFlow()
 
+    private val _forecastDay = MutableStateFlow(-1)
+    val forecastDay: StateFlow<Int> = _forecastDay.asStateFlow()
+
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
@@ -97,15 +100,8 @@ class DashboardViewModel(
 
     fun fetchGraphData() {
         viewModelScope.launch {
-            val (day, meal) = detectCurrentOrNextMeal()
-            _currentMeal.value = meal
             _graphState.value = UiState.Loading
-            val result = waitTimeRepository.getLineGraphForMeal(day, meal)
-            _graphState.value = if (result.isSuccess) {
-                UiState.Success(result.getOrNull() ?: emptyMap())
-            } else {
-                UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
-            }
+            _graphState.value = fetchMealGraph()
         }
     }
 
@@ -113,15 +109,37 @@ class DashboardViewModel(
         viewModelScope.launch {
             _isRefreshing.value = true
             _refreshTick.value++
-            val (day, meal) = detectCurrentOrNextMeal()
-            _currentMeal.value = meal
-            val result = waitTimeRepository.getLineGraphForMeal(day, meal)
-            _graphState.value = if (result.isSuccess) {
-                UiState.Success(result.getOrNull() ?: emptyMap())
-            } else {
-                UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
-            }
+            _graphState.value = fetchMealGraph()
             _isRefreshing.value = false
+        }
+    }
+
+    /**
+     * Fetches graph data for the current/next meal. If the result is all zeros
+     * (menza closed, e.g. Sunday), tries the next day up to 7 days ahead.
+     */
+    private suspend fun fetchMealGraph(): UiState {
+        val (startDay, meal) = detectCurrentOrNextMeal()
+        _currentMeal.value = meal
+
+        for (offset in 0 until 7) {
+            val day = (startDay + offset) % 7
+            val result = waitTimeRepository.getLineGraphForMeal(day, meal)
+            if (result.isFailure) {
+                return UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
+            }
+            val data = result.getOrNull() ?: emptyMap()
+            if (data.values.any { it > 0.0 }) {
+                _forecastDay.value = day
+                return UiState.Success(data)
+            }
+        }
+        // All 7 days are zeros — show the data as-is
+        val result = waitTimeRepository.getLineGraphForMeal(startDay, meal)
+        return if (result.isSuccess) {
+            UiState.Success(result.getOrNull() ?: emptyMap())
+        } else {
+            UiState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
         }
     }
 }
