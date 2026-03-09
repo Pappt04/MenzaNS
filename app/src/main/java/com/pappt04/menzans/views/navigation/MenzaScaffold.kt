@@ -16,7 +16,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.createGraph
 import com.pappt04.menzans.viewmodels.MainViewModel
 import com.pappt04.menzans.views.card.CardScreen
 import com.pappt04.menzans.views.common.AnimatedAppearance
@@ -60,47 +59,45 @@ fun MenzaScaffold(
         },
     ) { innerpadding ->
 
-        val graph =
-            navController.createGraph(startDestination = Screen.DashboardScreen.route) {
-                composable(route = Screen.DashboardScreen.route) {
-                    if (state.isFirstWelcome) {
-                        WelcomeScreen(onCompleted = { mainViewModel.setFirstWelcomeComplete() }, innerpadding)
-                    } else {
-                        AnimatedAppearance(
-                            delay = 5.milliseconds,
-                            enter = slideInVertically { it },
-                        ) {
-                            DashboardScreen(
-                                padding = innerpadding,
-                                snackbar = snackbarHostState,
-                            )
-                        }
-                    }
-                }
-                composable(route = Screen.StatisticsScreen.route) {
-                    AnimatedAppearance(enter = slideInVertically { it }) {
-                        StatisticsScreen(innerpadding)
-                    }
-                }
-                composable(route = Screen.InfoScreen.route) {
-                    AnimatedAppearance(enter = slideInVertically { it }) {
-                        InfoScreen(innerpadding)
-                    }
-                }
-                composable(route = Screen.CardScreen.route) {
-                    AnimatedAppearance(enter = slideInVertically { it }) {
-                        CardScreen(snackbarHostState, innerpadding)
-                    }
-                }
-                composable(route = Screen.SettingsScreen.route) {
-                    AnimatedAppearance(enter = slideInVertically { it }) {
-                        SettingsScreen(innerpadding, mainViewModel)
+        NavHost(
+            navController = bottomController,
+            startDestination = Screen.DashboardScreen.route,
+        ) {
+            composable(route = Screen.DashboardScreen.route) {
+                if (state.isFirstWelcome) {
+                    WelcomeScreen(onCompleted = { mainViewModel.setFirstWelcomeComplete() }, innerpadding)
+                } else {
+                    AnimatedAppearance(
+                        delay = 5.milliseconds,
+                        enter = slideInVertically { it },
+                    ) {
+                        DashboardScreen(
+                            padding = innerpadding,
+                            snackbar = snackbarHostState,
+                        )
                     }
                 }
             }
-        NavHost(
-            navController = bottomController,
-            graph = graph,
-        )
+            composable(route = Screen.StatisticsScreen.route) {
+                AnimatedAppearance(enter = slideInVertically { it }) {
+                    StatisticsScreen(innerpadding)
+                }
+            }
+            composable(route = Screen.InfoScreen.route) {
+                AnimatedAppearance(enter = slideInVertically { it }) {
+                    InfoScreen(innerpadding)
+                }
+            }
+            composable(route = Screen.CardScreen.route) {
+                AnimatedAppearance(enter = slideInVertically { it }) {
+                    CardScreen(snackbarHostState, innerpadding)
+                }
+            }
+            composable(route = Screen.SettingsScreen.route) {
+                AnimatedAppearance(enter = slideInVertically { it }) {
+                    SettingsScreen(innerpadding, mainViewModel)
+                }
+            }
+        }
     }
 }
