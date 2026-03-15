@@ -1,0 +1,86 @@
+name: Android App - Build & Test
+
+on:
+  pull_request:
+    branches: [ master, develop ]
+  push:
+    branches: [ master, develop ]
+
+jobs:
+  build:
+    name: Build & Test Android App
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+          cache-dependency-path: './gradle/wrapper/gradle-wrapper.properties'
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest --continue
+
+      - name: Generate test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Unit Test Results
+          path: 'app/build/test-results/testDebugUnitTest/**/*.xml'
+          reporter: 'java-junit'
+          fail-on-error: false
+
+      - name: Run linting checks
+        if: always()
+        run: ./gradlew lint --continue
+
+      - name: Upload build artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            app/build/reports/
+            app/build/outputs/
+          retention-days: 7
+
+      - name: Comment PR with build status
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const jobStatus = '${{ job.status }}';
+            const emoji = jobStatus === 'success' ? '✅' : '❌';
+            const branch = '${{ github.head_ref }}';
+            const commit = '${{ github.event.pull_request.head.sha }}';
+            const buildPassed = jobStatus === 'success' ? '✅ Passed' : '❌ Failed';
+
+            const comment = '## ' + emoji + ' Build Report\n\n' +
+              '**Job Status**: ' + jobStatus + '\n' +
+              '**Branch**: `' + branch + '`\n' +
+              '**Commit**: `' + commit + '`\n\n' +
+              '### Summary\n' +
+              '- 📦 **APK Build**: ' + buildPassed + '\n' +
+              '- 🧪 **Unit Tests**: Check test-reporter results above\n' +
+              '- 📋 **Linting**: View artifacts for details\n\n' +
+              '[View Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
