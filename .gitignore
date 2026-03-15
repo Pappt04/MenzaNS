@@ -43,3 +43,4 @@ local.properties
 /kls_database.db
 .editorconfig
 /keystore.properties.template
+/.idea/markdown.xml

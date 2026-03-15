@@ -3,6 +3,7 @@ package com.pappt04.menzans.viewmodel
 import com.pappt04.menzans.repository.UserRepository
 import com.pappt04.menzans.repository.MealRepository
 import com.pappt04.menzans.repository.CardRepository
+import com.pappt04.menzans.viewmodels.DashboardViewModel
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

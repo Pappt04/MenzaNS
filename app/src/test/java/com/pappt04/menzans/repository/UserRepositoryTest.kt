@@ -1,13 +1,12 @@
 package com.pappt04.menzans.repository
 
-import com.pappt04.menzans.data.models.User
+import com.pappt04.menzans.models.UserResponse
 import com.pappt04.menzans.service.MenzaApiService
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.whenever
 
 class UserRepositoryTest {
 
@@ -26,11 +25,11 @@ class UserRepositoryTest {
     fun testGetUserProfile_Success() = runTest {
         // Arrange
         val userId = "user123"
-        val mockUser = User(id = userId, name = "John Doe", balance = 50.0)
+        val mockUser = UserResponse(userID = userId)
 
         // Act & Assert
         // This is a placeholder for when UserRepository is properly implemented
-        assert(mockUser.id == userId)
+        assert(mockUser.userID == userId)
     }
 
     @Test

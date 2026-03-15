@@ -62,13 +62,13 @@ class UserRepositoryTest {
     @Test
     fun testFunctionName() = runTest {
         // Arrange
-        val testData = ...
+        val testData = "test"
 
         // Act
-        val result = ...
+        val result = testData.length
 
         // Assert
-        assert(result == expected)
+        assert(result > 0)
     }
 }
 ```

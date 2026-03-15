@@ -1,6 +1,5 @@
 package com.pappt04.menzans.repository
 
-import com.pappt04.menzans.data.local.datastore.StatisticsDataStoreManager
 import com.pappt04.menzans.service.MenzaApiService
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -12,9 +11,6 @@ class WaitTimeRepositoryTest {
 
     @Mock
     private lateinit var apiService: MenzaApiService
-
-    @Mock
-    private lateinit var statisticsDataStore: StatisticsDataStoreManager
 
     @Mock
     private lateinit var waitTimeRepository: WaitTimeRepository

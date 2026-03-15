@@ -1,6 +1,7 @@
 package com.pappt04.menzans.viewmodel
 
 import com.pappt04.menzans.repository.UserRepository
+import com.pappt04.menzans.viewmodels.MainViewModel
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -13,7 +14,6 @@ class MainViewModelTest {
     @Mock
     private lateinit var userRepository: UserRepository
 
-    private lateinit var mainViewModel: MainViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
