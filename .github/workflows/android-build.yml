@@ -6,6 +6,10 @@ on:
   push:
     branches: [ master, develop ]
 
+defaults:
+  run:
+    working-directory: ./MenzaNS
+
 jobs:
   build:
     name: Build & Test Android App
@@ -22,7 +26,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
-          cache-dependency-path: './gradle/wrapper/gradle-wrapper.properties'
+          cache-dependency-path: 'MenzaNS/gradle/wrapper/gradle-wrapper.properties'
 
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
@@ -38,7 +42,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Unit Test Results
-          path: 'app/build/test-results/testDebugUnitTest/**/*.xml'
+          path: 'MenzaNS/app/build/test-results/testDebugUnitTest/**/*.xml'
           reporter: 'java-junit'
           fail-on-error: false
 
@@ -52,8 +56,8 @@ jobs:
         with:
           name: build-reports
           path: |
-            app/build/reports/
-            app/build/outputs/
+            MenzaNS/app/build/reports/
+            MenzaNS/app/build/outputs/
           retention-days: 7
 
       - name: Comment PR with build status
