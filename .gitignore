@@ -33,13 +33,7 @@ local.properties
 /.idea/other.xml
 /.idea/runConfigurations.xml
 /.idea/vcs.xml
-/gradle/wrapper/gradle-wrapper.jar
-/gradle/wrapper/gradle-wrapper.properties
-/gradle/gradle-daemon-jvm.properties
-/gradle/libs.versions.toml
 /CLAUDE.md
-/gradlew
-/gradlew.bat
 /kls_database.db
 .editorconfig
 /keystore.properties.template
