@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: GitHub Discussions
-    url: https://github.com/pappt04/MenzaNS/discussions
-    about: Ask questions or discuss MenzaNS
-  - name: Documentation
-    url: https://github.com/pappt04/MenzaNS#readme
-    about: View the project README and documentation
