@@ -98,6 +98,11 @@ class GeofenceBroadcastReceiver :
                     val timeExited = timeFormat.format(Date())
                     val timeEntered = geofenceRepository.getEnterTime()
 
+                    if (timeEntered.isEmpty()) {
+                        Log.w(tag, "No enter time recorded, skipping exit processing")
+                        return@launch
+                    }
+
                     val enteredsplit = timeEntered.split(":").toTypedArray()
                     val exitedsplit = timeExited.split(":").toTypedArray()
 
@@ -188,8 +193,11 @@ fun calculateCorrectMeal(
     val enteredsplit = timeEntered.split(":").toTypedArray()
     val exitedsplit = timeExited.split(":").toTypedArray()
 
+    val enteredHour = enteredsplit.getOrNull(0)?.toIntOrNull() ?: return null
+    val exitedHour = exitedsplit.getOrNull(0)?.toIntOrNull() ?: return null
+
     for (mealdata in MealSampleBudget) {
-        if (mealdata.start_hour <= (enteredsplit[0].toInt()) && mealdata.end_hour >= (exitedsplit[0].toInt())) {
+        if (mealdata.start_hour <= enteredHour && mealdata.end_hour >= exitedHour) {
             return mealdata
         }
     }
@@ -200,8 +208,10 @@ fun calculateTimeDifference(
     enteredsplit: Array<String>,
     exitedsplit: Array<String>,
 ): Int {
-    val enteredMinutes = enteredsplit[0].toInt() * 60 + enteredsplit[1].toInt()
-    val exitedMinutes = exitedsplit[0].toInt() * 60 + exitedsplit[1].toInt()
+    val enteredMinutes = (enteredsplit.getOrNull(0)?.toIntOrNull() ?: 0) * 60 +
+        (enteredsplit.getOrNull(1)?.toIntOrNull() ?: 0)
+    val exitedMinutes = (exitedsplit.getOrNull(0)?.toIntOrNull() ?: 0) * 60 +
+        (exitedsplit.getOrNull(1)?.toIntOrNull() ?: 0)
 
     return abs(exitedMinutes - enteredMinutes)
 }
